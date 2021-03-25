@@ -10,6 +10,8 @@ import android.widget.Toast
 class ShowProfileActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        //TODO: Retrieve data from filesystem
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_show_profile)
     }
@@ -29,4 +31,12 @@ class ShowProfileActivity : AppCompatActivity() {
             else -> super.onOptionsItemSelected(item)
         }
     }
+
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        //TODO: Save data into filesystem
+    }
+
 }
