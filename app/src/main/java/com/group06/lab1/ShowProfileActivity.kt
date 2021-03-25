@@ -1,5 +1,6 @@
 package com.group06.lab1
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
@@ -23,7 +24,10 @@ class ShowProfileActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.editMenu -> {
-                Toast.makeText(this, "Simple action", Toast.LENGTH_LONG).show()
+//                Toast.makeText(this, "Simple action", Toast.LENGTH_LONG).show()
+                Intent(this, EditProfileActivity::class.java).also {
+                    startActivity(it)
+                }
                 true
             }
             else -> super.onOptionsItemSelected(item)
