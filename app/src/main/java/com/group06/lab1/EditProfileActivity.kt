@@ -1,29 +1,46 @@
 package com.group06.lab1
 
+import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.graphics.Bitmap
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
-import android.view.ContextMenu
-import android.view.MenuItem
-import android.view.View
-import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.Toast
+import android.view.*
+import android.widget.*
 
 class EditProfileActivity : AppCompatActivity() {
     val REQUEST_IMAGE_CAPTURE = 1
+
+    private lateinit var etFullName : EditText
+    private lateinit var etNickName : EditText
+    private lateinit var etEmail : EditText
+    private lateinit var etLocation : EditText
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_profile)
 
-
         val btnImageEdit = findViewById<ImageButton>(R.id.imageButtonEdit)
         registerForContextMenu(btnImageEdit)
 
+        etFullName = findViewById<EditText>(R.id.etFullName)
+        etNickName = findViewById<EditText>(R.id.etNickName)
+        etEmail = findViewById<EditText>(R.id.etEmail)
+        etLocation =  findViewById<EditText>(R.id.etLocation)
+
+        etFullName.setText(intent.getStringExtra("fullName"))
+        etNickName.setText(intent.getStringExtra("nickName"))
+        etEmail.setText(intent.getStringExtra("email"))
+        etLocation.setText(intent.getStringExtra("location"))
+
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val inflater: MenuInflater = menuInflater
+        inflater.inflate(R.menu.activity_edit_profile_menu, menu)
+        return true
     }
 
     override fun onCreateContextMenu(
@@ -50,6 +67,22 @@ class EditProfileActivity : AppCompatActivity() {
 //        return super.onContextItemSelected(item)
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.btnSubmit -> {
+                setResult(Activity.RESULT_OK, Intent().also {
+                    it.putExtra("result", etFullName.text.toString())
+                    it.putExtra("fullName", etFullName.text.toString())
+                    it.putExtra("nickName", etNickName.text.toString())
+                    it.putExtra("email", etEmail.text.toString())
+                    it.putExtra("location", etLocation.text.toString())
+                })
+                finish()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
 
     // ---------------- Use the camera to take a picture
     private fun dispatchTakePictureIntent() {

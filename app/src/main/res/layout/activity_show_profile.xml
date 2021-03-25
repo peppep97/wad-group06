@@ -34,31 +34,31 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/fullNameView"
+                android:id="@+id/tvFullName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Marco Rossi"
+                android:text="Marco Ross"
                 android:textAppearance="@style/TextAppearance.AppCompat.Display2" />
 
             <TextView
-                android:id="@+id/nicknameView"
+                android:id="@+id/tvNickName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="rossimarco"
+                android:text="rossimarc"
                 android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
 
             <TextView
-                android:id="@+id/emailView"
+                android:id="@+id/tvEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="marco@rossi.com"
+                android:text="marco@rossi.co"
                 android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
 
             <TextView
-                android:id="@+id/locationView"
+                android:id="@+id/tvLocation"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Turin, Italy"
+                android:text="Turin, Ital"
                 android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
         </LinearLayout>
     </ScrollView>
