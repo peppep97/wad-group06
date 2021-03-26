@@ -26,6 +26,7 @@
 
             <ImageButton
                 android:id="@+id/imageButtonEdit"
+
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -52,29 +53,37 @@
                 android:id="@+id/etFullName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Marco Rossi"
-                android:textAppearance="@style/TextAppearance.AppCompat.Display2" />
+                android:hint="Full Name"
+                android:inputType=
+                    "textCapSentences|textAutoCorrect"
+                android:textSize="20sp"
+                />
 
             <EditText
                 android:id="@+id/etNickName"
+                android:inputType=
+                    "textCapSentences|textAutoCorrect"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="rossimarco"
-                android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
+                android:hint="Nick Name"
+                android:textSize="20sp" />
 
             <EditText
                 android:id="@+id/etEmail"
+                android:inputType="textEmailAddress|textAutoCorrect"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="marco@rossi.com"
-                android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
+                android:hint="Email Address"
+                android:textSize="20sp"/>
 
             <EditText
                 android:id="@+id/etLocation"
+                android:inputType=
+                    "textCapSentences|textAutoCorrect"
+                android:hint="Location"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Turin, Italy"
-                android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
+                android:textSize="20sp"/>
         </LinearLayout>
 
     </LinearLayout>
