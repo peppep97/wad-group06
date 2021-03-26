@@ -4,19 +4,22 @@ import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.graphics.Bitmap
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.*
 import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
+
 
 class EditProfileActivity : AppCompatActivity() {
     val REQUEST_IMAGE_CAPTURE = 1
+
 
     private lateinit var etFullName : EditText
     private lateinit var etNickName : EditText
     private lateinit var etEmail : EditText
     private lateinit var etLocation : EditText
+    private lateinit var imgView : ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,11 +32,16 @@ class EditProfileActivity : AppCompatActivity() {
         etNickName = findViewById<EditText>(R.id.etNickName)
         etEmail = findViewById<EditText>(R.id.etEmail)
         etLocation =  findViewById<EditText>(R.id.etLocation)
+        imgView = findViewById<ImageView>(R.id.imgProfile)
 
         etFullName.setText(intent.getStringExtra("fullName"))
         etNickName.setText(intent.getStringExtra("nickName"))
         etEmail.setText(intent.getStringExtra("email"))
         etLocation.setText(intent.getStringExtra("location"))
+
+
+
+
 
     }
 
@@ -91,18 +99,24 @@ class EditProfileActivity : AppCompatActivity() {
             startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
         } catch (e: ActivityNotFoundException) {
             // display error state to the user
+            Toast.makeText(applicationContext, "error $e", Toast.LENGTH_SHORT).show()
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        val picView = findViewById<ImageView>(R.id.imageViewEdit)
+
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             val imageBitmap = data?.extras?.get("data") as Bitmap
-            picView.setImageBitmap(imageBitmap)
+                imgView.setImageBitmap(imageBitmap)
+
         }
     }
 // ---------------- Use the camera to take a picture
+
+
+    // TODO fixing rotation of the Image
+    // TODO moving data btw tow activities
 
 }
 
