@@ -9,17 +9,19 @@ import android.provider.MediaStore
 import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.graphics.drawable.toBitmap
 
 
 class EditProfileActivity : AppCompatActivity() {
     val REQUEST_IMAGE_CAPTURE = 1
+    val REQUEST_IMAGE_GALLERY = 2
 
 
     private lateinit var etFullName : EditText
     private lateinit var etNickName : EditText
     private lateinit var etEmail : EditText
     private lateinit var etLocation : EditText
-    private lateinit var imgView : ImageView
+    private lateinit var imgProfile : ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,16 +34,13 @@ class EditProfileActivity : AppCompatActivity() {
         etNickName = findViewById<EditText>(R.id.etNickName)
         etEmail = findViewById<EditText>(R.id.etEmail)
         etLocation =  findViewById<EditText>(R.id.etLocation)
-        imgView = findViewById<ImageView>(R.id.imgProfile)
+        imgProfile = findViewById<ImageView>(R.id.imgProfile)
 
         etFullName.setText(intent.getStringExtra("fullName"))
         etNickName.setText(intent.getStringExtra("nickName"))
         etEmail.setText(intent.getStringExtra("email"))
         etLocation.setText(intent.getStringExtra("location"))
-
-
-
-
+        imgProfile.setImageBitmap(intent?.extras?.getParcelable("profile"))
 
     }
 
@@ -63,7 +62,8 @@ class EditProfileActivity : AppCompatActivity() {
     override fun onContextItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.addGallery -> {
-                Toast.makeText(applicationContext, "Option 1 Selected", Toast.LENGTH_SHORT).show()
+                val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
+                startActivityForResult(intent, REQUEST_IMAGE_GALLERY)
                 true
             }
             R.id.addCamera -> {
@@ -76,6 +76,7 @@ class EditProfileActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        imgProfile.invalidate()
         return when (item.itemId) {
             R.id.btnSubmit -> {
                 setResult(Activity.RESULT_OK, Intent().also {
@@ -84,12 +85,31 @@ class EditProfileActivity : AppCompatActivity() {
                     it.putExtra("nickName", etNickName.text.toString())
                     it.putExtra("email", etEmail.text.toString())
                     it.putExtra("location", etLocation.text.toString())
+                    it.putExtra("profile", imgProfile.drawable.toBitmap())
                 })
                 finish()
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString("fullName", etFullName.text.toString())
+        outState.putString("nickName", etNickName.text.toString())
+        outState.putString("email", etEmail.text.toString())
+        outState.putString("location", etLocation.text.toString())
+        outState.putParcelable("image", imgProfile.drawable.toBitmap())
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        etFullName.setText(savedInstanceState.getString("fullName"))
+        etNickName.setText(savedInstanceState.getString("nickName"))
+        etEmail.setText(savedInstanceState.getString("email"))
+        etLocation.setText(savedInstanceState.getString("location"))
+        imgProfile.setImageBitmap(savedInstanceState.getParcelable("image"))
     }
 
     // ---------------- Use the camera to take a picture
@@ -108,15 +128,17 @@ class EditProfileActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             val imageBitmap = data?.extras?.get("data") as Bitmap
-                imgView.setImageBitmap(imageBitmap)
+                imgProfile.setImageBitmap(imageBitmap)
 
+        } else if (requestCode == REQUEST_IMAGE_GALLERY && resultCode == RESULT_OK) {
+//            val bitmap = MediaStore.Images.Media.getBitmap(this.contentResolver, data?.data)
+//            imgProfile.setImageBitmap(bitmap)
+            imgProfile.setImageURI(data?.data)
         }
     }
 // ---------------- Use the camera to take a picture
 
-
-    // TODO fixing rotation of the Image
-    // TODO moving data btw tow activities
+    // TODO moving data btw two activities
 
 }
 

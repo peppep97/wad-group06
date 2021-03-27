@@ -8,14 +8,17 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.graphics.drawable.toBitmap
 
 class ShowProfileActivity : AppCompatActivity() {
     private lateinit var tvFullName : TextView
     private lateinit var tvNickName : TextView
     private lateinit var tvEmail : TextView
     private lateinit var tvLocation : TextView
+    private lateinit var imgProfile : ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         //TODO: Retrieve data from filesystem
@@ -27,6 +30,7 @@ class ShowProfileActivity : AppCompatActivity() {
         tvNickName = findViewById<TextView>(R.id.tvNickName)
         tvEmail = findViewById<TextView>(R.id.tvEmail)
         tvLocation =  findViewById<TextView>(R.id.tvLocation)
+        imgProfile = findViewById<ImageView>(R.id.imgProfile)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -44,6 +48,7 @@ class ShowProfileActivity : AppCompatActivity() {
                     it.putExtra("nickName", tvNickName.text.toString())
                     it.putExtra("email", tvEmail.text.toString())
                     it.putExtra("location", tvLocation.text.toString())
+                    it.putExtra("profile", imgProfile.drawable.toBitmap())
                     startActivityForResult(it, 1)
                 }
                 true
@@ -59,7 +64,26 @@ class ShowProfileActivity : AppCompatActivity() {
             tvNickName.text = data?.getStringExtra("nickName")
             tvEmail.text = data?.getStringExtra("email")
             tvLocation.text = data?.getStringExtra("location")
+            imgProfile.setImageBitmap(data?.extras?.getParcelable("profile"))
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString("fullName", tvFullName.text.toString())
+        outState.putString("nickName", tvNickName.text.toString())
+        outState.putString("email", tvEmail.text.toString())
+        outState.putString("location", tvLocation.text.toString())
+        outState.putParcelable("image", imgProfile.drawable.toBitmap())
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        tvFullName.text = savedInstanceState.getString("fullName")
+        tvNickName.text = savedInstanceState.getString("nickName")
+        tvEmail.text = savedInstanceState.getString("email")
+        tvLocation.text = savedInstanceState.getString("location")
+        imgProfile.setImageBitmap(savedInstanceState.getParcelable("image"))
     }
 
     override fun onDestroy() {

@@ -7,7 +7,7 @@
     tools:context=".ShowProfileActivity">
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/imgProfile"
         android:layout_height="0dp"
         android:layout_width="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -26,7 +26,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/guideline3"
         app:layout_constraintHorizontal_weight="2"
-        app:layout_constraintStart_toEndOf="@+id/imageView"
+        app:layout_constraintStart_toEndOf="@+id/imgProfile"
         app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
@@ -36,28 +36,28 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/etFullName"
+                android:id="@+id/tvFullName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Marco Rossi"
                 android:textAppearance="@style/TextAppearance.AppCompat.Display2" />
 
             <TextView
-                android:id="@+id/etNickName"
+                android:id="@+id/tvNickName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="rossimarco"
                 android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
 
             <TextView
-                android:id="@+id/etEmail"
+                android:id="@+id/tvEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="marco@rossi.com"
                 android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
 
             <TextView
-                android:id="@+id/etLocation"
+                android:id="@+id/tvLocation"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Turin, Italy"
