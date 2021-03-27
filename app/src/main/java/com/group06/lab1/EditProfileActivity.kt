@@ -70,7 +70,6 @@ class EditProfileActivity : AppCompatActivity() {
             }
             else -> false
         }
-//        return super.onContextItemSelected(item)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -129,15 +128,9 @@ class EditProfileActivity : AppCompatActivity() {
             imgProfile.setImageBitmap(imageBitmap)
 
         } else if (requestCode == REQUEST_IMAGE_GALLERY && resultCode == RESULT_OK) {
-//            val bitmap = MediaStore.Images.Media.getBitmap(this.contentResolver, data?.data)
-//            imgProfile.setImageBitmap(bitmap)
             imgProfile.setImageURI(data?.data)
         }
     }
-// ---------------- Use the camera to take a picture
-
-    // TODO moving data btw two activities
-
 }
 
 

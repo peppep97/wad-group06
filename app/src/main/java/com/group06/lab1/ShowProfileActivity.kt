@@ -26,8 +26,6 @@ class ShowProfileActivity : AppCompatActivity() {
     private lateinit var imgProfile : ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        //TODO: Retrieve data from filesystem
-
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_show_profile)
 
