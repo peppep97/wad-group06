@@ -8,62 +8,59 @@
 
     <ImageView
         android:id="@+id/imgProfile"
-        android:layout_height="0dp"
         android:layout_width="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintDimensionRatio="1:1"
-        app:layout_constraintEnd_toStartOf="@+id/scrollView3"
+        android:layout_height="0dp"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintHorizontal_weight="1"
-        app:layout_constraintStart_toStartOf="@+id/guideline2"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/guideline2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/linearLayout2"
         app:srcCompat="@drawable/ic_person_black" />
 
-    <ScrollView
-        android:id="@+id/scrollView3"
+    <LinearLayout
+        android:id="@+id/linearLayout2"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="16dp"
+        android:gravity="center"
+        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/guideline3"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintHorizontal_weight="2"
         app:layout_constraintStart_toEndOf="@+id/imgProfile"
         app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/tvFullName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="vertical">
+            android:text="Marco Rossi"
+            android:textAppearance="@style/TextAppearance.AppCompat.Display2" />
 
-            <TextView
-                android:id="@+id/tvFullName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Marco Rossi"
-                android:textAppearance="@style/TextAppearance.AppCompat.Display2" />
+        <TextView
+            android:id="@+id/tvNickName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="rossimarco"
+            android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
 
-            <TextView
-                android:id="@+id/tvNickName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="rossimarco"
-                android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
+        <TextView
+            android:id="@+id/tvEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="marco@rossi.com"
+            android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
 
-            <TextView
-                android:id="@+id/tvEmail"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="marco@rossi.com"
-                android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
-
-            <TextView
-                android:id="@+id/tvLocation"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Turin, Italy"
-                android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
-        </LinearLayout>
-    </ScrollView>
+        <TextView
+            android:id="@+id/tvLocation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Turin, Italy"
+            android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
+    </LinearLayout>
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline2"

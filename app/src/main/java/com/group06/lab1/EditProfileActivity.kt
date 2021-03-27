@@ -11,11 +11,9 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.drawable.toBitmap
 
-
 class EditProfileActivity : AppCompatActivity() {
     val REQUEST_IMAGE_CAPTURE = 1
     val REQUEST_IMAGE_GALLERY = 2
-
 
     private lateinit var etFullName : EditText
     private lateinit var etNickName : EditText
@@ -30,18 +28,18 @@ class EditProfileActivity : AppCompatActivity() {
         val btnImageEdit = findViewById<ImageButton>(R.id.imageButtonEdit)
         registerForContextMenu(btnImageEdit)
 
-        etFullName = findViewById<EditText>(R.id.etFullName)
-        etNickName = findViewById<EditText>(R.id.etNickName)
-        etEmail = findViewById<EditText>(R.id.etEmail)
-        etLocation =  findViewById<EditText>(R.id.etLocation)
-        imgProfile = findViewById<ImageView>(R.id.imgProfile)
+        etFullName = findViewById(R.id.etFullName)
+        etNickName = findViewById(R.id.etNickName)
+        etEmail = findViewById(R.id.etEmail)
+        etLocation =  findViewById(R.id.etLocation)
+        imgProfile = findViewById(R.id.imgProfile)
 
-        etFullName.setText(intent.getStringExtra("fullName"))
-        etNickName.setText(intent.getStringExtra("nickName"))
-        etEmail.setText(intent.getStringExtra("email"))
-        etLocation.setText(intent.getStringExtra("location"))
-        imgProfile.setImageBitmap(intent?.extras?.getParcelable("profile"))
-
+        etFullName.setText(intent.getStringExtra("group06.lab1.fullName"))
+        etNickName.setText(intent.getStringExtra("group06.lab1.nickName"))
+        etEmail.setText(intent.getStringExtra("group06.lab1.email"))
+        etLocation.setText(intent.getStringExtra("group06.lab1.location"))
+        val img : Bitmap? = intent.getParcelableExtra("group06.lab1.profile")
+        img?.let { imgProfile.setImageBitmap(img) }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -80,12 +78,12 @@ class EditProfileActivity : AppCompatActivity() {
         return when (item.itemId) {
             R.id.btnSubmit -> {
                 setResult(Activity.RESULT_OK, Intent().also {
-                    it.putExtra("result", etFullName.text.toString())
-                    it.putExtra("fullName", etFullName.text.toString())
-                    it.putExtra("nickName", etNickName.text.toString())
-                    it.putExtra("email", etEmail.text.toString())
-                    it.putExtra("location", etLocation.text.toString())
-                    it.putExtra("profile", imgProfile.drawable.toBitmap())
+                    it.putExtra("group06.lab1.result", etFullName.text.toString())
+                    it.putExtra("group06.lab1.fullName", etFullName.text.toString())
+                    it.putExtra("group06.lab1.nickName", etNickName.text.toString())
+                    it.putExtra("group06.lab1.email", etEmail.text.toString())
+                    it.putExtra("group06.lab1.location", etLocation.text.toString())
+                    it.putExtra("group06.lab1.profile", imgProfile.drawable.toBitmap())
                 })
                 finish()
                 true
@@ -96,20 +94,20 @@ class EditProfileActivity : AppCompatActivity() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putString("fullName", etFullName.text.toString())
-        outState.putString("nickName", etNickName.text.toString())
-        outState.putString("email", etEmail.text.toString())
-        outState.putString("location", etLocation.text.toString())
-        outState.putParcelable("image", imgProfile.drawable.toBitmap())
+        outState.putString("group06.lab1.fullName", etFullName.text.toString())
+        outState.putString("group06.lab1.nickName", etNickName.text.toString())
+        outState.putString("group06.lab1.email", etEmail.text.toString())
+        outState.putString("group06.lab1.location", etLocation.text.toString())
+        outState.putParcelable("group06.lab1.image", imgProfile.drawable.toBitmap())
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
-        etFullName.setText(savedInstanceState.getString("fullName"))
-        etNickName.setText(savedInstanceState.getString("nickName"))
-        etEmail.setText(savedInstanceState.getString("email"))
-        etLocation.setText(savedInstanceState.getString("location"))
-        imgProfile.setImageBitmap(savedInstanceState.getParcelable("image"))
+        etFullName.setText(savedInstanceState.getString("group06.lab1.fullName"))
+        etNickName.setText(savedInstanceState.getString("group06.lab1.nickName"))
+        etEmail.setText(savedInstanceState.getString("group06.lab1.email"))
+        etLocation.setText(savedInstanceState.getString("group06.lab1.location"))
+        imgProfile.setImageBitmap(savedInstanceState.getParcelable("group06.lab1.image"))
     }
 
     // ---------------- Use the camera to take a picture
@@ -128,7 +126,7 @@ class EditProfileActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             val imageBitmap = data?.extras?.get("data") as Bitmap
-                imgProfile.setImageBitmap(imageBitmap)
+            imgProfile.setImageBitmap(imageBitmap)
 
         } else if (requestCode == REQUEST_IMAGE_GALLERY && resultCode == RESULT_OK) {
 //            val bitmap = MediaStore.Images.Media.getBitmap(this.contentResolver, data?.data)
