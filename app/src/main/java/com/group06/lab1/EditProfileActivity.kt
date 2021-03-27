@@ -18,11 +18,11 @@ class EditProfileActivity : AppCompatActivity() {
     val REQUEST_IMAGE_GALLERY = 2
 
 
-    private lateinit var etFullName : EditText
-    private lateinit var etNickName : EditText
-    private lateinit var etEmail : EditText
-    private lateinit var etLocation : EditText
-    private lateinit var imgProfile : ImageView
+    private lateinit var etFullName: EditText
+    private lateinit var etNickName: EditText
+    private lateinit var etEmail: EditText
+    private lateinit var etLocation: EditText
+    private lateinit var imgProfile: ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,7 +35,7 @@ class EditProfileActivity : AppCompatActivity() {
         etFullName = findViewById<EditText>(R.id.etFullName)
         etNickName = findViewById<EditText>(R.id.etNickName)
         etEmail = findViewById<EditText>(R.id.etEmail)
-        etLocation =  findViewById<EditText>(R.id.etLocation)
+        etLocation = findViewById<EditText>(R.id.etLocation)
         imgProfile = findViewById<ImageView>(R.id.imgProfile)
 
         etFullName.setText(intent.getStringExtra("fullName"))
@@ -80,16 +80,17 @@ class EditProfileActivity : AppCompatActivity() {
 //        return super.onContextItemSelected(item)
     }
 
+    // change the scale of image
+    fun scaleDownBitmap(photo: Bitmap, newHeight: Int, context: Context): Bitmap? {
+        var photo = photo
+        val densityMultiplier: Float = context.getResources().getDisplayMetrics().density
+        val h = (newHeight * densityMultiplier).toInt()
+        val w = (h * photo.width / photo.height.toDouble()).toInt()
+        photo = Bitmap.createScaledBitmap(photo, w, h, true)
+        return photo
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // change the scale of image
-        fun scaleDownBitmap(photo: Bitmap, newHeight: Int, context: Context): Bitmap? {
-            var photo = photo
-            val densityMultiplier: Float = context.getResources().getDisplayMetrics().density
-            val h = (newHeight * densityMultiplier).toInt()
-            val w = (h * photo.width / photo.height.toDouble()).toInt()
-            photo = Bitmap.createScaledBitmap(photo, w, h, true)
-            return photo
-        }
         imgProfile.invalidate()
         return when (item.itemId) {
             R.id.btnSubmit -> {
@@ -99,7 +100,10 @@ class EditProfileActivity : AppCompatActivity() {
                     it.putExtra("nickName", etNickName.text.toString())
                     it.putExtra("email", etEmail.text.toString())
                     it.putExtra("location", etLocation.text.toString())
-                    it.putExtra("profile", scaleDownBitmap(imgProfile.drawable.toBitmap(),100,this))
+                    it.putExtra(
+                        "profile",
+                        scaleDownBitmap(imgProfile.drawable.toBitmap(), 100, this)
+                    )
                 })
                 finish()
                 true
@@ -116,8 +120,6 @@ class EditProfileActivity : AppCompatActivity() {
         outState.putString("location", etLocation.text.toString())
         outState.putParcelable("image", imgProfile.drawable.toBitmap())
     }
-
-
 
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
@@ -145,7 +147,7 @@ class EditProfileActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             val imageBitmap = data?.extras?.get("data") as Bitmap
-                imgProfile.setImageBitmap(imageBitmap)
+            imgProfile.setImageBitmap(imageBitmap)
 
         } else if (requestCode == REQUEST_IMAGE_GALLERY && resultCode == RESULT_OK) {
 //            val bitmap = MediaStore.Images.Media.getBitmap(this.contentResolver, data?.data)
