@@ -2,6 +2,7 @@ package com.group06.lab1
 
 import android.app.Activity
 import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
@@ -27,6 +28,7 @@ class EditProfileActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_profile)
 
+        // open the Context Menu
         val btnImageEdit = findViewById<ImageButton>(R.id.imageButtonEdit)
         registerForContextMenu(btnImageEdit)
 
@@ -62,7 +64,10 @@ class EditProfileActivity : AppCompatActivity() {
     override fun onContextItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.addGallery -> {
-                val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
+                val intent = Intent(
+                    Intent.ACTION_PICK,
+                    MediaStore.Images.Media.INTERNAL_CONTENT_URI
+                )
                 startActivityForResult(intent, REQUEST_IMAGE_GALLERY)
                 true
             }
@@ -76,6 +81,15 @@ class EditProfileActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // change the scale of image
+        fun scaleDownBitmap(photo: Bitmap, newHeight: Int, context: Context): Bitmap? {
+            var photo = photo
+            val densityMultiplier: Float = context.getResources().getDisplayMetrics().density
+            val h = (newHeight * densityMultiplier).toInt()
+            val w = (h * photo.width / photo.height.toDouble()).toInt()
+            photo = Bitmap.createScaledBitmap(photo, w, h, true)
+            return photo
+        }
         imgProfile.invalidate()
         return when (item.itemId) {
             R.id.btnSubmit -> {
@@ -85,7 +99,7 @@ class EditProfileActivity : AppCompatActivity() {
                     it.putExtra("nickName", etNickName.text.toString())
                     it.putExtra("email", etEmail.text.toString())
                     it.putExtra("location", etLocation.text.toString())
-                    it.putExtra("profile", imgProfile.drawable.toBitmap())
+                    it.putExtra("profile", scaleDownBitmap(imgProfile.drawable.toBitmap(),100,this))
                 })
                 finish()
                 true
@@ -102,6 +116,9 @@ class EditProfileActivity : AppCompatActivity() {
         outState.putString("location", etLocation.text.toString())
         outState.putParcelable("image", imgProfile.drawable.toBitmap())
     }
+
+
+
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
