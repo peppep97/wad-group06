@@ -39,12 +39,13 @@ class ShowProfileActivity : AppCompatActivity() {
             getString(R.string.preference_file_key), Context.MODE_PRIVATE)
 
         val data = sharedPref.getString("profile", null)
-        with(JSONObject(data!!)) {
-            tvFullName.text = getString("fullName")
-            tvNickName.text = getString("nickName")
-            tvEmail.text = getString("email")
-            tvLocation.text = getString("location")
-        }
+        if (data != null)
+            with(JSONObject(data)) {
+                tvFullName.text = getString("fullName")
+                tvNickName.text = getString("nickName")
+                tvEmail.text = getString("email")
+                tvLocation.text = getString("location")
+            }
 
         File(filesDir, "profilepic.jpg").let {
             if (it.exists()) imgProfile.setImageBitmap(BitmapFactory.decodeFile(it.absolutePath))

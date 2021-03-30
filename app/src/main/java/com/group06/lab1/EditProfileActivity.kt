@@ -2,6 +2,7 @@ package com.group06.lab1
 
 import android.app.Activity
 import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
@@ -26,7 +27,11 @@ class EditProfileActivity : AppCompatActivity() {
         setContentView(R.layout.activity_edit_profile)
 
         val btnImageEdit = findViewById<ImageButton>(R.id.imageButtonEdit)
-        registerForContextMenu(btnImageEdit)
+        btnImageEdit.setOnClickListener{
+            registerForContextMenu(btnImageEdit)
+            openContextMenu(btnImageEdit)
+            unregisterForContextMenu(btnImageEdit);
+        }
 
         etFullName = findViewById(R.id.etFullName)
         etNickName = findViewById(R.id.etNickName)
@@ -44,7 +49,7 @@ class EditProfileActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater: MenuInflater = menuInflater
-        inflater.inflate(R.menu.activity_edit_profile_menu, menu)
+        menuInflater.inflate(R.menu.activity_edit_save, menu)
         return true
     }
 
@@ -58,6 +63,7 @@ class EditProfileActivity : AppCompatActivity() {
     }
 
     override fun onContextItemSelected(item: MenuItem): Boolean {
+        imgProfile.invalidate()
         return when (item.itemId) {
             R.id.addGallery -> {
                 val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
@@ -73,22 +79,30 @@ class EditProfileActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        imgProfile.invalidate()
         return when (item.itemId) {
-            R.id.btnSubmit -> {
+            R.id.saveEdit -> {
                 setResult(Activity.RESULT_OK, Intent().also {
                     it.putExtra("group06.lab1.result", etFullName.text.toString())
                     it.putExtra("group06.lab1.fullName", etFullName.text.toString())
                     it.putExtra("group06.lab1.nickName", etNickName.text.toString())
                     it.putExtra("group06.lab1.email", etEmail.text.toString())
                     it.putExtra("group06.lab1.location", etLocation.text.toString())
-                    it.putExtra("group06.lab1.profile", imgProfile.drawable.toBitmap())
+                    it.putExtra("group06.lab1.profile", scaleDownBitmap(imgProfile.drawable.toBitmap(), 100, this))
                 })
                 finish()
                 true
-            }
-            else -> super.onOptionsItemSelected(item)
+
+            } else -> false
         }
+    }
+
+    fun scaleDownBitmap(photo: Bitmap, newHeight: Int, context: Context): Bitmap? {
+        var photo = photo
+        val densityMultiplier: Float = context.getResources().getDisplayMetrics().density
+        val h = (newHeight * densityMultiplier).toInt()
+        val w = (h * photo.width / photo.height.toDouble()).toInt()
+        photo = Bitmap.createScaledBitmap(photo, w, h, true)
+        return photo
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -131,6 +145,7 @@ class EditProfileActivity : AppCompatActivity() {
             imgProfile.setImageURI(data?.data)
         }
     }
+
 }
 
 
