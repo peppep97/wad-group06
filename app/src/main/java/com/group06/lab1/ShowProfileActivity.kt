@@ -19,11 +19,11 @@ import java.io.FileOutputStream
 
 
 class ShowProfileActivity : AppCompatActivity() {
-    private lateinit var tvFullName : TextView
-    private lateinit var tvNickName : TextView
-    private lateinit var tvEmail : TextView
-    private lateinit var tvLocation : TextView
-    private lateinit var imgProfile : ImageView
+    private lateinit var tvFullName: TextView
+    private lateinit var tvNickName: TextView
+    private lateinit var tvEmail: TextView
+    private lateinit var tvLocation: TextView
+    private lateinit var imgProfile: ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,11 +32,12 @@ class ShowProfileActivity : AppCompatActivity() {
         tvFullName = findViewById(R.id.tvFullName)
         tvNickName = findViewById(R.id.tvNickName)
         tvEmail = findViewById(R.id.tvEmail)
-        tvLocation =  findViewById(R.id.tvLocation)
+        tvLocation = findViewById(R.id.tvLocation)
         imgProfile = findViewById(R.id.imgProfile)
 
         val sharedPref = getSharedPreferences(
-            getString(R.string.preference_file_key), Context.MODE_PRIVATE)
+            getString(R.string.preference_file_key), Context.MODE_PRIVATE
+        )
 
         val data = sharedPref.getString("profile", null)
         if (data != null)
@@ -70,12 +71,12 @@ class ShowProfileActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if(requestCode == 1 && resultCode == Activity.RESULT_OK) {
+        if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
             tvFullName.text = data?.getStringExtra("group06.lab1.fullName")
             tvNickName.text = data?.getStringExtra("group06.lab1.nickName")
             tvEmail.text = data?.getStringExtra("group06.lab1.email")
             tvLocation.text = data?.getStringExtra("group06.lab1.location")
-            val img : Bitmap? = data?.getParcelableExtra("group06.lab1.profile")
+            val img: Bitmap? = data?.getParcelableExtra("group06.lab1.profile")
             img?.let { imgProfile.setImageBitmap(img) }
 
             //serialize data into a JSON object
@@ -88,9 +89,10 @@ class ShowProfileActivity : AppCompatActivity() {
 
             //store data persistently
             val sharedPref = getSharedPreferences(
-                getString(R.string.preference_file_key), Context.MODE_PRIVATE)
+                getString(R.string.preference_file_key), Context.MODE_PRIVATE
+            )
 
-            with (sharedPref.edit()) {
+            with(sharedPref.edit()) {
                 putString("profile", profileData.toString())
                 apply()
             }

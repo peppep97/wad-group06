@@ -16,18 +16,19 @@ class EditProfileActivity : AppCompatActivity() {
     val REQUEST_IMAGE_CAPTURE = 1
     val REQUEST_IMAGE_GALLERY = 2
 
-    private lateinit var etFullName : EditText
-    private lateinit var etNickName : EditText
-    private lateinit var etEmail : EditText
-    private lateinit var etLocation : EditText
-    private lateinit var imgProfile : ImageView
+    private lateinit var etFullName: EditText
+    private lateinit var etNickName: EditText
+    private lateinit var etEmail: EditText
+    private lateinit var etLocation: EditText
+    private lateinit var imgProfile: ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_profile)
 
         val btnImageEdit = findViewById<ImageButton>(R.id.imageButtonEdit)
-        btnImageEdit.setOnClickListener{
+        // open context menu by clicking on btnImage
+        btnImageEdit.setOnClickListener {
             registerForContextMenu(btnImageEdit)
             openContextMenu(btnImageEdit)
             unregisterForContextMenu(btnImageEdit);
@@ -36,14 +37,14 @@ class EditProfileActivity : AppCompatActivity() {
         etFullName = findViewById(R.id.etFullName)
         etNickName = findViewById(R.id.etNickName)
         etEmail = findViewById(R.id.etEmail)
-        etLocation =  findViewById(R.id.etLocation)
+        etLocation = findViewById(R.id.etLocation)
         imgProfile = findViewById(R.id.imgProfile)
 
         etFullName.setText(intent.getStringExtra("group06.lab1.fullName"))
         etNickName.setText(intent.getStringExtra("group06.lab1.nickName"))
         etEmail.setText(intent.getStringExtra("group06.lab1.email"))
         etLocation.setText(intent.getStringExtra("group06.lab1.location"))
-        val img : Bitmap? = intent.getParcelableExtra("group06.lab1.profile")
+        val img: Bitmap? = intent.getParcelableExtra("group06.lab1.profile")
         img?.let { imgProfile.setImageBitmap(img) }
     }
 
@@ -66,7 +67,8 @@ class EditProfileActivity : AppCompatActivity() {
         imgProfile.invalidate()
         return when (item.itemId) {
             R.id.addGallery -> {
-                val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
+                val intent =
+                    Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
                 startActivityForResult(intent, REQUEST_IMAGE_GALLERY)
                 true
             }
@@ -87,16 +89,21 @@ class EditProfileActivity : AppCompatActivity() {
                     it.putExtra("group06.lab1.nickName", etNickName.text.toString())
                     it.putExtra("group06.lab1.email", etEmail.text.toString())
                     it.putExtra("group06.lab1.location", etLocation.text.toString())
-                    it.putExtra("group06.lab1.profile", scaleDownBitmap(imgProfile.drawable.toBitmap(), 100, this))
+                    it.putExtra(
+                        "group06.lab1.profile",
+                        scaleDownBitmap(imgProfile.drawable.toBitmap(), 100, this)
+                    )
                 })
                 finish()
                 true
 
-            } else -> false
+            }
+            else -> false
         }
     }
 
-    fun scaleDownBitmap(photo: Bitmap, newHeight: Int, context: Context): Bitmap? {
+    // function to scale down the BitMap Image for transferring it to another activity
+    private fun scaleDownBitmap(photo: Bitmap, newHeight: Int, context: Context): Bitmap? {
         var photo = photo
         val densityMultiplier: Float = context.getResources().getDisplayMetrics().density
         val h = (newHeight * densityMultiplier).toInt()
@@ -104,6 +111,7 @@ class EditProfileActivity : AppCompatActivity() {
         photo = Bitmap.createScaledBitmap(photo, w, h, true)
         return photo
     }
+
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
@@ -123,7 +131,7 @@ class EditProfileActivity : AppCompatActivity() {
         imgProfile.setImageBitmap(savedInstanceState.getParcelable("group06.lab1.image"))
     }
 
-    // ---------------- Use the camera to take a picture
+    // ---------------- function for activating the camera to take a picture
     private fun dispatchTakePictureIntent() {
         val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         try {
