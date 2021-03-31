@@ -63,6 +63,7 @@
 
             <EditText
                 android:id="@+id/etFullName"
+                android:hint="Fullname"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textShortMessage|textAutoCorrect|text"
@@ -74,6 +75,7 @@
 
             <EditText
                 android:id="@+id/etNickName"
+                android:hint="Nickname"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="clip_horizontal"
@@ -87,6 +89,7 @@
 
             <EditText
                 android:id="@+id/etEmail"
+                android:hint="Email Address"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="clip_horizontal"
@@ -100,6 +103,7 @@
 
             <EditText
                 android:id="@+id/etLocation"
+                android:hint="Location"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="clip_horizontal"
