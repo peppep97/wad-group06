@@ -7,61 +7,56 @@
     tools:context=".ShowProfileActivity">
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/imgProfile"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/scrollView3"
-        app:layout_constraintDimensionRatio="1:1"
+        android:paddingTop="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout3"
         app:layout_constraintEnd_toStartOf="@+id/guideline3"
         app:layout_constraintStart_toStartOf="@+id/guideline2"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_weight="1"
         app:srcCompat="@drawable/ic_person_black" />
 
-    <ScrollView
-        android:id="@+id/scrollView3"
+    <LinearLayout
+        android:id="@+id/linearLayout3"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/guideline3"
         app:layout_constraintStart_toStartOf="@+id/guideline2"
-        app:layout_constraintTop_toBottomOf="@+id/imageView"
+        app:layout_constraintTop_toBottomOf="@+id/imgProfile"
+        app:layout_constraintEnd_toStartOf="@+id/guideline3"
         app:layout_constraintVertical_weight="2">
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/tvFullName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:text="Marco Rossi"
+            android:textAppearance="@style/TextAppearance.AppCompat.Display2" />
 
-            <TextView
-                android:id="@+id/fullNameView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Marco Rossi"
-                android:textAppearance="@style/TextAppearance.AppCompat.Display2" />
+        <TextView
+            android:id="@+id/tvNickName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="rossimarco"
+            android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
 
-            <TextView
-                android:id="@+id/nicknameView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="rossimarco"
-                android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
+        <TextView
+            android:id="@+id/tvEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="marco@rossi.com"
+            android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
 
-            <TextView
-                android:id="@+id/emailView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="marco@rossi.com"
-                android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
-
-            <TextView
-                android:id="@+id/locationView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Turin, Italy"
-                android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
-        </LinearLayout>
-    </ScrollView>
+        <TextView
+            android:id="@+id/tvLocation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Turin, Italy"
+            android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
+    </LinearLayout>
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline2"
