@@ -40,28 +40,32 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Marco Rossi"
-            android:textAppearance="@style/TextAppearance.AppCompat.Display2" />
+            android:paddingBottom="5sp"
+            android:textStyle="bold"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
         <TextView
             android:id="@+id/tvNickName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingBottom="5sp"
             android:text="rossimarco"
-            android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
+            android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
         <TextView
             android:id="@+id/tvEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingBottom="5sp"
             android:text="marco@rossi.com"
-            android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
+            android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
         <TextView
             android:id="@+id/tvLocation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Turin, Italy"
-            android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
+            android:textAppearance="@style/TextAppearance.AppCompat.Large" />
     </LinearLayout>
 
     <androidx.constraintlayout.widget.Guideline
