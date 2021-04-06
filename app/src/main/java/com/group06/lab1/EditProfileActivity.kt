@@ -5,12 +5,15 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.drawable.toBitmap
+import java.io.File
+import java.io.FileOutputStream
 
 class EditProfileActivity : AppCompatActivity() {
     val REQUEST_IMAGE_CAPTURE = 1
@@ -44,8 +47,10 @@ class EditProfileActivity : AppCompatActivity() {
         etNickName.setText(intent.getStringExtra("group06.lab1.nickName"))
         etEmail.setText(intent.getStringExtra("group06.lab1.email"))
         etLocation.setText(intent.getStringExtra("group06.lab1.location"))
-        val img: Bitmap? = intent.getParcelableExtra("group06.lab1.profile")
-        img?.let { imgProfile.setImageBitmap(img) }
+        val fileName: String = intent.getStringExtra("group06.lab1.profile") ?: ""
+        File(filesDir, fileName).let {
+            if (it.exists()) imgProfile.setImageBitmap(BitmapFactory.decodeFile(it.absolutePath))
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -89,10 +94,7 @@ class EditProfileActivity : AppCompatActivity() {
                     it.putExtra("group06.lab1.nickName", etNickName.text.toString())
                     it.putExtra("group06.lab1.email", etEmail.text.toString())
                     it.putExtra("group06.lab1.location", etLocation.text.toString())
-                    it.putExtra(
-                        "group06.lab1.profile",
-                        scaleDownBitmap(imgProfile.drawable.toBitmap(), 100, this)
-                    )
+                    it.putExtra("group06.lab1.profile", "profilepic.jpg")
                 })
                 finish()
                 true
@@ -102,24 +104,13 @@ class EditProfileActivity : AppCompatActivity() {
         }
     }
 
-    // function to scale down the BitMap Image for transferring it to another activity
-    private fun scaleDownBitmap(photo: Bitmap, newHeight: Int, context: Context): Bitmap? {
-        var photo = photo
-        val densityMultiplier: Float = context.getResources().getDisplayMetrics().density
-        val h = (newHeight * densityMultiplier).toInt()
-        val w = (h * photo.width / photo.height.toDouble()).toInt()
-        photo = Bitmap.createScaledBitmap(photo, w, h, true)
-        return photo
-    }
-
-
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString("group06.lab1.fullName", etFullName.text.toString())
         outState.putString("group06.lab1.nickName", etNickName.text.toString())
         outState.putString("group06.lab1.email", etEmail.text.toString())
         outState.putString("group06.lab1.location", etLocation.text.toString())
-        outState.putParcelable("group06.lab1.image", imgProfile.drawable.toBitmap())
+        outState.putString("group06.lab1.image", "profilepic.jpg")
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
@@ -128,7 +119,9 @@ class EditProfileActivity : AppCompatActivity() {
         etNickName.setText(savedInstanceState.getString("group06.lab1.nickName"))
         etEmail.setText(savedInstanceState.getString("group06.lab1.email"))
         etLocation.setText(savedInstanceState.getString("group06.lab1.location"))
-        imgProfile.setImageBitmap(savedInstanceState.getParcelable("group06.lab1.image"))
+        File(filesDir, savedInstanceState.getString("group06.lab1.image") ?: "").let {
+            if (it.exists()) imgProfile.setImageBitmap(BitmapFactory.decodeFile(it.absolutePath))
+        }
     }
 
     // ---------------- function for activating the camera to take a picture
@@ -143,15 +136,23 @@ class EditProfileActivity : AppCompatActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             val imageBitmap = data?.extras?.get("data") as Bitmap
             imgProfile.setImageBitmap(imageBitmap)
-
+            saveImageOnStorage(imageBitmap)
         } else if (requestCode == REQUEST_IMAGE_GALLERY && resultCode == RESULT_OK) {
             imgProfile.setImageURI(data?.data)
+            saveImageOnStorage(imgProfile.drawable.toBitmap())
         }
+    }
+
+    private fun saveImageOnStorage(bitmap: Bitmap) {
+        val file = File(filesDir, "profilepic.jpg")
+        val out = FileOutputStream(file)
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 85, out)
+        out.flush()
+        out.close()
     }
 
 }

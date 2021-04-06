@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#FF272727"
     tools:context=".ShowProfileActivity">
 
     <ImageView
@@ -18,7 +19,7 @@
         app:layout_constraintHorizontal_weight="1"
         app:layout_constraintStart_toEndOf="@+id/guideline2"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_person_black" />
+        app:srcCompat="@drawable/ic_person_white" />
 
     <LinearLayout
         android:id="@+id/linearLayout2"
@@ -39,10 +40,11 @@
             android:id="@+id/tvFullName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Marco Rossi"
             android:paddingBottom="5sp"
-            android:textStyle="bold"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+            android:text="Marco Rossi"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/tvNickName"
@@ -50,7 +52,8 @@
             android:layout_height="wrap_content"
             android:paddingBottom="5sp"
             android:text="rossimarco"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textColor="#FFFFFF" />
 
         <TextView
             android:id="@+id/tvEmail"
@@ -58,14 +61,16 @@
             android:layout_height="wrap_content"
             android:paddingBottom="5sp"
             android:text="marco@rossi.com"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textColor="#FFFFFF" />
 
         <TextView
             android:id="@+id/tvLocation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Turin, Italy"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textColor="#FFFFFF" />
     </LinearLayout>
 
     <androidx.constraintlayout.widget.Guideline

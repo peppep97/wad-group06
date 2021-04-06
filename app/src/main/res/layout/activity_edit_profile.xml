@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#272727"
     tools:context=".EditProfileActivity">
 
     <androidx.constraintlayout.widget.Guideline
@@ -26,10 +27,12 @@
 
         <ImageButton
             android:id="@+id/imageButtonEdit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:layout_gravity="center_horizontal"
+            android:background="#FF272727"
             android:foregroundGravity="center"
+            android:scaleType="fitXY"
             app:srcCompat="@android:drawable/ic_menu_camera" />
 
         <ImageView
@@ -37,7 +40,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            app:srcCompat="@drawable/ic_person_black" />
+            app:srcCompat="@drawable/ic_person_white" />
     </LinearLayout>
 
     <LinearLayout
@@ -57,9 +60,10 @@
             android:layout_height="wrap_content"
             android:hint="FullName"
             android:inputType="textPersonName"
-            android:text="Marco Rossi"
             android:paddingTop="15sp"
+            android:text="Marco Rossi"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textColor="#FFFFFF"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -73,6 +77,7 @@
             android:inputType="textAutoComplete"
             android:text="rossimarco"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textColor="#FFFFFF"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
@@ -87,6 +92,7 @@
             android:inputType="textEmailAddress"
             android:text="marco@rossi.com"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textColor="#FFFFFF"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
@@ -101,6 +107,7 @@
             android:inputType="textAutoCorrect"
             android:text="Turin, Italy"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textColor="#FFFFFF"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"

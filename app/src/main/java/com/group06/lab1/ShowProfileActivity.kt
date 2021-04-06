@@ -76,9 +76,9 @@ class ShowProfileActivity : AppCompatActivity() {
             tvNickName.text = data?.getStringExtra("group06.lab1.nickName")
             tvEmail.text = data?.getStringExtra("group06.lab1.email")
             tvLocation.text = data?.getStringExtra("group06.lab1.location")
-            val img: Bitmap? = data?.getParcelableExtra("group06.lab1.profile")
-            img?.let { imgProfile.setImageBitmap(img) }
-
+            File(filesDir, "profilepic.jpg").let {
+                if (it.exists()) imgProfile.setImageBitmap(BitmapFactory.decodeFile(it.absolutePath))
+            }
             //serialize data into a JSON object
             val profileData = JSONObject().also {
                 it.put("fullName", tvFullName.text)
@@ -112,7 +112,7 @@ class ShowProfileActivity : AppCompatActivity() {
         outState.putString("group06.lab1.nickName", tvNickName.text.toString())
         outState.putString("group06.lab1.email", tvEmail.text.toString())
         outState.putString("group06.lab1.location", tvLocation.text.toString())
-        outState.putParcelable("group06.lab1.profile", imgProfile.drawable.toBitmap())
+        outState.putString("group06.lab1.profile", "profilepic.jpg")
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
@@ -121,7 +121,9 @@ class ShowProfileActivity : AppCompatActivity() {
         tvNickName.text = savedInstanceState.getString("group06.lab1.nickName")
         tvEmail.text = savedInstanceState.getString("group06.lab1.email")
         tvLocation.text = savedInstanceState.getString("group06.lab1.location")
-        imgProfile.setImageBitmap(savedInstanceState.getParcelable("group06.lab1.profile"))
+        File(filesDir, savedInstanceState.getString("group06.lab1.profile") ?: "").let {
+            if (it.exists()) imgProfile.setImageBitmap(BitmapFactory.decodeFile(it.absolutePath))
+        }
     }
 
     private fun editProfile() {
@@ -130,7 +132,7 @@ class ShowProfileActivity : AppCompatActivity() {
             it.putExtra("group06.lab1.nickName", tvNickName.text.toString())
             it.putExtra("group06.lab1.email", tvEmail.text.toString())
             it.putExtra("group06.lab1.location", tvLocation.text.toString())
-            it.putExtra("group06.lab1.profile", imgProfile.drawable.toBitmap())
+            it.putExtra("group06.lab1.profile", "profilepic.jpg")
             startActivityForResult(it, 1)
         }
     }
