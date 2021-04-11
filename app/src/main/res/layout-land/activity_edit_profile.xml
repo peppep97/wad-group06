@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FF272727"
+    android:background="@color/backgroundColor"
     tools:context=".EditProfileActivity">
 
     <androidx.constraintlayout.widget.Guideline
@@ -40,12 +40,12 @@
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_gravity="center"
-            android:background="#FF272727"
-            android:scaleType="fitXY"
+            android:background="@color/backgroundColor"
+            android:scaleType="centerCrop"
             app:layout_constraintBottom_toTopOf="@+id/imgProfile"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:srcCompat="@android:drawable/ic_menu_camera" />
+            app:srcCompat="@drawable/ic_camera" />
 
         <ImageView
             android:id="@+id/imgProfile"
@@ -58,7 +58,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_person_white" />
+            app:srcCompat="@drawable/ic_account_circle" />
 
     </LinearLayout>
 
@@ -82,11 +82,13 @@
             android:id="@+id/etFullName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ic_person"
+            android:drawablePadding="5dp"
             android:hint="Fullname"
             android:inputType="textShortMessage|textAutoCorrect|text"
             android:text="Marco Rossi"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/textColorMain"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -95,12 +97,15 @@
             android:id="@+id/etNickName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:drawableStart="@drawable/ic_keyboard"
+            android:drawablePadding="5dp"
             android:gravity="clip_horizontal"
             android:hint="Nickname"
             android:inputType="textShortMessage|textAutoCorrect|text"
             android:text="rossimarco"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/textColorMain"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
@@ -110,12 +115,15 @@
             android:id="@+id/etEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:drawableStart="@drawable/ic_email"
+            android:drawablePadding="5dp"
             android:gravity="clip_horizontal"
             android:hint="Email Address"
             android:inputType="textAutoCorrect|textEmailAddress"
             android:text="marco@rossi.com"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/textColorMain"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
@@ -125,12 +133,15 @@
             android:id="@+id/etLocation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:drawableStart="@drawable/ic_location_on"
+            android:drawablePadding="5dp"
             android:gravity="clip_horizontal"
             android:hint="Location"
             android:inputType="textShortMessage|textAutoCorrect|text"
             android:text="Turin, Italy"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/textColorMain"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"

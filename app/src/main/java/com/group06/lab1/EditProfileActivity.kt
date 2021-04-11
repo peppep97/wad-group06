@@ -2,7 +2,6 @@ package com.group06.lab1
 
 import android.app.Activity
 import android.content.ActivityNotFoundException
-import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -18,6 +17,7 @@ import java.io.FileOutputStream
 class EditProfileActivity : AppCompatActivity() {
     val REQUEST_IMAGE_CAPTURE = 1
     val REQUEST_IMAGE_GALLERY = 2
+    private var profileChanged = false
 
     private lateinit var etFullName: EditText
     private lateinit var etNickName: EditText
@@ -28,6 +28,9 @@ class EditProfileActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_profile)
+
+//        actionBar?.setDisplayHomeAsUpEnabled(true);
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         val btnImageEdit = findViewById<ImageButton>(R.id.imageButtonEdit)
         // open context menu by clicking on btnImage
@@ -43,6 +46,8 @@ class EditProfileActivity : AppCompatActivity() {
         etLocation = findViewById(R.id.etLocation)
         imgProfile = findViewById(R.id.imgProfile)
 
+//        imgProfile.setImageBitmap(imgProfile.drawable.toBitmap())
+
         etFullName.setText(intent.getStringExtra("group06.lab1.fullName"))
         etNickName.setText(intent.getStringExtra("group06.lab1.nickName"))
         etEmail.setText(intent.getStringExtra("group06.lab1.email"))
@@ -54,7 +59,6 @@ class EditProfileActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        val inflater: MenuInflater = menuInflater
         menuInflater.inflate(R.menu.activity_edit_save, menu)
         return true
     }
@@ -88,6 +92,8 @@ class EditProfileActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.saveEdit -> {
+                if (profileChanged)
+                    saveImageOnStorage(imgProfile.drawable.toBitmap())
                 setResult(Activity.RESULT_OK, Intent().also {
                     it.putExtra("group06.lab1.result", etFullName.text.toString())
                     it.putExtra("group06.lab1.fullName", etFullName.text.toString())
@@ -98,8 +104,12 @@ class EditProfileActivity : AppCompatActivity() {
                 })
                 finish()
                 true
-
             }
+            16908332 -> { // the back button on action bar
+                finish()
+                true
+            }
+
             else -> false
         }
     }
@@ -110,7 +120,8 @@ class EditProfileActivity : AppCompatActivity() {
         outState.putString("group06.lab1.nickName", etNickName.text.toString())
         outState.putString("group06.lab1.email", etEmail.text.toString())
         outState.putString("group06.lab1.location", etLocation.text.toString())
-        outState.putString("group06.lab1.image", "profilepic.jpg")
+        outState.putString("group06.lab1.image", "profilepictemp.jpg")
+        outState.putBoolean("group06.lab1.profileChanged", profileChanged)
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
@@ -119,9 +130,11 @@ class EditProfileActivity : AppCompatActivity() {
         etNickName.setText(savedInstanceState.getString("group06.lab1.nickName"))
         etEmail.setText(savedInstanceState.getString("group06.lab1.email"))
         etLocation.setText(savedInstanceState.getString("group06.lab1.location"))
-        File(filesDir, savedInstanceState.getString("group06.lab1.image") ?: "").let {
-            if (it.exists()) imgProfile.setImageBitmap(BitmapFactory.decodeFile(it.absolutePath))
-        }
+        profileChanged = savedInstanceState.getBoolean("group06.lab1.profileChanged")
+        if (profileChanged)
+            File(filesDir, savedInstanceState.getString("group06.lab1.image") ?: "").let {
+                if (it.exists()) imgProfile.setImageBitmap(BitmapFactory.decodeFile(it.absolutePath))
+            }
     }
 
     // ---------------- function for activating the camera to take a picture
@@ -140,15 +153,17 @@ class EditProfileActivity : AppCompatActivity() {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             val imageBitmap = data?.extras?.get("data") as Bitmap
             imgProfile.setImageBitmap(imageBitmap)
-            saveImageOnStorage(imageBitmap)
+            profileChanged = true
+            saveImageOnStorage(imageBitmap, "profilepictemp.jpg")
         } else if (requestCode == REQUEST_IMAGE_GALLERY && resultCode == RESULT_OK) {
             imgProfile.setImageURI(data?.data)
-            saveImageOnStorage(imgProfile.drawable.toBitmap())
+            profileChanged = true
+            saveImageOnStorage(imgProfile.drawable.toBitmap(), "profilepictemp.jpg")
         }
     }
 
-    private fun saveImageOnStorage(bitmap: Bitmap) {
-        val file = File(filesDir, "profilepic.jpg")
+    private fun saveImageOnStorage(bitmap: Bitmap, tempName: String = "profilepic.jpg") {
+        val file = File(filesDir, tempName)
         val out = FileOutputStream(file)
         bitmap.compress(Bitmap.CompressFormat.JPEG, 85, out)
         out.flush()

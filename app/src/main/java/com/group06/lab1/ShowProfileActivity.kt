@@ -38,7 +38,6 @@ class ShowProfileActivity : AppCompatActivity() {
         val sharedPref = getSharedPreferences(
             getString(R.string.preference_file_key), Context.MODE_PRIVATE
         )
-
         val data = sharedPref.getString("profile", null)
         if (data != null)
             with(JSONObject(data)) {
@@ -47,7 +46,6 @@ class ShowProfileActivity : AppCompatActivity() {
                 tvEmail.text = getString("email")
                 tvLocation.text = getString("location")
             }
-
         File(filesDir, "profilepic.jpg").let {
             if (it.exists()) imgProfile.setImageBitmap(BitmapFactory.decodeFile(it.absolutePath))
         }
@@ -77,7 +75,14 @@ class ShowProfileActivity : AppCompatActivity() {
             tvEmail.text = data?.getStringExtra("group06.lab1.email")
             tvLocation.text = data?.getStringExtra("group06.lab1.location")
             File(filesDir, "profilepic.jpg").let {
-                if (it.exists()) imgProfile.setImageBitmap(BitmapFactory.decodeFile(it.absolutePath))
+                if (it.exists()) {
+                    imgProfile.setImageBitmap(BitmapFactory.decodeFile(it.absolutePath))
+                    val file = File(filesDir, "profilepic.jpg")
+                    val out = FileOutputStream(file)
+                    imgProfile.drawable.toBitmap().compress(Bitmap.CompressFormat.JPEG, 85, out)
+                    out.flush()
+                    out.close()
+                }
             }
             //serialize data into a JSON object
             val profileData = JSONObject().also {
@@ -97,12 +102,7 @@ class ShowProfileActivity : AppCompatActivity() {
                 apply()
             }
 
-            //var file = it.getDir("Images", Context.MODE_PRIVATE)
-            val file = File(filesDir, "profilepic.jpg")
-            val out = FileOutputStream(file)
-            imgProfile.drawable.toBitmap().compress(Bitmap.CompressFormat.JPEG, 85, out)
-            out.flush()
-            out.close()
+
         }
     }
 

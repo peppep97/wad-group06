@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#114D7C</color>
+    <color name="colorPrimaryDark">#174061</color>
+    <color name="colorAccent">#958E50</color>
+
+    <color name="iconsColor">#FFFFFF</color>
+    <color name="pathColor">#000000</color>
+    <color name="backgroundColor">#FF272727</color>
+
+    <color name="textColorMain">#FFFFFF</color>
+    <color name="textColorAccent">#D8D8D8</color>
+    <color name="etBackgroundTint">#8BECECEC</color>
+</resources>
