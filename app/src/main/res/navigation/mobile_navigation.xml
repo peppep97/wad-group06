@@ -12,7 +12,11 @@
         tools:layout="@layout/fragment_trip_details" >
         <action
             android:id="@+id/action_trip_details_to_trip_edit"
-            app:destination="@id/trip_edit" />
+            app:destination="@id/trip_edit"
+            app:enterAnim="@anim/fragment_open_enter"
+            app:exitAnim="@anim/fragment_open_exit"
+            app:popEnterAnim="@anim/fragment_close_enter"
+            app:popExitAnim="@anim/fragment_close_exit" />
     </fragment>
     <fragment
         android:id="@+id/trip_edit"
@@ -32,7 +36,11 @@
         android:label="TripListFragment" >
         <action
             android:id="@+id/action_trip_list_to_trip_details"
-            app:destination="@id/trip_details" />
+            app:destination="@id/trip_details"
+            app:enterAnim="@anim/fragment_open_enter"
+            app:exitAnim="@anim/fragment_open_exit"
+            app:popEnterAnim="@anim/fragment_close_enter"
+            app:popExitAnim="@anim/fragment_close_exit" />
         <action
             android:id="@+id/action_trip_list_to_trip_edit"
             app:destination="@id/trip_edit"

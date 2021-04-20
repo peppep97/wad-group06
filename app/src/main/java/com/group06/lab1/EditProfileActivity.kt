@@ -29,7 +29,6 @@ class EditProfileActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_profile)
 
-//        actionBar?.setDisplayHomeAsUpEnabled(true);
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         val btnImageEdit = findViewById<ImageButton>(R.id.imageButtonEdit)

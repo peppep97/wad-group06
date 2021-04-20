@@ -29,7 +29,7 @@
             app:srcCompat="@drawable/ic_camera" />
 
         <ImageView
-            android:id="@+id/imgProfile"
+            android:id="@+id/imgTrip"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
@@ -112,12 +112,14 @@
                 android:hint="Estimated duration"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
-                app:startIconDrawable="@drawable/ic_baseline_access_time_24">
+                app:startIconDrawable="@drawable/ic_baseline_access_time_24"
+                android:focusable="false">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:singleLine="true" />
+                    android:inputType="number"
+                    android:focusable="false"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout

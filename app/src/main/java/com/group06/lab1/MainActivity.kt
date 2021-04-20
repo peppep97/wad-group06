@@ -1,6 +1,7 @@
 package com.group06.lab1
 
 import android.os.Bundle
+import android.provider.ContactsContract
 import com.google.android.material.navigation.NavigationView
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -10,6 +11,7 @@ import androidx.navigation.ui.setupWithNavController
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import com.group06.lab1.utils.Database
 
 class MainActivity : AppCompatActivity() {
 
@@ -20,6 +22,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
+
+        //load trip list
+        Database.getInstance(this).load()
 
         /*val fab: FloatingActionButton = findViewById(R.id.fab)
         fab.setOnClickListener { view ->

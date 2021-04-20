@@ -8,7 +8,7 @@
     tools:context=".ui.trip.TripDetailsFragment">
 
     <ImageView
-        android:id="@+id/imageView5"
+        android:id="@+id/imgTrip"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:scaleType="fitCenter"
@@ -28,7 +28,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView5"
+        app:layout_constraintTop_toBottomOf="@+id/imgTrip"
         app:layout_constraintVertical_weight="3">
 
         <LinearLayout
@@ -154,7 +154,7 @@
                         android:textSize="16sp" />
 
                     <TextView
-                        android:id="@+id/tvDepartureDarte"
+                        android:id="@+id/tvDepartureDate"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"

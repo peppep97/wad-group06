@@ -1,14 +1,25 @@
 package com.group06.lab1.ui.trip
 
+import android.graphics.BitmapFactory
+import android.media.Image
 import android.os.Bundle
 import android.view.*
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
+import com.group06.lab1.utils.Database
 import com.group06.lab1.R
+import kotlinx.android.synthetic.main.fragment_trip_edit.*
+import java.io.File
+import java.lang.StringBuilder
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
+
+private var index: Int? = null
 
 /**
  * A simple [Fragment] subclass.
@@ -38,7 +49,38 @@ class TripDetailsFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        index = arguments?.getInt("index")
 
+        val t = Database.getInstance(context).tripList.get(index!!)
+
+        val tvDepartureLocation = view.findViewById<TextView>(R.id.tvDepartureLocation)
+        val tvArrivalLocation = view.findViewById<TextView>(R.id.tvArrivalLocation)
+        val tvDepartureDate = view.findViewById<TextView>(R.id.tvDepartureDate)
+        val tvEstimatedDuration = view.findViewById<TextView>(R.id.tvEstimatedDuration)
+        val tvAvailableSeats = view.findViewById<TextView>(R.id.tvAvailableSeats)
+        val tvPrice = view.findViewById<TextView>(R.id.tvPrice)
+        val tvDescription = view.findViewById<TextView>(R.id.tvDescription)
+        val imgTrip = view.findViewById<ImageView>(R.id.imgTrip)
+
+        tvDepartureLocation.text = t.departure
+        tvArrivalLocation.text = t.arrival
+        tvDepartureDate.text = t.departureDate.toString()
+        tvAvailableSeats.text = t.availableSeats.toString()
+        tvPrice.text = t.price.toString()
+        tvDescription.text = t.description
+
+        val sBuilder = StringBuilder()
+        if (t.estimatedDay > 0)
+            sBuilder.append(String.format("%dd", t.estimatedDay))
+        if (t.estimatedHour > 0)
+            sBuilder.append(String.format(" %dh", t.estimatedHour))
+        if (t.estimatedMinute > 0)
+            sBuilder.append(String.format(" %dm", t.estimatedMinute))
+        tvEstimatedDuration.text = sBuilder.toString()
+
+        File(context?.filesDir, t.imageUrl).let {
+            if (it.exists()) imgTrip.setImageBitmap(BitmapFactory.decodeFile(it.absolutePath))
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -50,7 +92,10 @@ class TripDetailsFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
             R.id.edit -> {
-                //open edit fragment
+                findNavController().navigate(R.id.action_trip_details_to_trip_edit, Bundle().apply {
+                    putBoolean("edit", true)
+                    putInt("index", index!!)
+                })
                 return true
             }
         }
