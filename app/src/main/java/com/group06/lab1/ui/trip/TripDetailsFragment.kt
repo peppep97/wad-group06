@@ -51,7 +51,7 @@ class TripDetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         index = arguments?.getInt("index")
 
-        val t = Database.getInstance(context).tripList.get(index!!)
+        val t = Database.getInstance(context).tripList[index!!]
 
         val tvDepartureLocation = view.findViewById<TextView>(R.id.tvDepartureLocation)
         val tvArrivalLocation = view.findViewById<TextView>(R.id.tvArrivalLocation)

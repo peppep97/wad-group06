@@ -124,6 +124,8 @@ class TripEditFragment : Fragment() {
             etPrice.editText?.setText(t.price.toString())
             etDescription.editText?.setText(t.description)
 
+            imgName = t.imageUrl
+
             dateOk = true
             day = t.estimatedDay
             hour = t.estimatedHour
@@ -181,8 +183,6 @@ class TripEditFragment : Fragment() {
             if (dateOk)
                 etDepartureDate.editText?.setText(dateValue.toString())
         }
-
-        imgName = genRandomString()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -210,9 +210,9 @@ class TripEditFragment : Fragment() {
                 //save data
                 if (validateForm()){
                     if (imgChanged)
-                        saveImageOnStorage(imgTrip.drawable.toBitmap(), "${imgName}.jpg")
+                        saveImageOnStorage(imgTrip.drawable.toBitmap(), "$imgName")
 
-                    val t = Trip("${imgName}.jpg",
+                    val t = Trip("$imgName",
                         etDeparture.editText?.text.toString(),
                         etArrival.editText?.text.toString(),
                         dateValue,
@@ -224,7 +224,7 @@ class TripEditFragment : Fragment() {
                         etDescription.editText?.text.toString())
 
                     if (edit!!)
-                        Database.getInstance(context).tripList.set(index, t)
+                        Database.getInstance(context).tripList[index] = t
                     else
                         Database.getInstance(context).tripList.add(t)
 
@@ -363,14 +363,16 @@ class TripEditFragment : Fragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == AppCompatActivity.RESULT_OK) {
+            imgName = genRandomString() + ".png"
             val imageBitmap = data?.extras?.get("data") as Bitmap
             imgTrip.setImageBitmap(imageBitmap)
             imgChanged = true
-            saveImageOnStorage(imageBitmap, "${imgName}.jpg")
+            saveImageOnStorage(imageBitmap, "$imgName")
         } else if (requestCode == REQUEST_IMAGE_GALLERY && resultCode == AppCompatActivity.RESULT_OK) {
+            imgName = genRandomString() + ".png"
             imgTrip.setImageURI(data?.data)
             imgChanged = true
-            saveImageOnStorage(imgTrip.drawable.toBitmap(), "${imgName}.jpg")
+            saveImageOnStorage(imgTrip.drawable.toBitmap(), "$imgName")
         }
     }
 
