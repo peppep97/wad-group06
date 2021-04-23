@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.google.android.material.card.MaterialCardView
+
+        android:id="@+id/cardTrip"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
+        android:checkable="true"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardCornerRadius="7dp"
+        app:cardElevation="4dp"
+        app:cardUseCompatPadding="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="MissingConstraints">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/imgCar"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:foregroundGravity="center"
+                android:scaleType="fitCenter"
+                app:srcCompat="@drawable/ic_no_photo" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="2"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.1"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/tvDepTime"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingBottom="5dp"
+                            android:text="08:00"
+                            app:layout_constraintEnd_toStartOf="@+id/imageView9"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintStart_toStartOf="parent"
+                            tools:layout_editor_absoluteY="16dp" />
+
+                        <TextView
+                            android:id="@+id/tvArrTime"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingTop="5dp"
+                            android:text="12:00"
+                            app:layout_constraintEnd_toStartOf="@+id/imageView9"
+                            app:layout_constraintStart_toStartOf="parent"
+                            tools:layout_editor_absoluteY="54dp" />
+                    </LinearLayout>
+
+                    <ImageView
+                        android:id="@+id/imageView9"
+                        android:layout_width="10dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginBottom="10dp"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
+                        android:scaleType="centerCrop"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/tvOrigin"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toEndOf="@+id/tvDepTime"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/ic_distance" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/tvOrigin"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingStart="10dp"
+                            android:paddingBottom="5dp"
+                            android:text="Origin"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                            app:layout_constraintEnd_toStartOf="@+id/tvPrice"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintStart_toEndOf="@+id/imageView9"
+                            tools:layout_editor_absoluteY="16dp" />
+
+                        <TextView
+                            android:id="@+id/tvDestination"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingStart="10dp"
+                            android:paddingTop="5dp"
+                            android:text="Destination"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.057"
+                            app:layout_constraintStart_toEndOf="@+id/imageView9"
+                            tools:layout_editor_absoluteY="54dp" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tvPrice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.1"
+                        android:paddingTop="16dp"
+                        android:text="$50"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/imageView10"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#c3c3c3" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tvDepDate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Wednesday April 7th"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/btnEdit"
+                        app:layout_constraintHorizontal_bias="0.898"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="0.52" />
+
+
+                    <ImageView
+                        android:id="@+id/imageView5"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/ic_seat" />
+
+                    <TextView
+                        android:id="@+id/tvSeat"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="1"
+
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/tvDepDate"
+                        app:layout_constraintHorizontal_bias="0.2"
+                        app:layout_constraintStart_toEndOf="@+id/imageView5"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="0.52" />
+
+                    <Button
+                        android:id="@+id/btnEdit"
+                        style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
+                        android:layout_width="70dp"
+                        android:layout_height="40dp"
+                        android:text="Edit"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.99"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+</androidx.constraintlayout.widget.ConstraintLayout>

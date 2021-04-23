@@ -11,6 +11,7 @@
         android:id="@+id/imgTrip"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:paddingTop="5dp"
         android:scaleType="fitCenter"
         android:src="@drawable/ic_account_circle"
         app:layout_constraintBottom_toTopOf="@+id/nestedScrollView"
