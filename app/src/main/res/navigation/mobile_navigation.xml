@@ -49,4 +49,35 @@
             app:popEnterAnim="@anim/fragment_close_enter"
             app:popExitAnim="@anim/fragment_close_exit" />
     </fragment>
+    <fragment
+        android:id="@+id/showProfileActivity"
+        android:name="com.group06.lab1.ShowProfileActivity"
+        android:label="activity_show_profile"
+        tools:layout="@layout/fragment_activity_show_profile" >
+        <action
+            android:id="@+id/action_showProfileActivity_to_editProfileActivity"
+            app:destination="@id/editProfileActivity"
+
+            app:popUpTo="@+id/showProfileActivity"
+            app:popUpToInclusive="true"
+
+            />
+<!--        In order two prevent popUpTo and popUpToInclusive we should add
+            app:popUpTo="@+id/showProfileActivity"
+            app:popUpToInclusive="true"
+            otherwise, when the second fragment calls, return back to the first one
+-->
+    </fragment>
+    <fragment
+        android:id="@+id/editProfileActivity"
+        android:name="com.group06.lab1.EditProfileFragment"
+        android:label="activity_edit_profile"
+        tools:layout="@layout/fragment_activity_edit_profile" >
+        <action
+            android:id="@+id/action_editProfileActivity_to_showProfileActivity"
+            app:destination="@id/showProfileActivity"
+            app:popUpTo="@+id/editProfileActivity"
+            app:popUpToInclusive="true"
+            />
+    </fragment>
 </navigation>

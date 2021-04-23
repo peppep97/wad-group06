@@ -5,46 +5,34 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/backgroundColor"
-    tools:context=".EditProfileActivity">
+    tools:context=".EditProfileFragment">
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline6"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_end="16dp" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline5"
+        android:id="@+id/guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_begin="16dp" />
 
     <LinearLayout
-        android:id="@+id/constraintLayout"
+        android:id="@+id/linearLayout4"
         android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_gravity="center_horizontal|center_vertical"
-        android:gravity="center_vertical|center_horizontal"
+        android:layout_height="0dp"
         android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/linearLayout5"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintHorizontal_weight="1"
-        app:layout_constraintStart_toStartOf="@id/guideline5"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+        app:layout_constraintEnd_toStartOf="@id/guideline4"
+        app:layout_constraintStart_toStartOf="@id/guideline"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_weight="1">
 
         <ImageButton
             android:id="@+id/imageButtonEdit"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_gravity="center"
-            android:background="@color/backgroundColor"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center_horizontal"
+            android:backgroundTint="@color/backgroundColor"
+            android:foregroundGravity="center"
             android:scaleType="centerCrop"
-            app:layout_constraintBottom_toTopOf="@+id/imgProfile"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:srcCompat="@drawable/ic_camera" />
 
         <ImageView
@@ -52,31 +40,20 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:foregroundGravity="center"
-            android:paddingBottom="16dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_account_circle" />
-
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/linearLayout5"
+        android:id="@+id/linearLayout"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_gravity="center_horizontal|center_vertical"
-        android:layout_marginStart="16dp"
-        android:gravity="center_vertical|center_horizontal"
         android:orientation="vertical"
+        android:paddingTop="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/guideline6"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintHorizontal_weight="2"
-        app:layout_constraintStart_toEndOf="@+id/constraintLayout"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintEnd_toStartOf="@id/guideline4"
+        app:layout_constraintStart_toStartOf="@id/guideline"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout4"
+        app:layout_constraintVertical_weight="2">
 
         <EditText
             android:id="@+id/etFullName"
@@ -84,8 +61,9 @@
             android:layout_height="wrap_content"
             android:drawableStart="@drawable/ic_person"
             android:drawablePadding="5dp"
-            android:hint="Fullname"
-            android:inputType="textShortMessage|textAutoCorrect|text"
+            android:hint="Full Name"
+            android:inputType="textPersonName"
+            android:paddingTop="15sp"
             android:text="Marco Rossi"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:textColor="@color/textColorMain"
@@ -101,8 +79,8 @@
             android:drawableStart="@drawable/ic_keyboard"
             android:drawablePadding="5dp"
             android:gravity="clip_horizontal"
-            android:hint="Nickname"
-            android:inputType="textShortMessage|textAutoCorrect|text"
+            android:hint="Nick Name"
+            android:inputType="textAutoComplete"
             android:text="rossimarco"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:textColor="@color/textColorMain"
@@ -120,7 +98,7 @@
             android:drawablePadding="5dp"
             android:gravity="clip_horizontal"
             android:hint="Email Address"
-            android:inputType="textAutoCorrect|textEmailAddress"
+            android:inputType="textEmailAddress"
             android:text="marco@rossi.com"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:textColor="@color/textColorMain"
@@ -138,7 +116,7 @@
             android:drawablePadding="5dp"
             android:gravity="clip_horizontal"
             android:hint="Location"
-            android:inputType="textShortMessage|textAutoCorrect|text"
+            android:inputType="textAutoCorrect"
             android:text="Turin, Italy"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:textColor="@color/textColorMain"
@@ -147,6 +125,13 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/etEmail" />
     </LinearLayout>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="16dp" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
