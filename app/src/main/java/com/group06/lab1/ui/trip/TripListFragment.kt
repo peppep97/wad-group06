@@ -55,7 +55,6 @@ class TripListFragment : Fragment() {
                 putBoolean("edit", false)
             })
         }
-
         tripList = Database.getInstance(context).tripList
 
         val tvEmpty = view.findViewById<TextView>(R.id.tvEmpty)
