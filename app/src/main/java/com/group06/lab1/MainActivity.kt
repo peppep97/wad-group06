@@ -2,6 +2,7 @@ package com.group06.lab1
 
 import android.os.Bundle
 import android.provider.ContactsContract
+import android.widget.Toast
 import com.google.android.material.navigation.NavigationView
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -11,6 +12,9 @@ import androidx.navigation.ui.setupWithNavController
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.view.GravityCompat
+import androidx.fragment.app.commit
+import com.group06.lab1.ui.trip.TripListFragment
 import com.group06.lab1.utils.Database
 
 class MainActivity : AppCompatActivity() {

@@ -8,5 +8,9 @@
             android:id="@+id/trip_list"
             android:icon="@drawable/ic_baseline_list_24"
             android:title="@string/menu_home" />
+        <item
+            android:id="@+id/showProfileActivity"
+            android:icon="@drawable/ic_baseline_list_24"
+            android:title="Show Profile" />
     </group>
 </menu>

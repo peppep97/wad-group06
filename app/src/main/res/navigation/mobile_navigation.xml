@@ -16,7 +16,10 @@
             app:enterAnim="@anim/fragment_open_enter"
             app:exitAnim="@anim/fragment_open_exit"
             app:popEnterAnim="@anim/fragment_close_enter"
-            app:popExitAnim="@anim/fragment_close_exit" />
+            app:popExitAnim="@anim/fragment_close_exit"
+            app:popUpTo="@+id/trip_details"
+            app:popUpToInclusive="true"
+            />
     </fragment>
     <fragment
         android:id="@+id/trip_edit"
@@ -28,12 +31,14 @@
             app:enterAnim="@anim/fragment_open_enter"
             app:exitAnim="@anim/fragment_close_exit"
             app:popEnterAnim="@anim/fragment_close_enter"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"
+            app:popUpTo="@+id/trip_edit"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/trip_list"
         android:name="com.group06.lab1.ui.trip.TripListFragment"
-        android:label="TripListFragment" >
+        android:label="Lab2">
         <action
             android:id="@+id/action_trip_list_to_trip_details"
             app:destination="@id/trip_details"
@@ -48,12 +53,15 @@
             app:exitAnim="@anim/fragment_open_exit"
             app:popEnterAnim="@anim/fragment_close_enter"
             app:popExitAnim="@anim/fragment_close_exit" />
+        <action
+            android:id="@+id/action_trip_list_to_showProfileActivity"
+            app:destination="@id/showProfileActivity" />
     </fragment>
     <fragment
         android:id="@+id/showProfileActivity"
         android:name="com.group06.lab1.ShowProfileActivity"
-        android:label="activity_show_profile"
-        tools:layout="@layout/fragment_activity_show_profile" >
+        android:label="Show Profile"
+        tools:layout="@layout/fragment_activity_show_profile">
         <action
             android:id="@+id/action_showProfileActivity_to_editProfileActivity"
             app:destination="@id/editProfileActivity"
@@ -62,22 +70,27 @@
             app:popUpToInclusive="true"
 
             />
-<!--        In order two prevent popUpTo and popUpToInclusive we should add
-            app:popUpTo="@+id/showProfileActivity"
+        <action
+            android:id="@+id/action_showProfileActivity_to_trip_list"
+            app:destination="@id/trip_list"
+            app:popUpTo="@+id/trip_list"
             app:popUpToInclusive="true"
-            otherwise, when the second fragment calls, return back to the first one
--->
+            />
+        <!--        In order two prevent popUpTo and popUpToInclusive we should add
+                    app:popUpTo="@+id/showProfileActivity"
+                    app:popUpToInclusive="true"
+                    otherwise, when the second fragment calls, return back to the first one
+        -->
     </fragment>
     <fragment
         android:id="@+id/editProfileActivity"
         android:name="com.group06.lab1.EditProfileFragment"
-        android:label="activity_edit_profile"
-        tools:layout="@layout/fragment_activity_edit_profile" >
+        android:label="Edit Profile"
+        tools:layout="@layout/fragment_activity_edit_profile">
         <action
             android:id="@+id/action_editProfileActivity_to_showProfileActivity"
             app:destination="@id/showProfileActivity"
             app:popUpTo="@+id/editProfileActivity"
-            app:popUpToInclusive="true"
-            />
+            app:popUpToInclusive="true" />
     </fragment>
 </navigation>

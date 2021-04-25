@@ -13,6 +13,7 @@ import com.group06.lab1.R
 import kotlinx.android.synthetic.main.fragment_trip_edit.*
 import java.io.File
 import java.lang.StringBuilder
+import com.group06.lab1.extensions.toString
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -64,7 +65,7 @@ class TripDetailsFragment : Fragment() {
 
         tvDepartureLocation.text = t.departure
         tvArrivalLocation.text = t.arrival
-        tvDepartureDate.text = t.departureDate.toString()
+        tvDepartureDate.text = t.departureDate.toString("yyyy/MM/dd - HH:mm")
         tvAvailableSeats.text = t.availableSeats.toString()
         tvPrice.text = t.price.toString()
         tvDescription.text = t.description

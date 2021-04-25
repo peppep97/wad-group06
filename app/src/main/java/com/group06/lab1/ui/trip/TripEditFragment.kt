@@ -26,6 +26,7 @@ import java.io.FileOutputStream
 import java.lang.StringBuilder
 import java.util.*
 import kotlin.math.min
+import com.group06.lab1.extensions.toString
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -119,12 +120,13 @@ class TripEditFragment : Fragment() {
             val t = Database.getInstance(context).tripList.get(index)
             etDeparture.editText?.setText(t.departure)
             etArrival.editText?.setText(t.arrival)
-            etDepartureDate.editText?.setText(t.departureDate.toString())
+            etDepartureDate.editText?.setText(t.departureDate.toString("yyyy/MM/dd - HH:mm"))
             etAvailableSeats.editText?.setText(t.availableSeats.toString())
             etPrice.editText?.setText(t.price.toString())
             etDescription.editText?.setText(t.description)
 
             imgName = t.imageUrl
+            dateValue = t.departureDate
 
             dateOk = true
             day = t.estimatedDay
@@ -163,7 +165,7 @@ class TripEditFragment : Fragment() {
         timePicker.addOnPositiveButtonClickListener {
             dateOk = true
             dateValue.time += (timePicker.hour*60*60 + timePicker.minute*60)*1000
-            etDepartureDate.editText?.setText(dateValue.toString())
+            etDepartureDate.editText?.setText(dateValue.toString("yyyy/MM/dd - HH:mm"))
         }
 
         etDuration.editText?.setOnClickListener {
@@ -181,7 +183,7 @@ class TripEditFragment : Fragment() {
             etDescription.editText?.setText(savedInstanceState.getString("description"))
 
             if (dateOk)
-                etDepartureDate.editText?.setText(dateValue.toString())
+                etDepartureDate.editText?.setText(dateValue.toString("yyyy/MM/dd - HH:mm"))
         }
     }
 

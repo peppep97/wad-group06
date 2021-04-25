@@ -124,6 +124,7 @@ class EditProfileFragment : Fragment() {
                 true
             }
             16908332 -> { // the back button on action bar
+                findNavController().navigate(R.id.action_editProfileActivity_to_showProfileActivity)
                 true
             }
 
@@ -150,7 +151,7 @@ class EditProfileFragment : Fragment() {
             etEmail.setText(savedInstanceState.getString("group06.lab1.email"))
             etLocation.setText(savedInstanceState.getString("group06.lab1.location"))
             profileChanged = savedInstanceState.getBoolean("group06.lab1.profileChanged")
-
+//            if (profileChanged)
             File(context?.filesDir, savedInstanceState.getString("group06.lab1.image") ?: "").let {
                 if (it.exists()) imgProfile.setImageBitmap(BitmapFactory.decodeFile(it.absolutePath))
             }

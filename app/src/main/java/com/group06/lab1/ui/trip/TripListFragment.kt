@@ -11,6 +11,7 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.commit
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
@@ -24,6 +25,7 @@ import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
+import com.group06.lab1.extensions.toString
 
 
 /**
@@ -84,11 +86,6 @@ class TripListFragment : Fragment() {
         var fm: FragmentManager? = fragmentManager
 
         class TripViewHolder(v: View) : RecyclerView.ViewHolder(v) {
-            fun Date.toString(format: String, locale: Locale = Locale.getDefault()): String {
-                val formatter = SimpleDateFormat(format, locale)
-                return formatter.format(this)
-            }
-
             val tvDepTime: TextView = v.findViewById<TextView>(R.id.tvDepTime)
             val tvArrTime: TextView = v.findViewById<TextView>(R.id.tvArrTime)
             val tvOrigin: TextView = v.findViewById<TextView>(R.id.tvOrigin)
@@ -137,6 +134,11 @@ class TripListFragment : Fragment() {
                  holder.cardTrip.findNavController().navigate(R.id.action_trip_list_to_trip_details, Bundle().apply {
                     putInt("index", position)
                 })
+//                val tripDetailsFragment = TripDetailsFragment()
+//                fm?.commit {
+//                    replace(R.id.nav_host_fragment, tripDetailsFragment)
+//                    addToBackStack(tripDetailsFragment.tag)
+//                }
             }
 
             holder.btnEdit.setOnClickListener {
