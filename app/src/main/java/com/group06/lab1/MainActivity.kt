@@ -1,7 +1,11 @@
 package com.group06.lab1
 
+import android.content.Context
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.provider.ContactsContract
+import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import com.google.android.material.navigation.NavigationView
 import androidx.navigation.findNavController
@@ -16,6 +20,8 @@ import androidx.core.view.GravityCompat
 import androidx.fragment.app.commit
 import com.group06.lab1.ui.trip.TripListFragment
 import com.group06.lab1.utils.Database
+import org.json.JSONObject
+import java.io.File
 
 class MainActivity : AppCompatActivity() {
 
@@ -37,9 +43,40 @@ class MainActivity : AppCompatActivity() {
 //        }
 
 
+
+
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         val navView: NavigationView = findViewById(R.id.nav_view)
         val navController = findNavController(R.id.nav_host_fragment)
+
+        val drawer = navView.getHeaderView(0)
+
+        val tvHeaderName = drawer.findViewById<TextView>(R.id.headerName)
+        val ivHeaderProfileImage = drawer.findViewById<ImageView>(R.id.headerProfileImage)
+        val tvHeaderEmail = drawer.findViewById<TextView>(R.id.headermail)
+
+        val profileData = JSONObject()
+
+        val sharedPref = getSharedPreferences(getString(R.string.preference_file_key),
+            Context.MODE_PRIVATE)
+
+        val data = sharedPref.getString("profile", null)
+
+        if(data != null)
+            with(JSONObject(data)){
+
+                tvHeaderName.text = getString("fullName")
+                tvHeaderEmail.text = getString("email")
+
+
+
+            }
+
+        File(filesDir, "profilepic.jpg").let {
+            if (it.exists()) ivHeaderProfileImage.setImageBitmap(BitmapFactory.decodeFile(it.absolutePath))
+        }
+
+
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         appBarConfiguration = AppBarConfiguration(
@@ -61,4 +98,9 @@ class MainActivity : AppCompatActivity() {
         val navController = findNavController(R.id.nav_host_fragment)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
+
+
+
+
+
 }
