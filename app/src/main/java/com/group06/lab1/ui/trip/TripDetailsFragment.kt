@@ -115,6 +115,14 @@ class TripDetailsFragment : Fragment() {
                 })
                 return true
             }
+            android.R.id.home -> {
+                //Handling the toolbar back button
+                findNavController().navigate(R.id.action_trip_details_to_trip_list)
+
+                return true
+
+
+            }
         }
 
         return false

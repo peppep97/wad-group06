@@ -72,19 +72,22 @@
             android:id="@+id/action_showProfileActivity_to_editProfileActivity"
             app:destination="@id/editProfileActivity"
 
-            app:enterAnim="@anim/fragment_open_enter"
+            app:enterAnim="@anim/custom_from_top"
             app:exitAnim="@anim/fragment_open_exit"
 
-            app:popEnterAnim="@anim/fragment_open_enter"
+            app:popEnterAnim="@anim/custom_from_top"
             app:popExitAnim="@anim/fragment_open_exit"
             app:popUpTo="@+id/showProfileActivity"
             app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_showProfileActivity_to_trip_list"
             app:destination="@id/trip_list"
+            app:enterAnim="@anim/custom_from_left"
+            app:exitAnim="@anim/custom_to_right"
+            app:popEnterAnim="@anim/custom_from_left"
+            app:popExitAnim="@anim/custom_to_right"
             app:popUpTo="@+id/trip_list"
-            app:popUpToInclusive="true"
-            />
+            app:popUpToInclusive="true" />
         <!--        In order two prevent popUpTo and popUpToInclusive we should add
                     app:popUpTo="@+id/showProfileActivity"
                     app:popUpToInclusive="true"
@@ -99,6 +102,10 @@
         <action
             android:id="@+id/action_editProfileActivity_to_showProfileActivity"
             app:destination="@id/showProfileActivity"
+            app:enterAnim="@anim/custom_fade_in"
+            app:exitAnim="@anim/custom_to_top"
+            app:popEnterAnim="@anim/custom_fade_in"
+            app:popExitAnim="@anim/custom_to_top"
             app:popUpTo="@+id/editProfileActivity"
             app:popUpToInclusive="true" />
     </fragment>

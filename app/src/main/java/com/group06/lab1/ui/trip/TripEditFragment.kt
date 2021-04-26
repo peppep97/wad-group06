@@ -10,6 +10,7 @@ import android.provider.MediaStore
 import android.util.Log
 import android.view.*
 import android.widget.*
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.Fragment
@@ -74,6 +75,17 @@ class TripEditFragment : Fragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+
+        //Override action of the back button, otherwise the transition defined in mobile_navigation does not occur
+        val callback = requireActivity().onBackPressedDispatcher.addCallback(this,
+            object: OnBackPressedCallback(true){
+                override fun handleOnBackPressed() {
+                    findNavController().navigate(R.id.action_trip_edit_to_trip_list)
+                }
+            }
+        )
+
+
     }
 
     override fun onCreateView(
@@ -236,6 +248,13 @@ class TripEditFragment : Fragment() {
                     findNavController().navigate(R.id.action_trip_edit_to_trip_list)
                 }
                 return true
+            }
+            android.R.id.home -> {
+                //Handling the toolbar back button
+                findNavController().navigate(R.id.action_trip_edit_to_trip_list)
+                return true
+
+
             }
         }
         return false

@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.view.*
 import android.widget.*
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.os.bundleOf
@@ -32,6 +33,13 @@ class EditProfileFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val callback = requireActivity().onBackPressedDispatcher.addCallback(this,
+            object: OnBackPressedCallback(true){
+                override fun handleOnBackPressed() {
+                    findNavController().navigate(R.id.action_editProfileActivity_to_showProfileActivity)
+                }
+            }
+        )
     }
 
     override fun onCreateView(
