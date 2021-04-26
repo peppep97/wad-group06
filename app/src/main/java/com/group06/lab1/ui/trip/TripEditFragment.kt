@@ -16,6 +16,7 @@ import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.datepicker.MaterialDatePicker
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
@@ -28,6 +29,7 @@ import java.lang.StringBuilder
 import java.util.*
 import kotlin.math.min
 import com.group06.lab1.extensions.toString
+import kotlinx.android.synthetic.main.app_bar_main.*
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -55,6 +57,8 @@ class TripEditFragment : Fragment() {
     private lateinit var etPrice: TextInputLayout
     private lateinit var etDescription: TextInputLayout
     private lateinit var imgTrip: ImageView
+
+    private lateinit var snackBar: Snackbar;
 
     private var dateValue: Date = Date()
     private var dateOk: Boolean = false
@@ -244,6 +248,11 @@ class TripEditFragment : Fragment() {
 
                     //save trip list
                     Database.getInstance(context).save()
+                    snackBar = Snackbar.make( requireView().getRootView().findViewById(R.id.coordinatorLayout), "Profile updated correctly", Snackbar.LENGTH_LONG)
+                    snackBar.setAction("Dismiss"){
+                        snackBar.dismiss()
+                    }
+                    snackBar.show()
 
                     findNavController().navigate(R.id.action_trip_edit_to_trip_list)
                 }

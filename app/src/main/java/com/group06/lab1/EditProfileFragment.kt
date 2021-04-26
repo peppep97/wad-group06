@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.snackbar.Snackbar
 import java.io.File
 import java.io.FileOutputStream
 
@@ -29,6 +30,7 @@ class EditProfileFragment : Fragment() {
     private lateinit var etEmail: EditText
     private lateinit var etLocation: EditText
     private lateinit var imgProfile: ImageView
+    private lateinit var snackBar: Snackbar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -117,8 +119,11 @@ class EditProfileFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.saveEdit -> {
-                if (profileChanged)
+                if (profileChanged){
                     saveImageOnStorage(imgProfile.drawable.toBitmap())
+
+
+                }
                 setFragmentResult(
                     "requestKeyEditToShow", bundleOf(
                         "group06.lab1.fullName" to etFullName.text.toString(),
@@ -128,6 +133,11 @@ class EditProfileFragment : Fragment() {
                         "group06.lab1.profile" to "profilepic.jpg"
                     )
                 )
+                snackBar = Snackbar.make( requireView().getRootView().findViewById(R.id.coordinatorLayout), "Profile updated correctly", Snackbar.LENGTH_LONG)
+                snackBar.setAction("Dismiss"){
+                    snackBar.dismiss()
+                }
+                snackBar.show()
                 findNavController().navigate(R.id.action_editProfileActivity_to_showProfileActivity)
                 true
             }

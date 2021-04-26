@@ -16,6 +16,7 @@ import androidx.navigation.ui.setupWithNavController
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.commit
 import com.group06.lab1.ui.trip.TripListFragment
@@ -43,7 +44,7 @@ class MainActivity : AppCompatActivity() {
 //        }
 
 
-
+        val coordinatorLayout = findViewById<CoordinatorLayout>(R.id.coordinatorLayout)
 
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         val navView: NavigationView = findViewById(R.id.nav_view)
