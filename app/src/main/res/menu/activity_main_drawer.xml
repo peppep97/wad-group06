@@ -7,10 +7,10 @@
         <item
             android:id="@+id/trip_list"
             android:icon="@drawable/ic_baseline_list_24"
-            android:title="@string/menu_home" />
+            android:title="Trips" />
         <item
             android:id="@+id/showProfileActivity"
             android:icon="@drawable/ic_baseline_list_24"
-            android:title="Show Profile" />
+            android:title="Profile" />
     </group>
 </menu>

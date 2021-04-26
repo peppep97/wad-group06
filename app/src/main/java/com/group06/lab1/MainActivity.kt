@@ -56,21 +56,17 @@ class MainActivity : AppCompatActivity() {
         val ivHeaderProfileImage = drawer.findViewById<ImageView>(R.id.headerProfileImage)
         val tvHeaderEmail = drawer.findViewById<TextView>(R.id.headermail)
 
-        val profileData = JSONObject()
-
-        val sharedPref = getSharedPreferences(getString(R.string.preference_file_key),
-            Context.MODE_PRIVATE)
+        val sharedPref = getSharedPreferences(
+            getString(R.string.preference_file_key),
+            Context.MODE_PRIVATE
+        )
 
         val data = sharedPref.getString("profile", null)
 
-        if(data != null)
-            with(JSONObject(data)){
-
+        if (data != null)
+            with(JSONObject(data)) {
                 tvHeaderName.text = getString("fullName")
                 tvHeaderEmail.text = getString("email")
-
-
-
             }
 
         File(filesDir, "profilepic.jpg").let {
@@ -99,9 +95,6 @@ class MainActivity : AppCompatActivity() {
         val navController = findNavController(R.id.nav_host_fragment)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
-
-
-
 
 
 }

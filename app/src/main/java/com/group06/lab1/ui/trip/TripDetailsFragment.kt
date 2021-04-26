@@ -15,6 +15,8 @@ import kotlinx.android.synthetic.main.fragment_trip_edit.*
 import java.io.File
 import java.lang.StringBuilder
 import com.group06.lab1.extensions.toString
+import java.text.DecimalFormat
+import java.util.*
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -42,18 +44,12 @@ class TripDetailsFragment : Fragment() {
 
         //Override action of the back button, otherwise the transition defined in mobile_navigation does not occur
         val callback = requireActivity().onBackPressedDispatcher.addCallback(this,
-            object: OnBackPressedCallback(true){
+            object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
                     findNavController().navigate(R.id.action_trip_details_to_trip_list)
                 }
             }
-            )
-
-
-
-
-
-
+        )
     }
 
     override fun onCreateView(
@@ -62,7 +58,7 @@ class TripDetailsFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         setHasOptionsMenu(true)
-        return inflater.inflate(R.layout.fragment_trip_details, container, false)
+        return inflater.inflate(R.layout.fragment_trip_detail, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -78,12 +74,25 @@ class TripDetailsFragment : Fragment() {
         val tvPrice = view.findViewById<TextView>(R.id.tvPrice)
         val tvDescription = view.findViewById<TextView>(R.id.tvDescription)
         val imgTrip = view.findViewById<ImageView>(R.id.imgTrip)
+        val tvDepTime: TextView = view.findViewById<TextView>(R.id.tvDepTime)
+        val tvArrTime: TextView = view.findViewById<TextView>(R.id.tvArrTime)
 
         tvDepartureLocation.text = t.departure
         tvArrivalLocation.text = t.arrival
-        tvDepartureDate.text = t.departureDate.toString("yyyy/MM/dd - HH:mm")
+        tvDepartureDate.text = t.departureDate.toString("MMMM - dd")
         tvAvailableSeats.text = t.availableSeats.toString()
-        tvPrice.text = t.price.toString()
+
+        tvDepTime.text = t.departureDate.toString("HH:mm")
+        val calendar = Calendar.getInstance()
+        calendar.time = t.departureDate
+        calendar.add(Calendar.DAY_OF_MONTH, t.estimatedDay)
+        calendar.add(Calendar.HOUR, t.estimatedHour)
+        calendar.add(Calendar.MINUTE, t.estimatedMinute)
+        tvArrTime.text = calendar.time.toString("HH:mm")
+
+        val format = DecimalFormat()
+        format.isDecimalSeparatorAlwaysShown = false
+        tvPrice.text = format.format(t.price).toString() + "€"
         tvDescription.text = t.description
 
         val sBuilder = StringBuilder()
@@ -93,7 +102,7 @@ class TripDetailsFragment : Fragment() {
             sBuilder.append(String.format(" %dh", t.estimatedHour))
         if (t.estimatedMinute > 0)
             sBuilder.append(String.format(" %dm", t.estimatedMinute))
-        tvEstimatedDuration.text = sBuilder.toString()
+        tvEstimatedDuration.text = "(${sBuilder.toString()})"
 
         File(context?.filesDir, t.imageUrl).let {
             if (it.exists()) imgTrip.setImageBitmap(BitmapFactory.decodeFile(it.absolutePath))
@@ -107,7 +116,7 @@ class TripDetailsFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId){
+        when (item.itemId) {
             R.id.edit -> {
                 findNavController().navigate(R.id.action_trip_details_to_trip_edit, Bundle().apply {
                     putBoolean("edit", true)
@@ -147,9 +156,6 @@ class TripDetailsFragment : Fragment() {
                 }
             }
     }
-
-
-
 
 
 }
