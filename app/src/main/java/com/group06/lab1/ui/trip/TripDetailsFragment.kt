@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.*
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.group06.lab1.utils.Database
@@ -38,6 +39,21 @@ class TripDetailsFragment : Fragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+
+        //Override action of the back button, otherwise the transition defined in mobile_navigation does not occur
+        val callback = requireActivity().onBackPressedDispatcher.addCallback(this,
+            object: OnBackPressedCallback(true){
+                override fun handleOnBackPressed() {
+                    findNavController().navigate(R.id.action_trip_details_to_trip_list)
+                }
+            }
+            )
+
+
+
+
+
+
     }
 
     override fun onCreateView(
@@ -123,6 +139,9 @@ class TripDetailsFragment : Fragment() {
                 }
             }
     }
+
+
+
 
 
 }
