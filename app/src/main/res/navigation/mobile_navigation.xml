@@ -19,14 +19,6 @@
             app:popExitAnim="@anim/fragment_close_exit"
             app:popUpTo="@+id/trip_details"
             app:popUpToInclusive="true" />
-        <action
-            android:id="@+id/action_trip_details_to_trip_list"
-            app:destination="@id/trip_list"
-            app:enterAnim="@anim/custom_from_left"
-            app:exitAnim="@anim/custom_to_right"
-            app:popEnterAnim="@anim/custom_from_left"
-            app:popExitAnim="@anim/custom_to_right"
-            app:popUpTo="@id/trip_list" />
     </fragment>
     <fragment
         android:id="@+id/trip_edit"
@@ -59,9 +51,6 @@
             app:exitAnim="@anim/fragment_open_exit"
             app:popEnterAnim="@anim/fragment_close_enter"
             app:popExitAnim="@anim/fragment_close_exit" />
-        <action
-            android:id="@+id/action_trip_list_to_showProfileActivity"
-            app:destination="@id/showProfileActivity" />
     </fragment>
     <fragment
         android:id="@+id/showProfileActivity"
@@ -79,20 +68,7 @@
             app:popExitAnim="@anim/fragment_open_exit"
             app:popUpTo="@+id/showProfileActivity"
             app:popUpToInclusive="true" />
-        <action
-            android:id="@+id/action_showProfileActivity_to_trip_list"
-            app:destination="@id/trip_list"
-            app:enterAnim="@anim/custom_from_left"
-            app:exitAnim="@anim/custom_to_right"
-            app:popEnterAnim="@anim/custom_from_left"
-            app:popExitAnim="@anim/custom_to_right"
-            app:popUpTo="@+id/trip_list"
-            app:popUpToInclusive="true" />
-        <!--        In order two prevent popUpTo and popUpToInclusive we should add
-                    app:popUpTo="@+id/showProfileActivity"
-                    app:popUpToInclusive="true"
-                    otherwise, when the second fragment calls, return back to the first one
-        -->
+
     </fragment>
     <fragment
         android:id="@+id/editProfileActivity"

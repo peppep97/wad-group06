@@ -41,15 +41,6 @@ class TripDetailsFragment : Fragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
-
-        //Override action of the back button, otherwise the transition defined in mobile_navigation does not occur
-        val callback = requireActivity().onBackPressedDispatcher.addCallback(this,
-            object : OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() {
-                    findNavController().navigate(R.id.action_trip_details_to_trip_list)
-                }
-            }
-        )
     }
 
     override fun onCreateView(
@@ -102,7 +93,7 @@ class TripDetailsFragment : Fragment() {
             sBuilder.append(String.format(" %dh", t.estimatedHour))
         if (t.estimatedMinute > 0)
             sBuilder.append(String.format(" %dm", t.estimatedMinute))
-        tvEstimatedDuration.text = "(${sBuilder.toString()})"
+        tvEstimatedDuration.text = "(${sBuilder.toString()} )"
 
         File(context?.filesDir, t.imageUrl).let {
             if (it.exists()) imgTrip.setImageBitmap(BitmapFactory.decodeFile(it.absolutePath))
@@ -123,14 +114,6 @@ class TripDetailsFragment : Fragment() {
                     putInt("index", index!!)
                 })
                 return true
-            }
-            android.R.id.home -> {
-                //Handling the toolbar back button
-                findNavController().navigate(R.id.action_trip_details_to_trip_list)
-
-                return true
-
-
             }
         }
 

@@ -81,13 +81,13 @@ class TripEditFragment : Fragment() {
         }
 
         //Override action of the back button, otherwise the transition defined in mobile_navigation does not occur
-        val callback = requireActivity().onBackPressedDispatcher.addCallback(this,
-            object: OnBackPressedCallback(true){
-                override fun handleOnBackPressed() {
-                    findNavController().navigate(R.id.action_trip_edit_to_trip_list)
-                }
-            }
-        )
+//        val callback = requireActivity().onBackPressedDispatcher.addCallback(this,
+//            object: OnBackPressedCallback(true){
+//                override fun handleOnBackPressed() {
+//                    findNavController().navigate(R.id.action_trip_edit_to_trip_list)
+//                }
+//            }
+//        )
 
 
     }
