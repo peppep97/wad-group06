@@ -314,8 +314,8 @@ class TripEditFragment : Fragment() {
         val minuteSpinner = dialogLayout.findViewById<Spinner>(R.id.minuteSpinner)
 
         val adapter1 = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, (0..30).toList())
-        val adapter2 = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, (0..24).toList())
-        val adapter3 = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, (0..60).toList())
+        val adapter2 = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, (0..23).toList())
+        val adapter3 = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, (0..59).toList())
 
         adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
