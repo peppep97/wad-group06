@@ -95,8 +95,12 @@ class TripDetailsFragment : Fragment() {
             sBuilder.append(String.format(" %dm", t.estimatedMinute))
         tvEstimatedDuration.text = "(${sBuilder.toString()} )"
 
-        File(context?.filesDir, t.imageUrl).let {
-            if (it.exists()) imgTrip.setImageBitmap(BitmapFactory.decodeFile(it.absolutePath))
+        if (t.imageUrl == "") {
+            imgTrip.setImageResource(R.drawable.ic_no_photo)
+        } else {
+            File(context?.filesDir, t.imageUrl).let {
+                if (it.exists()) imgTrip.setImageBitmap(BitmapFactory.decodeFile(it.absolutePath))
+            }
         }
     }
 

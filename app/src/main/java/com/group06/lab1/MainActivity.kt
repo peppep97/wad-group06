@@ -28,6 +28,11 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
 
+    private lateinit var tvHeaderName: TextView
+    private lateinit var ivHeaderProfileImage: ImageView
+    private lateinit var tvHeaderEmail: TextView
+    private lateinit var navView: NavigationView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -47,32 +52,10 @@ class MainActivity : AppCompatActivity() {
         val coordinatorLayout = findViewById<CoordinatorLayout>(R.id.coordinatorLayout)
 
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
-        val navView: NavigationView = findViewById(R.id.nav_view)
+        navView = findViewById(R.id.nav_view)
         val navController = findNavController(R.id.nav_host_fragment)
 
-        val drawer = navView.getHeaderView(0)
-
-        val tvHeaderName = drawer.findViewById<TextView>(R.id.headerName)
-        val ivHeaderProfileImage = drawer.findViewById<ImageView>(R.id.headerProfileImage)
-        val tvHeaderEmail = drawer.findViewById<TextView>(R.id.headermail)
-
-        val sharedPref = getSharedPreferences(
-            getString(R.string.preference_file_key),
-            Context.MODE_PRIVATE
-        )
-
-        val data = sharedPref.getString("profile", null)
-
-        if (data != null)
-            with(JSONObject(data)) {
-                tvHeaderName.text = getString("fullName")
-                tvHeaderEmail.text = getString("email")
-            }
-
-        File(filesDir, "profilepic.jpg").let {
-            if (it.exists()) ivHeaderProfileImage.setImageBitmap(BitmapFactory.decodeFile(it.absolutePath))
-        }
-
+        loadData()
 
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
@@ -91,7 +74,33 @@ class MainActivity : AppCompatActivity() {
         return true
     }*/
 
+    fun loadData() {
+        val drawer = navView.getHeaderView(0)
+
+        tvHeaderName = drawer.findViewById<TextView>(R.id.headerName)
+        ivHeaderProfileImage = drawer.findViewById<ImageView>(R.id.headerProfileImage)
+        tvHeaderEmail = drawer.findViewById<TextView>(R.id.headermail)
+
+        val sharedPref = getSharedPreferences(
+            getString(R.string.preference_file_key),
+            Context.MODE_PRIVATE
+        )
+
+        val data = sharedPref.getString("profile", null)
+
+        if (data != null)
+            with(JSONObject(data)) {
+                tvHeaderName.text = getString("fullName")
+                tvHeaderEmail.text = getString("email")
+            }
+
+        File(filesDir, "profilepic.jpg").let {
+            if (it.exists()) ivHeaderProfileImage.setImageBitmap(BitmapFactory.decodeFile(it.absolutePath))
+        }
+    }
+
     override fun onSupportNavigateUp(): Boolean {
+        loadData()
         val navController = findNavController(R.id.nav_host_fragment)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }

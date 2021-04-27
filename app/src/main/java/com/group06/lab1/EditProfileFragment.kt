@@ -121,8 +121,6 @@ class EditProfileFragment : Fragment() {
             R.id.saveEdit -> {
                 if (profileChanged){
                     saveImageOnStorage(imgProfile.drawable.toBitmap())
-
-
                 }
                 setFragmentResult(
                     "requestKeyEditToShow", bundleOf(
@@ -141,7 +139,7 @@ class EditProfileFragment : Fragment() {
                 findNavController().navigate(R.id.action_editProfileActivity_to_showProfileActivity)
                 true
             }
-            16908332 -> { // the back button on action bar
+            android.R.id.home -> { // the back button on action bar
                 findNavController().navigate(R.id.action_editProfileActivity_to_showProfileActivity)
                 true
             }

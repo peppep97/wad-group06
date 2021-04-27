@@ -117,8 +117,12 @@ class TripListFragment : Fragment() {
                 format.isDecimalSeparatorAlwaysShown = false
                 tvPrice.text = format.format(t.price).toString() + "€"
                 tvSeat.text = t.availableSeats.toString()
-                File(imgCar.context?.filesDir, t.imageUrl).let {
-                    if (it.exists()) imgCar.setImageBitmap(BitmapFactory.decodeFile(it.absolutePath))
+                if (t.imageUrl == "") {
+                    imgCar.setImageResource(R.drawable.ic_no_photo)
+                } else {
+                    File(imgCar.context?.filesDir, t.imageUrl).let {
+                        if (it.exists()) imgCar.setImageBitmap(BitmapFactory.decodeFile(it.absolutePath))
+                    }
                 }
             }
         }

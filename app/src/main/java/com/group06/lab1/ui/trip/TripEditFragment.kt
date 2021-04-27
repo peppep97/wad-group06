@@ -133,7 +133,7 @@ class TripEditFragment : Fragment() {
         if (edit!!){
             index = arguments?.getInt("index")!!
 
-            val t = Database.getInstance(context).tripList.get(index)
+            val t = Database.getInstance(context).tripList[index]
             etDeparture.editText?.setText(t.departure)
             etArrival.editText?.setText(t.arrival)
             etDepartureDate.editText?.setText(t.departureDate.toString("yyyy/MM/dd - HH:mm"))
@@ -158,9 +158,12 @@ class TripEditFragment : Fragment() {
                 sBuilder.append(String.format(" %dm", t.estimatedMinute))
 
             etDuration.editText?.setText(sBuilder.toString())
-
-            File(context?.filesDir, t.imageUrl).let {
-                if (it.exists()) imgTrip.setImageBitmap(BitmapFactory.decodeFile(it.absolutePath))
+            if (t.imageUrl == "") {
+                imgTrip.setImageResource(R.drawable.ic_no_photo)
+            } else {
+                File(context?.filesDir, t.imageUrl).let {
+                    if (it.exists()) imgTrip.setImageBitmap(BitmapFactory.decodeFile(it.absolutePath))
+                }
             }
         }
 
@@ -197,7 +200,9 @@ class TripEditFragment : Fragment() {
             etAvailableSeats.editText?.setText(savedInstanceState.getString("availableseats"))
             etPrice.editText?.setText(savedInstanceState.getString("price"))
             etDescription.editText?.setText(savedInstanceState.getString("description"))
-
+            File(context?.filesDir, savedInstanceState.getString("imgTrip") ?: "").let {
+                if (it.exists()) imgTrip.setImageBitmap(BitmapFactory.decodeFile(it.absolutePath))
+            }
             if (dateOk)
                 etDepartureDate.editText?.setText(dateValue.toString("yyyy/MM/dd - HH:mm"))
         }
@@ -213,8 +218,8 @@ class TripEditFragment : Fragment() {
         outState.putString("availableseats", etAvailableSeats.editText?.text.toString())
         outState.putString("price", etPrice.editText?.text.toString())
         outState.putString("description", etDescription.editText?.text.toString())
+        outState.putString("imgTrip", "trippictemp.png")
     }
-
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
@@ -397,12 +402,12 @@ class TripEditFragment : Fragment() {
             val imageBitmap = data?.extras?.get("data") as Bitmap
             imgTrip.setImageBitmap(imageBitmap)
             imgChanged = true
-            saveImageOnStorage(imageBitmap, "$imgName")
+            saveImageOnStorage(imageBitmap, "trippictemp.png")
         } else if (requestCode == REQUEST_IMAGE_GALLERY && resultCode == AppCompatActivity.RESULT_OK) {
             imgName = genRandomString() + ".png"
             imgTrip.setImageURI(data?.data)
             imgChanged = true
-            saveImageOnStorage(imgTrip.drawable.toBitmap(), "$imgName")
+            saveImageOnStorage(imgTrip.drawable.toBitmap(), "trippictemp.png")
         }
     }
 
