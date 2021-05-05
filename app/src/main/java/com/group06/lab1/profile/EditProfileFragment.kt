@@ -1,4 +1,4 @@
-package com.group06.lab1
+package com.group06.lab1.profile
 
 import android.content.ActivityNotFoundException
 import android.content.Intent
@@ -17,6 +17,8 @@ import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.firestore.FirebaseFirestore
+import com.group06.lab1.R
 import java.io.File
 import java.io.FileOutputStream
 
@@ -122,6 +124,15 @@ class EditProfileFragment : Fragment() {
                 if (profileChanged){
                     saveImageOnStorage(imgProfile.drawable.toBitmap())
                 }
+
+                var user = User(etFullName.text.toString(), etNickName.text.toString(),
+                etEmail.text.toString(), etLocation.text.toString())
+
+                val db = FirebaseFirestore.getInstance()
+                db.collection("users")
+                    .document(etEmail.text.toString()) //use the specified email as document id
+                    .set(user)
+
                 setFragmentResult(
                     "requestKeyEditToShow", bundleOf(
                         "group06.lab1.fullName" to etFullName.text.toString(),
@@ -131,7 +142,9 @@ class EditProfileFragment : Fragment() {
                         "group06.lab1.profile" to "profilepic.jpg"
                     )
                 )
-                snackBar = Snackbar.make( requireView().getRootView().findViewById(R.id.coordinatorLayout), "Profile updated correctly", Snackbar.LENGTH_LONG)
+                snackBar = Snackbar.make( requireView().getRootView().findViewById(
+                    R.id.coordinatorLayout
+                ), "Profile updated correctly", Snackbar.LENGTH_LONG)
                 snackBar.setAction("Dismiss"){
                     snackBar.dismiss()
                 }

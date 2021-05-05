@@ -14,9 +14,9 @@
             android:id="@+id/action_trip_details_to_trip_edit"
             app:destination="@id/trip_edit"
             app:enterAnim="@anim/custom_from_top"
-            app:exitAnim="@anim/fragment_open_exit"
+            app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/custom_from_top"
-            app:popExitAnim="@anim/fragment_close_exit"
+            app:popExitAnim="@anim/nav_default_exit_anim"
             app:popUpTo="@+id/trip_details"
             app:popUpToInclusive="true" />
     </fragment>
@@ -48,13 +48,13 @@
             android:id="@+id/action_trip_list_to_trip_edit"
             app:destination="@id/trip_edit"
             app:enterAnim="@anim/custom_from_top"
-            app:exitAnim="@anim/fragment_open_exit"
-            app:popEnterAnim="@anim/fragment_close_enter"
-            app:popExitAnim="@anim/fragment_close_exit" />
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_exit_anim"
+            app:popExitAnim="@anim/nav_default_exit_anim" />
     </fragment>
     <fragment
-        android:id="@+id/showProfileActivity"
-        android:name="com.group06.lab1.ShowProfileActivity"
+        android:id="@+id/show_profile"
+        android:name="com.group06.lab1.profile.ShowProfileFragment"
         android:label="Show Profile"
         tools:layout="@layout/fragment_activity_show_profile">
         <action
@@ -62,22 +62,22 @@
             app:destination="@id/editProfileActivity"
 
             app:enterAnim="@anim/custom_from_top"
-            app:exitAnim="@anim/fragment_open_exit"
+            app:exitAnim="@anim/nav_default_exit_anim"
 
             app:popEnterAnim="@anim/custom_from_top"
-            app:popExitAnim="@anim/fragment_open_exit"
-            app:popUpTo="@+id/showProfileActivity"
+            app:popExitAnim="@anim/nav_default_exit_anim"
+            app:popUpTo="@+id/show_profile"
             app:popUpToInclusive="true" />
 
     </fragment>
     <fragment
         android:id="@+id/editProfileActivity"
-        android:name="com.group06.lab1.EditProfileFragment"
+        android:name="com.group06.lab1.profile.EditProfileFragment"
         android:label="Edit Profile"
         tools:layout="@layout/fragment_activity_edit_profile">
         <action
             android:id="@+id/action_editProfileActivity_to_showProfileActivity"
-            app:destination="@id/showProfileActivity"
+            app:destination="@id/show_profile"
             app:enterAnim="@anim/custom_fade_in"
             app:exitAnim="@anim/custom_to_top"
             app:popEnterAnim="@anim/custom_fade_in"

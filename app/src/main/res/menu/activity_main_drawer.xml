@@ -9,7 +9,7 @@
             android:icon="@drawable/ic_baseline_list_24"
             android:title="Trips" />
         <item
-            android:id="@+id/showProfileActivity"
+            android:id="@+id/show_profile"
             android:icon="@drawable/ic_baseline_list_24"
             android:title="Profile" />
     </group>

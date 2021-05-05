@@ -1,4 +1,5 @@
-package com.group06.lab1
+package com.group06.lab1.profile
+
 
 import android.app.Activity
 import android.content.Context
@@ -15,26 +16,20 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
-
-
+import com.google.firebase.firestore.FirebaseFirestore
+import com.group06.lab1.R
 import org.json.JSONObject
 import java.io.File
 import java.io.FileOutputStream
 
 
-class ShowProfileActivity : Fragment() {
+class ShowProfileFragment : Fragment() {
     private lateinit var tvFullName: TextView
     private lateinit var tvNickName: TextView
     private lateinit var tvEmail: TextView
     private lateinit var tvLocation: TextView
     private lateinit var imgProfile: ImageView
 
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,10 +40,11 @@ class ShowProfileActivity : Fragment() {
 
 
         setFragmentResultListener("requestKeyEditToShow") { requestKey, bundle ->
-            tvFullName.text = bundle.getString("group06.lab1.fullName")
-            tvNickName.text = bundle.getString("group06.lab1.nickName")
-            tvEmail.text = bundle.getString("group06.lab1.email")
-            tvLocation.text = bundle.getString("group06.lab1.location")
+            //tvFullName.text = bundle.getString("group06.lab1.fullName")
+            //tvNickName.text = bundle.getString("group06.lab1.nickName")
+            //tvEmail.text = bundle.getString("group06.lab1.email")
+            //tvLocation.text = bundle.getString("group06.lab1.location")
+
             val fileName: String = bundle.getString("group06.lab1.profile") ?: ""
             File(context?.filesDir, fileName).let {
                 if (it.exists()) imgProfile
@@ -56,10 +52,10 @@ class ShowProfileActivity : Fragment() {
             }
 
             val profileData = JSONObject().also {
-                it.put("fullName", tvFullName.text)
-                it.put("nickName", tvNickName.text)
+                //it.put("fullName", tvFullName.text)
+                //it.put("nickName", tvNickName.text)
                 it.put("email", tvEmail.text)
-                it.put("location", tvLocation.text)
+                //it.put("location", tvLocation.text)
             }
 
             //store data persistently
@@ -82,8 +78,6 @@ class ShowProfileActivity : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
-
         tvFullName = view.findViewById(R.id.tvFullName)
         tvNickName = view.findViewById(R.id.tvNickName)
         tvEmail = view.findViewById(R.id.tvEmail)
@@ -94,17 +88,25 @@ class ShowProfileActivity : Fragment() {
             getString(R.string.preference_file_key),
             Context.MODE_PRIVATE
         )
-//        val sharedPref = getSharedPreferences(
-//            getString(R.string.preference_file_key), Context.MODE_PRIVATE
-//        )
+
         val data = sharedPref.getString("profile", null)
-        if (data != null)
-            with(JSONObject(data)) {
-                tvFullName.text = getString("fullName")
-                tvNickName.text = getString("nickName")
-                tvEmail.text = getString("email")
-                tvLocation.text = getString("location")
-            }
+
+        if (data != null){
+            val db = FirebaseFirestore.getInstance()
+            db.collection("users")
+                .document(JSONObject(data).getString("email"))
+                .addSnapshotListener{
+                        value, error ->
+                    if (error != null) throw error
+                    if (value != null){
+                        tvFullName.text = value["name"].toString()
+                        tvNickName.text = value["nickName"].toString()
+                        tvEmail.text = value["email"].toString()
+                        tvLocation.text = value["location"].toString()
+                    }
+                }
+        }
+
         File(context?.filesDir, "profilepic.jpg").let {
             if (it.exists()) imgProfile.setImageBitmap(BitmapFactory.decodeFile(it.absolutePath))
         }

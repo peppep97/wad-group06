@@ -19,6 +19,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.commit
+import com.google.firebase.firestore.FirebaseFirestore
 import com.group06.lab1.ui.trip.TripListFragment
 import com.group06.lab1.utils.Database
 import org.json.JSONObject
@@ -88,11 +89,19 @@ class MainActivity : AppCompatActivity() {
 
         val data = sharedPref.getString("profile", null)
 
-        if (data != null)
-            with(JSONObject(data)) {
-                tvHeaderName.text = getString("fullName")
-                tvHeaderEmail.text = getString("email")
-            }
+        if (data != null){
+            val db = FirebaseFirestore.getInstance()
+            db.collection("users")
+                .document(JSONObject(data).getString("email"))
+                .addSnapshotListener{
+                    value, error ->
+                    if (error != null) throw error
+                    if (value != null){
+                        tvHeaderName.text = value["name"].toString()
+                        tvHeaderEmail.text = value["email"].toString()
+                    }
+                }
+        }
 
         File(filesDir, "profilepic.jpg").let {
             if (it.exists()) ivHeaderProfileImage.setImageBitmap(BitmapFactory.decodeFile(it.absolutePath))

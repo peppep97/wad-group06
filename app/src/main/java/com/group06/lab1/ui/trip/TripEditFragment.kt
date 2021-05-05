@@ -20,6 +20,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.gson.Gson
 import com.group06.lab1.utils.Database
 import com.group06.lab1.R
@@ -88,8 +89,6 @@ class TripEditFragment : Fragment() {
 //                }
 //            }
 //        )
-
-
     }
 
     override fun onCreateView(
@@ -246,18 +245,25 @@ class TripEditFragment : Fragment() {
                         etPrice.editText?.text.toString().toDouble(),
                         etDescription.editText?.text.toString())
 
-                    if (edit!!)
+                    val db = FirebaseFirestore.getInstance()
+                    db.collection("trips")
+                        .document()
+                        .set(t)
+                        .addOnSuccessListener {
+                            snackBar = Snackbar.make( requireView().getRootView().findViewById(R.id.coordinatorLayout), "Trip correctly saved", Snackbar.LENGTH_LONG)
+                            snackBar.setAction("Dismiss"){
+                                snackBar.dismiss()
+                            }
+                            snackBar.show()
+                        }
+
+                    /*if (edit!!)
                         Database.getInstance(context).tripList[index] = t
                     else
-                        Database.getInstance(context).tripList.add(t)
+                        Database.getInstance(context).tripList.add(t)*/
 
                     //save trip list
-                    Database.getInstance(context).save()
-                    snackBar = Snackbar.make( requireView().getRootView().findViewById(R.id.coordinatorLayout), "Profile updated correctly", Snackbar.LENGTH_LONG)
-                    snackBar.setAction("Dismiss"){
-                        snackBar.dismiss()
-                    }
-                    snackBar.show()
+                    //Database.getInstance(context).save()
 
                     findNavController().navigate(R.id.action_trip_edit_to_trip_list)
                 }
