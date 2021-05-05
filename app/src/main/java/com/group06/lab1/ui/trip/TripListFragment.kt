@@ -16,15 +16,19 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
+import coil.request.CachePolicy
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
 import com.group06.lab1.R
 import com.group06.lab1.utils.Database
 import java.io.File
 import java.text.DecimalFormat
 import java.util.*
-import kotlin.collections.ArrayList
 import com.group06.lab1.extensions.toString
+import kotlin.collections.ArrayList
 
 
 /**
@@ -36,7 +40,6 @@ import com.group06.lab1.extensions.toString
 
 class TripListFragment : Fragment() {
 
-    private var tripList: ArrayList<Trip> = ArrayList()
     private lateinit var tvEmpty: TextView
     private lateinit var rvTripList: RecyclerView
 
@@ -51,7 +54,6 @@ class TripListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         //TODO: set actionbar title
-
         val addFab = view.findViewById<FloatingActionButton>(R.id.addFab)
 
         addFab.setOnClickListener {
@@ -63,9 +65,9 @@ class TripListFragment : Fragment() {
         tvEmpty = view.findViewById(R.id.tvEmpty)
         rvTripList = view.findViewById(R.id.rvTripList)
 
-        showList(tripList.size)
+        showList(Database.getInstance(activity).tripList.size)
 
-        val adapter = TripAdapter(tripList, parentFragmentManager)
+        val adapter = TripAdapter(Database.getInstance(activity).tripList, parentFragmentManager)
 
         rvTripList.layoutManager = LinearLayoutManager(context)
         rvTripList.adapter = adapter
@@ -76,11 +78,16 @@ class TripListFragment : Fragment() {
         db.collection("trips")
             .addSnapshotListener { value, error ->
                 if (error != null) throw error
-                for (doc in value!!)
-                    tripList.add(doc.toObject(Trip::class.java))
+                Database.getInstance(activity).tripList.clear()
+                for (doc in value!!){
+                    val t = doc.toObject(Trip::class.java)
+                    t.docId = doc.id
+
+                    Database.getInstance(activity).tripList.add(t)
+                }
 
                 adapter.notifyDataSetChanged()
-                showList(tripList.size)
+                showList(Database.getInstance(activity).tripList.size)
             }
     }
 
@@ -124,14 +131,20 @@ class TripListFragment : Fragment() {
                 tvDepDate.text = t.departureDate.toString("MMMM - dd")
                 val format = DecimalFormat()
                 format.isDecimalSeparatorAlwaysShown = false
-                tvPrice.text = format.format(t.price).toString() + "€"
+                tvPrice.text = String.format("%s €", format.format(t.price).toString())
                 tvSeat.text = t.availableSeats.toString()
                 if (t.imageUrl == "") {
                     imgCar.setImageResource(R.drawable.ic_no_photo)
                 } else {
-                    File(imgCar.context?.filesDir, t.imageUrl).let {
+                    Firebase.storage.reference.child(t.imageUrl)
+                        .downloadUrl.addOnSuccessListener {
+                                uri -> imgCar.load(uri.toString()){
+                            memoryCachePolicy(CachePolicy.DISABLED) //to force reloading when image changes
+                        }
+                        }
+                    /*File(imgCar.context?.filesDir, t.imageUrl).let {
                         if (it.exists()) imgCar.setImageBitmap(BitmapFactory.decodeFile(it.absolutePath))
-                    }
+                    }*/
                 }
             }
         }
@@ -149,7 +162,7 @@ class TripListFragment : Fragment() {
         override fun onBindViewHolder(holder: TripAdapter.TripViewHolder, position: Int) {
             holder.bind(data[position])
             holder.cardTrip.setOnClickListener {
-                 holder.cardTrip.findNavController().navigate(R.id.action_trip_list_to_trip_details, Bundle().apply {
+                holder.cardTrip.findNavController().navigate(R.id.action_trip_list_to_trip_details, Bundle().apply {
                     putInt("index", position)
                 })
             }

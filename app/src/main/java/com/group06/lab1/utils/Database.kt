@@ -29,7 +29,7 @@ class Database private constructor (context: Context?) {
             // convert your json and fill the data into your lists
         }
     }*/
-    fun load(){
+    /*fun load(){
         val data = sharedPreferences?.getString("database", null)
         if (data != null){
             val sType = object : TypeToken<List<Trip>>() { }.type
@@ -42,5 +42,5 @@ class Database private constructor (context: Context?) {
             this?.putString("database", Gson().toJson(tripList))
             this?.apply()
         }
-    }
+    }*/
 }

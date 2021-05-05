@@ -7,41 +7,32 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Log
 import android.view.*
 import android.widget.*
-import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import coil.load
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.gson.Gson
-import com.group06.lab1.utils.Database
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.UploadTask
+import com.google.firebase.storage.ktx.storage
 import com.group06.lab1.R
+import com.group06.lab1.extensions.toString
+import com.group06.lab1.utils.Database
+import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
-import java.lang.StringBuilder
 import java.util.*
-import kotlin.math.min
-import com.group06.lab1.extensions.toString
-import kotlinx.android.synthetic.main.app_bar_main.*
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [TripEditFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class TripEditFragment : Fragment() {
     val REQUEST_IMAGE_CAPTURE = 1
     val REQUEST_IMAGE_GALLERY = 2
@@ -73,13 +64,10 @@ class TripEditFragment : Fragment() {
 
     private var edit: Boolean? = false
     private var index = -1
+    private var id: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
 
         //Override action of the back button, otherwise the transition defined in mobile_navigation does not occur
 //        val callback = requireActivity().onBackPressedDispatcher.addCallback(this,
@@ -93,8 +81,7 @@ class TripEditFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+        savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         setHasOptionsMenu(true)
         return inflater.inflate(R.layout.fragment_trip_edit, container, false)
@@ -140,6 +127,8 @@ class TripEditFragment : Fragment() {
             etPrice.editText?.setText(t.price.toString())
             etDescription.editText?.setText(t.description)
 
+            id = t.docId
+
             imgName = t.imageUrl
             dateValue = t.departureDate
 
@@ -160,9 +149,10 @@ class TripEditFragment : Fragment() {
             if (t.imageUrl == "") {
                 imgTrip.setImageResource(R.drawable.ic_no_photo)
             } else {
-                File(context?.filesDir, t.imageUrl).let {
-                    if (it.exists()) imgTrip.setImageBitmap(BitmapFactory.decodeFile(it.absolutePath))
-                }
+                Firebase.storage.reference.child(t.imageUrl)
+                    .downloadUrl.addOnSuccessListener {
+                            uri -> imgTrip.load(uri.toString())
+                    }
             }
         }
 
@@ -205,6 +195,11 @@ class TripEditFragment : Fragment() {
             if (dateOk)
                 etDepartureDate.editText?.setText(dateValue.toString("yyyy/MM/dd - HH:mm"))
         }
+
+        snackBar = Snackbar.make(requireActivity().findViewById(android.R.id.content), "Trip correctly saved", Snackbar.LENGTH_LONG)
+        snackBar.setAction("Dismiss"){
+            snackBar.dismiss()
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -231,10 +226,7 @@ class TripEditFragment : Fragment() {
             R.id.save -> {
                 //save data
                 if (validateForm()){
-                    if (imgChanged)
-                        saveImageOnStorage(imgTrip.drawable.toBitmap(), "$imgName")
-
-                    val t = Trip("$imgName",
+                    val t = Trip(imgName,
                         etDeparture.editText?.text.toString(),
                         etArrival.editText?.text.toString(),
                         dateValue,
@@ -245,27 +237,30 @@ class TripEditFragment : Fragment() {
                         etPrice.editText?.text.toString().toDouble(),
                         etDescription.editText?.text.toString())
 
-                    val db = FirebaseFirestore.getInstance()
-                    db.collection("trips")
-                        .document()
-                        .set(t)
+                    val trips = FirebaseFirestore.getInstance().collection("trips")
+                    val doc: DocumentReference
+                    if (edit!!){
+                        doc = trips.document(id)
+                    }else{
+                        doc = trips.document()
+                    }
+                    doc.set(t)
                         .addOnSuccessListener {
-                            snackBar = Snackbar.make( requireView().getRootView().findViewById(R.id.coordinatorLayout), "Trip correctly saved", Snackbar.LENGTH_LONG)
-                            snackBar.setAction("Dismiss"){
-                                snackBar.dismiss()
-                            }
+
                             snackBar.show()
                         }
 
-                    /*if (edit!!)
-                        Database.getInstance(context).tripList[index] = t
-                    else
-                        Database.getInstance(context).tripList.add(t)*/
+                    if (imgChanged){
 
-                    //save trip list
-                    //Database.getInstance(context).save()
-
-                    findNavController().navigate(R.id.action_trip_edit_to_trip_list)
+                        saveImageOnCloudStorage(imgTrip.drawable.toBitmap(), "$imgName")
+                            .addOnFailureListener {
+                                // Handle unsuccessful uploads
+                            }.addOnSuccessListener { taskSnapshot ->
+                                findNavController().navigate(R.id.action_trip_edit_to_trip_list)
+                            }
+                    }else{
+                        findNavController().navigate(R.id.action_trip_edit_to_trip_list)
+                    }
                 }
                 return true
             }
@@ -273,8 +268,6 @@ class TripEditFragment : Fragment() {
                 //Handling the toolbar back button
                 findNavController().navigate(R.id.action_trip_edit_to_trip_list)
                 return true
-
-
             }
         }
         return false
@@ -404,17 +397,31 @@ class TripEditFragment : Fragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == AppCompatActivity.RESULT_OK) {
-            imgName = genRandomString() + ".png"
+            if (imgName == "")
+                imgName = genRandomString()
             val imageBitmap = data?.extras?.get("data") as Bitmap
             imgTrip.setImageBitmap(imageBitmap)
             imgChanged = true
             saveImageOnStorage(imageBitmap, "trippictemp.png")
         } else if (requestCode == REQUEST_IMAGE_GALLERY && resultCode == AppCompatActivity.RESULT_OK) {
-            imgName = genRandomString() + ".png"
+            if (imgName == "")
+                imgName = genRandomString()
             imgTrip.setImageURI(data?.data)
             imgChanged = true
             saveImageOnStorage(imgTrip.drawable.toBitmap(), "trippictemp.png")
         }
+    }
+
+    private fun saveImageOnCloudStorage(bitmap: Bitmap, tempName: String): UploadTask {
+        val storage = Firebase.storage
+        val storageRef = storage.reference
+        val imgRef = storageRef.child(tempName)
+
+        val baos = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+        val data = baos.toByteArray()
+
+        return imgRef.putBytes(data)
     }
 
     private fun saveImageOnStorage(bitmap: Bitmap, tempName: String) {
@@ -431,26 +438,6 @@ class TripEditFragment : Fragment() {
         return (1..16)
             .map { i -> kotlin.random.Random.nextInt(0, charPool.size) }
             .map(charPool::get)
-            .joinToString("");
-    }
-
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment TripEditFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            TripEditFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+            .joinToString("")
     }
 }

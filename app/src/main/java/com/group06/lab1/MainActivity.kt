@@ -40,18 +40,6 @@ class MainActivity : AppCompatActivity() {
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
 
-        //load trip list
-        Database.getInstance(this).load()
-
-//        val fab: FloatingActionButton = findViewById(R.id.fab)
-//        fab.setOnClickListener { view ->
-//            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                .setAction("Action", null).show()
-//        }
-
-
-        val coordinatorLayout = findViewById<CoordinatorLayout>(R.id.coordinatorLayout)
-
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         navView = findViewById(R.id.nav_view)
         val navController = findNavController(R.id.nav_host_fragment)
@@ -78,10 +66,11 @@ class MainActivity : AppCompatActivity() {
     fun loadData() {
         val drawer = navView.getHeaderView(0)
 
-        tvHeaderName = drawer.findViewById<TextView>(R.id.headerName)
-        ivHeaderProfileImage = drawer.findViewById<ImageView>(R.id.headerProfileImage)
-        tvHeaderEmail = drawer.findViewById<TextView>(R.id.headermail)
+        tvHeaderName = drawer.findViewById(R.id.headerName)
+        ivHeaderProfileImage = drawer.findViewById(R.id.headerProfileImage)
+        tvHeaderEmail = drawer.findViewById(R.id.headermail)
 
+        //TODO now it uses email stored in the device, it should be changed with the firebase account email
         val sharedPref = getSharedPreferences(
             getString(R.string.preference_file_key),
             Context.MODE_PRIVATE

@@ -9,10 +9,12 @@ import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import coil.load
+import coil.request.CachePolicy
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
 import com.group06.lab1.utils.Database
 import com.group06.lab1.R
-import kotlinx.android.synthetic.main.fragment_trip_edit.*
-import java.io.File
 import java.lang.StringBuilder
 import com.group06.lab1.extensions.toString
 import java.text.DecimalFormat
@@ -83,7 +85,7 @@ class TripDetailsFragment : Fragment() {
 
         val format = DecimalFormat()
         format.isDecimalSeparatorAlwaysShown = false
-        tvPrice.text = format.format(t.price).toString() + "€"
+        tvPrice.text = String.format("%s €", format.format(t.price).toString())
         tvDescription.text = t.description
 
         val sBuilder = StringBuilder()
@@ -98,9 +100,12 @@ class TripDetailsFragment : Fragment() {
         if (t.imageUrl == "") {
             imgTrip.setImageResource(R.drawable.ic_no_photo)
         } else {
-            File(context?.filesDir, t.imageUrl).let {
-                if (it.exists()) imgTrip.setImageBitmap(BitmapFactory.decodeFile(it.absolutePath))
-            }
+            Firebase.storage.reference.child(t.imageUrl)
+                .downloadUrl.addOnSuccessListener {
+                        uri -> imgTrip.load(uri.toString()){
+                        memoryCachePolicy(CachePolicy.DISABLED) //to force reloading when image changes
+                    }
+                }
         }
     }
 
