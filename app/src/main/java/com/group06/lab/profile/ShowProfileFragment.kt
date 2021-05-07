@@ -6,9 +6,11 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.opengl.Visibility
 import android.os.Bundle
 import android.view.*
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.os.bundleOf
@@ -16,7 +18,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.provider.FirebaseInitProvider
 import com.group06.lab.R
 import org.json.JSONObject
 import java.io.File
@@ -30,6 +35,7 @@ class ShowProfileFragment : Fragment() {
     private lateinit var tvLocation: TextView
     private lateinit var imgProfile: ImageView
 
+    private lateinit var snackbar: Snackbar
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,33 +46,11 @@ class ShowProfileFragment : Fragment() {
 
 
         setFragmentResultListener("requestKeyEditToShow") { requestKey, bundle ->
-            //tvFullName.text = bundle.getString("group06.lab1.fullName")
-            //tvNickName.text = bundle.getString("group06.lab1.nickName")
-            //tvEmail.text = bundle.getString("group06.lab1.email")
-            //tvLocation.text = bundle.getString("group06.lab1.location")
 
             val fileName: String = bundle.getString("group06.lab.profile") ?: ""
             File(context?.filesDir, fileName).let {
                 if (it.exists()) imgProfile
                     .setImageBitmap(BitmapFactory.decodeFile(it.absolutePath))
-            }
-
-            val profileData = JSONObject().also {
-                //it.put("fullName", tvFullName.text)
-                //it.put("nickName", tvNickName.text)
-                it.put("email", tvEmail.text)
-                //it.put("location", tvLocation.text)
-            }
-
-            //store data persistently
-            val sharedPref = requireActivity().getSharedPreferences(
-                getString(R.string.preference_file_key),
-                Context.MODE_PRIVATE
-            )
-
-            with(sharedPref.edit()) {
-                putString("profile", profileData.toString())
-                apply()
             }
         }
 
@@ -84,28 +68,44 @@ class ShowProfileFragment : Fragment() {
         tvLocation = view.findViewById(R.id.tvLocation)
         imgProfile = view.findViewById(R.id.imgProfile)
 
-        val sharedPref = requireActivity().getSharedPreferences(
-            getString(R.string.preference_file_key),
-            Context.MODE_PRIVATE
-        )
+        val fullNameLayout: LinearLayout = view.findViewById(R.id.fullNameLayout)
+        val nicknameLayout: LinearLayout = view.findViewById(R.id.nicknameLayout)
+        val locationLayout: LinearLayout = view.findViewById(R.id.locationLayout)
 
-        val data = sharedPref.getString("profile", null)
+        snackbar = Snackbar.make( requireView().getRootView().findViewById(
+            R.id.coordinatorLayout
+        ), "Your profile seems empty, update it!", Snackbar.LENGTH_INDEFINITE)
 
-        if (data != null){
-            val db = FirebaseFirestore.getInstance()
-            db.collection("users")
-                .document(JSONObject(data).getString("email"))
-                .addSnapshotListener{
-                        value, error ->
-                    if (error != null) throw error
-                    if (value != null){
+        snackbar.setAction("Update"){
+            findNavController().navigate(R.id.action_showProfileActivity_to_editProfileActivity)
+        }
+
+        val db = FirebaseFirestore.getInstance()
+        db.collection("users")
+            .document(FirebaseAuth.getInstance().currentUser!!.email!!)
+            .addSnapshotListener{
+                    value, error ->
+                if (error != null) throw error
+                if (value != null){
+                    if (value.data?.isEmpty()!!){ //profile is empty
+                        fullNameLayout.visibility = View.GONE
+                        nicknameLayout.visibility = View.GONE
+                        locationLayout.visibility = View.GONE
+
+                        snackbar.show()
+                    }else{
+                        fullNameLayout.visibility = View.VISIBLE
+                        nicknameLayout.visibility = View.VISIBLE
+                        locationLayout.visibility = View.VISIBLE
+
                         tvFullName.text = value["name"].toString()
                         tvNickName.text = value["nickName"].toString()
-                        tvEmail.text = value["email"].toString()
                         tvLocation.text = value["location"].toString()
                     }
+
+                    tvEmail.text = FirebaseAuth.getInstance().currentUser!!.email!!
                 }
-        }
+            }
 
         File(context?.filesDir, "profilepic.jpg").let {
             if (it.exists()) imgProfile.setImageBitmap(BitmapFactory.decodeFile(it.absolutePath))
@@ -146,26 +146,6 @@ class ShowProfileFragment : Fragment() {
                     out.close()
                 }
             }
-            //serialize data into a JSON object
-            val profileData = JSONObject().also {
-                it.put("fullName", tvFullName.text)
-                it.put("nickName", tvNickName.text)
-                it.put("email", tvEmail.text)
-                it.put("location", tvLocation.text)
-            }
-
-            //store data persistently
-            val sharedPref = requireActivity().getSharedPreferences(
-                getString(R.string.preference_file_key),
-                Context.MODE_PRIVATE
-            )
-
-            with(sharedPref.edit()) {
-                putString("profile", profileData.toString())
-                apply()
-            }
-
-
         }
     }
 
@@ -194,7 +174,6 @@ class ShowProfileFragment : Fragment() {
         }
     }
 
-
     private fun editProfile() {
         setFragmentResult(
             "requestKeyShowToEdit", bundleOf(
@@ -204,8 +183,9 @@ class ShowProfileFragment : Fragment() {
                 "group06.lab.location" to tvLocation.text.toString(),
                 "group06.lab.profile" to "profilepic.jpg"
             )
-
         )
+        if (snackbar.isShown)
+            snackbar.dismiss()
         findNavController().navigate(R.id.action_showProfileActivity_to_editProfileActivity)
     }
 }

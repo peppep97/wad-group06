@@ -31,6 +31,7 @@
         app:layout_constraintVertical_weight="2">
 
         <LinearLayout
+            android:id="@+id/fullNameLayout"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:orientation="horizontal">
@@ -62,7 +63,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
-                    android:text="Marco Rossi"
                     android:textAppearance="@style/TextAppearance.AppCompat.Large"
                     android:textColor="@color/textColorMain" />
             </LinearLayout>
@@ -70,6 +70,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/nicknameLayout"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginTop="16dp"
@@ -101,7 +102,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
-                    android:text="rossimarco"
                     android:textAppearance="@style/TextAppearance.AppCompat.Large"
                     android:textColor="@color/textColorMain" />
             </LinearLayout>
@@ -109,6 +109,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/emailLayout"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginTop="16dp"
@@ -140,7 +141,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
-                    android:text="marco@rossi.com"
                     android:textAppearance="@style/TextAppearance.AppCompat.Large"
                     android:textColor="@color/textColorMain" />
 
@@ -149,6 +149,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/locationLayout"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginTop="16dp"
@@ -180,7 +181,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
-                    android:text="Turin, Italy"
                     android:textAppearance="@style/TextAppearance.AppCompat.Large"
                     android:textColor="@color/textColorMain" />
             </LinearLayout>

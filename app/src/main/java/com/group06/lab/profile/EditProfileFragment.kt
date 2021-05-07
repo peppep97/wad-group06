@@ -17,6 +17,7 @@ import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.group06.lab.R
 import java.io.File
@@ -71,10 +72,13 @@ class EditProfileFragment : Fragment() {
         etLocation = view.findViewById(R.id.etLocation)
         imgProfile = view.findViewById(R.id.imgProfile)
 
+        etEmail.isEnabled = false
+        etEmail.setText(FirebaseAuth.getInstance().currentUser!!.email!!)
+
         setFragmentResultListener("requestKeyShowToEdit") { _, bundle ->
             etFullName.setText(bundle.getString("group06.lab.fullName"))
             etNickName.setText(bundle.getString("group06.lab.nickName"))
-            etEmail.setText(bundle.getString("group06.lab.email"))
+            //etEmail.setText(bundle.getString("group06.lab.email"))
             etLocation.setText(bundle.getString("group06.lab.location"))
             val fileName: String = bundle.getString("group06.lab.profile") ?: ""
             File(context?.filesDir, fileName).let {
@@ -82,8 +86,6 @@ class EditProfileFragment : Fragment() {
                     .setImageBitmap(BitmapFactory.decodeFile(it.absolutePath))
             }
         }
-
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -130,7 +132,7 @@ class EditProfileFragment : Fragment() {
 
                 val db = FirebaseFirestore.getInstance()
                 db.collection("users")
-                    .document(etEmail.text.toString()) //use the specified email as document id
+                    .document(FirebaseAuth.getInstance().currentUser!!.email!!) //use the specified email as document id
                     .set(user)
 
                 setFragmentResult(
@@ -142,7 +144,7 @@ class EditProfileFragment : Fragment() {
                         "group06.lab.profile" to "profilepic.jpg"
                     )
                 )
-                snackBar = Snackbar.make( requireView().getRootView().findViewById(
+                snackBar = Snackbar.make(requireView().getRootView().findViewById(
                     R.id.coordinatorLayout
                 ), "Profile updated correctly", Snackbar.LENGTH_LONG)
                 snackBar.setAction("Dismiss"){
@@ -177,7 +179,7 @@ class EditProfileFragment : Fragment() {
         if (savedInstanceState != null) {
             etFullName.setText(savedInstanceState.getString("group06.lab.fullName"))
             etNickName.setText(savedInstanceState.getString("group06.lab.nickName"))
-            etEmail.setText(savedInstanceState.getString("group06.lab.email"))
+            //etEmail.setText(savedInstanceState.getString("group06.lab.email"))
             etLocation.setText(savedInstanceState.getString("group06.lab.location"))
             profileChanged = savedInstanceState.getBoolean("group06.lab.profileChanged")
 //            if (profileChanged)
@@ -203,11 +205,11 @@ class EditProfileFragment : Fragment() {
             val imageBitmap = data?.extras?.get("data") as Bitmap
             imgProfile.setImageBitmap(imageBitmap)
             profileChanged = true
-            saveImageOnStorage(imageBitmap, "profilepictemp.jpg")
+            //saveImageOnStorage(imageBitmap, "profilepictemp.jpg")
         } else if (requestCode == REQUEST_IMAGE_GALLERY && resultCode == AppCompatActivity.RESULT_OK) {
             imgProfile.setImageURI(data?.data)
             profileChanged = true
-            saveImageOnStorage(imgProfile.drawable.toBitmap(), "profilepictemp.jpg")
+            //saveImageOnStorage(imgProfile.drawable.toBitmap(), "profilepictemp.jpg")
         }
     }
 

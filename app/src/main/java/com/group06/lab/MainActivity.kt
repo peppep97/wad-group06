@@ -1,24 +1,20 @@
 package com.group06.lab
 
-import android.content.Context
-import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.TextView
-import com.google.android.material.navigation.NavigationView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import androidx.drawerlayout.widget.DrawerLayout
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
+import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.group06.lab.login.LoginActivity
-import org.json.JSONObject
 import java.io.File
 
 class MainActivity : AppCompatActivity() {
@@ -36,13 +32,14 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
 
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         navView = findViewById(R.id.nav_view)
         val navController = findNavController(R.id.nav_host_fragment)
+
+        mAuth = FirebaseAuth.getInstance()
 
         loadData()
 
@@ -70,26 +67,27 @@ class MainActivity : AppCompatActivity() {
         ivHeaderProfileImage = drawer.findViewById(R.id.headerProfileImage)
         tvHeaderEmail = drawer.findViewById(R.id.headermail)
 
-        //TODO now it uses email stored in the device, it should be changed with the firebase account email
-        val sharedPref = getSharedPreferences(
-            getString(R.string.preference_file_key),
-            Context.MODE_PRIVATE
-        )
+        val db = FirebaseFirestore.getInstance()
+        val userDoc = db.collection("users").document(mAuth.currentUser!!.email!!)
 
-        val data = sharedPref.getString("profile", null)
-
-        if (data != null){
-            val db = FirebaseFirestore.getInstance()
-            db.collection("users")
-                .document(JSONObject(data).getString("email"))
-                .addSnapshotListener{
-                    value, error ->
-                    if (error != null) throw error
-                    if (value != null){
-                        tvHeaderName.text = value["name"].toString()
-                        tvHeaderEmail.text = value["email"].toString()
+        userDoc
+            .get()
+            .addOnCompleteListener{
+                    value ->
+                if (value.isSuccessful){
+                    if (!value.result?.exists()!!){
+                        userDoc.set(HashMap<String, Any>()) //add empty document
                     }
                 }
+            }
+        userDoc.addSnapshotListener{
+                value, error ->
+            if (error != null) throw error
+            if (value != null){
+                if (value["name"] != null)
+                    tvHeaderName.text = value["name"].toString()
+                tvHeaderEmail.text = mAuth.currentUser!!.email!!
+            }
         }
 
         File(filesDir, "profilepic.jpg").let {
