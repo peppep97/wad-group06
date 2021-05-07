@@ -1,12 +1,9 @@
 package com.group06.lab.profile
 
-
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.opengl.Visibility
 import android.os.Bundle
 import android.view.*
 import android.widget.ImageView
@@ -16,14 +13,15 @@ import androidx.core.graphics.drawable.toBitmap
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
-import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
+import coil.load
+import coil.request.CachePolicy
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.provider.FirebaseInitProvider
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
 import com.group06.lab.R
-import org.json.JSONObject
 import java.io.File
 import java.io.FileOutputStream
 
@@ -44,17 +42,6 @@ class ShowProfileFragment : Fragment() {
         // enable option edit
         setHasOptionsMenu(true)
 
-
-        setFragmentResultListener("requestKeyEditToShow") { requestKey, bundle ->
-
-            val fileName: String = bundle.getString("group06.lab.profile") ?: ""
-            File(context?.filesDir, fileName).let {
-                if (it.exists()) imgProfile
-                    .setImageBitmap(BitmapFactory.decodeFile(it.absolutePath))
-            }
-        }
-
-
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_activity_show_profile, container, false)
     }
@@ -72,9 +59,8 @@ class ShowProfileFragment : Fragment() {
         val nicknameLayout: LinearLayout = view.findViewById(R.id.nicknameLayout)
         val locationLayout: LinearLayout = view.findViewById(R.id.locationLayout)
 
-        snackbar = Snackbar.make( requireView().getRootView().findViewById(
-            R.id.coordinatorLayout
-        ), "Your profile seems empty, update it!", Snackbar.LENGTH_INDEFINITE)
+        snackbar = Snackbar.make(requireActivity().findViewById(android.R.id.content),
+            "Your profile seems empty, update it!", Snackbar.LENGTH_INDEFINITE)
 
         snackbar.setAction("Update"){
             findNavController().navigate(R.id.action_showProfileActivity_to_editProfileActivity)
@@ -107,9 +93,16 @@ class ShowProfileFragment : Fragment() {
                 }
             }
 
-        File(context?.filesDir, "profilepic.jpg").let {
-            if (it.exists()) imgProfile.setImageBitmap(BitmapFactory.decodeFile(it.absolutePath))
-        }
+        Firebase.storage.reference
+            .child(FirebaseAuth.getInstance().currentUser!!.email!!).downloadUrl
+            .addOnSuccessListener { uri ->
+                imgProfile.load(uri.toString()) {
+                    memoryCachePolicy(CachePolicy.DISABLED) //to force reloading when image changes
+                }
+            }.addOnFailureListener {
+                imgProfile.setImageResource(R.drawable.ic_no_photo)
+            }
+
     }
 
 
@@ -149,39 +142,13 @@ class ShowProfileFragment : Fragment() {
         }
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putString("group06.lab.fullName", tvFullName.text.toString())
-        outState.putString("group06.lab.nickName", tvNickName.text.toString())
-        outState.putString("group06.lab.email", tvEmail.text.toString())
-        outState.putString("group06.lab.location", tvLocation.text.toString())
-        outState.putString("group06.lab.profile", "profilepic.jpg")
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        if (savedInstanceState != null) {
-            tvFullName.text = savedInstanceState.getString("group06.lab.fullName")
-            tvNickName.text = savedInstanceState.getString("group06.lab.nickName")
-            tvEmail.text = savedInstanceState.getString("group06.lab.email")
-            tvLocation.text = savedInstanceState.getString("group06.lab.location")
-            File(
-                context?.filesDir,
-                savedInstanceState.getString("group06.lab.profile") ?: ""
-            ).let {
-                if (it.exists()) imgProfile.setImageBitmap(BitmapFactory.decodeFile(it.absolutePath))
-            }
-        }
-    }
-
     private fun editProfile() {
         setFragmentResult(
             "requestKeyShowToEdit", bundleOf(
                 "group06.lab.fullName" to tvFullName.text.toString(),
                 "group06.lab.nickName" to tvNickName.text.toString(),
-                "group06.lab.email" to tvEmail.text.toString(),
-                "group06.lab.location" to tvLocation.text.toString(),
-                "group06.lab.profile" to "profilepic.jpg"
+                //"group06.lab.email" to tvEmail.text.toString(),
+                "group06.lab.location" to tvLocation.text.toString()
             )
         )
         if (snackbar.isShown)

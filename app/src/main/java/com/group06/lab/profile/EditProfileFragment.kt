@@ -16,10 +16,16 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
+import coil.load
+import coil.request.CachePolicy
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.UploadTask
+import com.google.firebase.storage.ktx.storage
 import com.group06.lab.R
+import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 
@@ -63,7 +69,7 @@ class EditProfileFragment : Fragment() {
         btnImageEdit?.setOnClickListener {
             registerForContextMenu(btnImageEdit)
             activity?.openContextMenu(btnImageEdit)
-            unregisterForContextMenu(btnImageEdit);
+            unregisterForContextMenu(btnImageEdit)
         }
 
         etFullName = view.findViewById(R.id.etFullName)
@@ -75,16 +81,51 @@ class EditProfileFragment : Fragment() {
         etEmail.isEnabled = false
         etEmail.setText(FirebaseAuth.getInstance().currentUser!!.email!!)
 
+        snackBar = Snackbar.make(requireActivity().findViewById(android.R.id.content),
+            "Profile updated correctly", Snackbar.LENGTH_LONG)
+        snackBar.setAction("Dismiss"){
+            snackBar.dismiss()
+        }
+
         setFragmentResultListener("requestKeyShowToEdit") { _, bundle ->
             etFullName.setText(bundle.getString("group06.lab.fullName"))
             etNickName.setText(bundle.getString("group06.lab.nickName"))
             //etEmail.setText(bundle.getString("group06.lab.email"))
             etLocation.setText(bundle.getString("group06.lab.location"))
-            val fileName: String = bundle.getString("group06.lab.profile") ?: ""
-            File(context?.filesDir, fileName).let {
-                if (it.exists()) imgProfile
-                    .setImageBitmap(BitmapFactory.decodeFile(it.absolutePath))
+        }
+
+        if (savedInstanceState != null){
+            etFullName.setText(savedInstanceState.getString("group06.lab.fullName"))
+            etNickName.setText(savedInstanceState.getString("group06.lab.nickName"))
+            //etEmail.setText(savedInstanceState.getString("group06.lab.email"))
+            etLocation.setText(savedInstanceState.getString("group06.lab.location"))
+
+            profileChanged = savedInstanceState.getBoolean("group06.lab.profileChanged")
+            if (profileChanged){
+                File(context?.filesDir, savedInstanceState.getString("group06.lab.image") ?: "").let {
+                    if (it.exists()) imgProfile.setImageBitmap(BitmapFactory.decodeFile(it.absolutePath))
+                }
+            }else{
+                Firebase.storage.reference
+                    .child(FirebaseAuth.getInstance().currentUser!!.email!!).downloadUrl
+                    .addOnSuccessListener { uri ->
+                        imgProfile.load(uri.toString()) {
+                            memoryCachePolicy(CachePolicy.DISABLED) //to force reloading when image changes
+                        }
+                    }.addOnFailureListener {
+                        imgProfile.setImageResource(R.drawable.ic_no_photo)
+                    }
             }
+        }else{
+            Firebase.storage.reference
+                .child(FirebaseAuth.getInstance().currentUser!!.email!!).downloadUrl
+                .addOnSuccessListener { uri ->
+                    imgProfile.load(uri.toString()) {
+                        memoryCachePolicy(CachePolicy.DISABLED) //to force reloading when image changes
+                    }
+                }.addOnFailureListener {
+                    imgProfile.setImageResource(R.drawable.ic_no_photo)
+                }
         }
     }
 
@@ -123,9 +164,6 @@ class EditProfileFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.saveEdit -> {
-                if (profileChanged){
-                    saveImageOnStorage(imgProfile.drawable.toBitmap())
-                }
 
                 var user = User(etFullName.text.toString(), etNickName.text.toString(),
                 etEmail.text.toString(), etLocation.text.toString())
@@ -135,7 +173,7 @@ class EditProfileFragment : Fragment() {
                     .document(FirebaseAuth.getInstance().currentUser!!.email!!) //use the specified email as document id
                     .set(user)
 
-                setFragmentResult(
+                /*setFragmentResult(
                     "requestKeyEditToShow", bundleOf(
                         "group06.lab.fullName" to etFullName.text.toString(),
                         "group06.lab.nickName" to etNickName.text.toString(),
@@ -143,15 +181,18 @@ class EditProfileFragment : Fragment() {
                         "group06.lab.location" to etLocation.text.toString(),
                         "group06.lab.profile" to "profilepic.jpg"
                     )
-                )
-                snackBar = Snackbar.make(requireView().getRootView().findViewById(
-                    R.id.coordinatorLayout
-                ), "Profile updated correctly", Snackbar.LENGTH_LONG)
-                snackBar.setAction("Dismiss"){
-                    snackBar.dismiss()
+                )*/
+
+                if (profileChanged){
+                    saveImageOnStorage(imgProfile.drawable.toBitmap())
+                    saveImageOnCloudStorage(imgProfile.drawable.toBitmap(), FirebaseAuth.getInstance().currentUser!!.email!!)
+                        .addOnSuccessListener { taskSnapshot ->
+                            snackBar.show()
+                            findNavController().navigate(R.id.action_editProfileActivity_to_showProfileActivity)
+                        }
+                }else{
+                    findNavController().navigate(R.id.action_editProfileActivity_to_showProfileActivity)
                 }
-                snackBar.show()
-                findNavController().navigate(R.id.action_editProfileActivity_to_showProfileActivity)
                 true
             }
             android.R.id.home -> { // the back button on action bar
@@ -173,22 +214,6 @@ class EditProfileFragment : Fragment() {
         outState.putBoolean("group06.lab.profileChanged", profileChanged)
     }
 
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        if (savedInstanceState != null) {
-            etFullName.setText(savedInstanceState.getString("group06.lab.fullName"))
-            etNickName.setText(savedInstanceState.getString("group06.lab.nickName"))
-            //etEmail.setText(savedInstanceState.getString("group06.lab.email"))
-            etLocation.setText(savedInstanceState.getString("group06.lab.location"))
-            profileChanged = savedInstanceState.getBoolean("group06.lab.profileChanged")
-//            if (profileChanged)
-            File(context?.filesDir, savedInstanceState.getString("group06.lab.image") ?: "").let {
-                if (it.exists()) imgProfile.setImageBitmap(BitmapFactory.decodeFile(it.absolutePath))
-            }
-        }
-    }
-
     private fun dispatchTakePictureIntent() {
         val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         try {
@@ -205,11 +230,11 @@ class EditProfileFragment : Fragment() {
             val imageBitmap = data?.extras?.get("data") as Bitmap
             imgProfile.setImageBitmap(imageBitmap)
             profileChanged = true
-            //saveImageOnStorage(imageBitmap, "profilepictemp.jpg")
+            saveImageOnStorage(imageBitmap, "profilepictemp.jpg")
         } else if (requestCode == REQUEST_IMAGE_GALLERY && resultCode == AppCompatActivity.RESULT_OK) {
             imgProfile.setImageURI(data?.data)
             profileChanged = true
-            //saveImageOnStorage(imgProfile.drawable.toBitmap(), "profilepictemp.jpg")
+            saveImageOnStorage(imgProfile.drawable.toBitmap(), "profilepictemp.jpg")
         }
     }
 
@@ -219,6 +244,18 @@ class EditProfileFragment : Fragment() {
         bitmap.compress(Bitmap.CompressFormat.JPEG, 85, out)
         out.flush()
         out.close()
+    }
+
+    private fun saveImageOnCloudStorage(bitmap: Bitmap, tempName: String): UploadTask {
+        val storage = Firebase.storage
+        val storageRef = storage.reference
+        val imgRef = storageRef.child(tempName)
+
+        val baos = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+        val data = baos.toByteArray()
+
+        return imgRef.putBytes(data)
     }
 
 }

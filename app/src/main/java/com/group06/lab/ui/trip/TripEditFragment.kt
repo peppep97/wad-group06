@@ -245,12 +245,10 @@ class TripEditFragment : Fragment() {
                     }
                     doc.set(t)
                         .addOnSuccessListener {
-
                             snackBar.show()
                         }
 
                     if (imgChanged){
-
                         saveImageOnCloudStorage(imgTrip.drawable.toBitmap(), "$imgName")
                             .addOnFailureListener {
                                 // Handle unsuccessful uploads

@@ -64,8 +64,8 @@ class TripDetailsFragment : Fragment() {
         val tvPrice = view.findViewById<TextView>(R.id.tvPrice)
         val tvDescription = view.findViewById<TextView>(R.id.tvDescription)
         val imgTrip = view.findViewById<ImageView>(R.id.imgTrip)
-        val tvDepTime: TextView = view.findViewById<TextView>(R.id.tvDepTime)
-        val tvArrTime: TextView = view.findViewById<TextView>(R.id.tvArrTime)
+        val tvDepTime = view.findViewById<TextView>(R.id.tvDepTime)
+        val tvArrTime = view.findViewById<TextView>(R.id.tvArrTime)
 
         tvDepartureLocation.text = t.departure
         tvArrivalLocation.text = t.arrival
