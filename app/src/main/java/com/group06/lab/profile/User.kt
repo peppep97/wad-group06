@@ -1,4 +1,4 @@
-package com.group06.lab1.profile
+package com.group06.lab.profile
 
 data class User (
     var name: String,

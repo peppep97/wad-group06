@@ -1,4 +1,4 @@
-package com.group06.lab1.ui.trip
+package com.group06.lab.ui.trip
 
 import android.app.AlertDialog
 import android.content.ActivityNotFoundException
@@ -10,7 +10,6 @@ import android.provider.MediaStore
 import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -25,9 +24,9 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.UploadTask
 import com.google.firebase.storage.ktx.storage
-import com.group06.lab1.R
-import com.group06.lab1.extensions.toString
-import com.group06.lab1.utils.Database
+import com.group06.lab.R
+import com.group06.lab.extensions.toString
+import com.group06.lab.utils.Database
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream

@@ -1,13 +1,11 @@
-package com.group06.lab1
+package com.group06.lab
 
 import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Bundle
-import android.provider.ContactsContract
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import com.google.android.material.navigation.NavigationView
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -17,14 +15,9 @@ import androidx.navigation.ui.setupWithNavController
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.core.view.GravityCompat
-import androidx.fragment.app.commit
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.group06.lab1.login.LoginActivity
-import com.group06.lab1.ui.trip.TripListFragment
-import com.group06.lab1.utils.Database
+import com.group06.lab.login.LoginActivity
 import org.json.JSONObject
 import java.io.File
 
@@ -42,14 +35,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        // if user is not authenticated, send them to the LogInActivity
-        mAuth = FirebaseAuth.getInstance()
-        val user = mAuth.currentUser
-        if (user == null){
-            val loginIntent = Intent(this, LoginActivity::class.java)
-            startActivity(loginIntent)
-        }
 
 
         val toolbar: Toolbar = findViewById(R.id.toolbar)

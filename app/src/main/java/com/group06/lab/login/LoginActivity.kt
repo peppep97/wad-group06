@@ -1,4 +1,4 @@
-package com.group06.lab1.login
+package com.group06.lab.login
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -10,8 +10,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
-import com.group06.lab1.MainActivity
-import com.group06.lab1.R
+import com.group06.lab.MainActivity
+import com.group06.lab.R
 import kotlinx.android.synthetic.main.activity_login.*
 
 class LoginActivity : AppCompatActivity() {
@@ -36,6 +36,13 @@ class LoginActivity : AppCompatActivity() {
         googleSignInClient = GoogleSignIn.getClient(this, gso)
 
         mAuth = FirebaseAuth.getInstance()
+
+        // if user is not authenticated, send them to the LogInActivity
+        val user = mAuth.currentUser
+        if (user != null){
+            val mainIntent = Intent(this, MainActivity::class.java)
+            startActivity(mainIntent)
+        }
 
         btnSignIn.setOnClickListener {
             signIn()

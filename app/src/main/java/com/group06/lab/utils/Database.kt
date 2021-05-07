@@ -1,10 +1,7 @@
-package com.group06.lab1.utils
+package com.group06.lab.utils
 
 import android.content.Context
-import android.util.Log
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
-import com.group06.lab1.ui.trip.Trip
+import com.group06.lab.ui.trip.Trip
 
 class Database private constructor (context: Context?) {
 

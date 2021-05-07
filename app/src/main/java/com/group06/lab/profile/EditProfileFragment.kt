@@ -1,4 +1,4 @@
-package com.group06.lab1.profile
+package com.group06.lab.profile
 
 import android.content.ActivityNotFoundException
 import android.content.Intent
@@ -18,7 +18,7 @@ import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.firestore.FirebaseFirestore
-import com.group06.lab1.R
+import com.group06.lab.R
 import java.io.File
 import java.io.FileOutputStream
 
@@ -72,11 +72,11 @@ class EditProfileFragment : Fragment() {
         imgProfile = view.findViewById(R.id.imgProfile)
 
         setFragmentResultListener("requestKeyShowToEdit") { _, bundle ->
-            etFullName.setText(bundle.getString("group06.lab1.fullName"))
-            etNickName.setText(bundle.getString("group06.lab1.nickName"))
-            etEmail.setText(bundle.getString("group06.lab1.email"))
-            etLocation.setText(bundle.getString("group06.lab1.location"))
-            val fileName: String = bundle.getString("group06.lab1.profile") ?: ""
+            etFullName.setText(bundle.getString("group06.lab.fullName"))
+            etNickName.setText(bundle.getString("group06.lab.nickName"))
+            etEmail.setText(bundle.getString("group06.lab.email"))
+            etLocation.setText(bundle.getString("group06.lab.location"))
+            val fileName: String = bundle.getString("group06.lab.profile") ?: ""
             File(context?.filesDir, fileName).let {
                 if (it.exists()) imgProfile
                     .setImageBitmap(BitmapFactory.decodeFile(it.absolutePath))
@@ -135,11 +135,11 @@ class EditProfileFragment : Fragment() {
 
                 setFragmentResult(
                     "requestKeyEditToShow", bundleOf(
-                        "group06.lab1.fullName" to etFullName.text.toString(),
-                        "group06.lab1.nickName" to etNickName.text.toString(),
-                        "group06.lab1.email" to etEmail.text.toString(),
-                        "group06.lab1.location" to etLocation.text.toString(),
-                        "group06.lab1.profile" to "profilepic.jpg"
+                        "group06.lab.fullName" to etFullName.text.toString(),
+                        "group06.lab.nickName" to etNickName.text.toString(),
+                        "group06.lab.email" to etEmail.text.toString(),
+                        "group06.lab.location" to etLocation.text.toString(),
+                        "group06.lab.profile" to "profilepic.jpg"
                     )
                 )
                 snackBar = Snackbar.make( requireView().getRootView().findViewById(
@@ -163,25 +163,25 @@ class EditProfileFragment : Fragment() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putString("group06.lab1.fullName", etFullName.text.toString())
-        outState.putString("group06.lab1.nickName", etNickName.text.toString())
-        outState.putString("group06.lab1.email", etEmail.text.toString())
-        outState.putString("group06.lab1.location", etLocation.text.toString())
-        outState.putString("group06.lab1.image", "profilepictemp.jpg")
-        outState.putBoolean("group06.lab1.profileChanged", profileChanged)
+        outState.putString("group06.lab.fullName", etFullName.text.toString())
+        outState.putString("group06.lab.nickName", etNickName.text.toString())
+        outState.putString("group06.lab.email", etEmail.text.toString())
+        outState.putString("group06.lab.location", etLocation.text.toString())
+        outState.putString("group06.lab.image", "profilepictemp.jpg")
+        outState.putBoolean("group06.lab.profileChanged", profileChanged)
     }
 
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         if (savedInstanceState != null) {
-            etFullName.setText(savedInstanceState.getString("group06.lab1.fullName"))
-            etNickName.setText(savedInstanceState.getString("group06.lab1.nickName"))
-            etEmail.setText(savedInstanceState.getString("group06.lab1.email"))
-            etLocation.setText(savedInstanceState.getString("group06.lab1.location"))
-            profileChanged = savedInstanceState.getBoolean("group06.lab1.profileChanged")
+            etFullName.setText(savedInstanceState.getString("group06.lab.fullName"))
+            etNickName.setText(savedInstanceState.getString("group06.lab.nickName"))
+            etEmail.setText(savedInstanceState.getString("group06.lab.email"))
+            etLocation.setText(savedInstanceState.getString("group06.lab.location"))
+            profileChanged = savedInstanceState.getBoolean("group06.lab.profileChanged")
 //            if (profileChanged)
-            File(context?.filesDir, savedInstanceState.getString("group06.lab1.image") ?: "").let {
+            File(context?.filesDir, savedInstanceState.getString("group06.lab.image") ?: "").let {
                 if (it.exists()) imgProfile.setImageBitmap(BitmapFactory.decodeFile(it.absolutePath))
             }
         }

@@ -1,4 +1,4 @@
-package com.group06.lab1.profile
+package com.group06.lab.profile
 
 
 import android.app.Activity
@@ -17,7 +17,7 @@ import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.firestore.FirebaseFirestore
-import com.group06.lab1.R
+import com.group06.lab.R
 import org.json.JSONObject
 import java.io.File
 import java.io.FileOutputStream
@@ -45,7 +45,7 @@ class ShowProfileFragment : Fragment() {
             //tvEmail.text = bundle.getString("group06.lab1.email")
             //tvLocation.text = bundle.getString("group06.lab1.location")
 
-            val fileName: String = bundle.getString("group06.lab1.profile") ?: ""
+            val fileName: String = bundle.getString("group06.lab.profile") ?: ""
             File(context?.filesDir, fileName).let {
                 if (it.exists()) imgProfile
                     .setImageBitmap(BitmapFactory.decodeFile(it.absolutePath))
@@ -132,10 +132,10 @@ class ShowProfileFragment : Fragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
-            tvFullName.text = data?.getStringExtra("group06.lab1.fullName")
-            tvNickName.text = data?.getStringExtra("group06.lab1.nickName")
-            tvEmail.text = data?.getStringExtra("group06.lab1.email")
-            tvLocation.text = data?.getStringExtra("group06.lab1.location")
+            tvFullName.text = data?.getStringExtra("group06.lab.fullName")
+            tvNickName.text = data?.getStringExtra("group06.lab.nickName")
+            tvEmail.text = data?.getStringExtra("group06.lab.email")
+            tvLocation.text = data?.getStringExtra("group06.lab.location")
             File(context?.filesDir, "profilepic.jpg").let {
                 if (it.exists()) {
                     imgProfile.setImageBitmap(BitmapFactory.decodeFile(it.absolutePath))
@@ -171,23 +171,23 @@ class ShowProfileFragment : Fragment() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putString("group06.lab1.fullName", tvFullName.text.toString())
-        outState.putString("group06.lab1.nickName", tvNickName.text.toString())
-        outState.putString("group06.lab1.email", tvEmail.text.toString())
-        outState.putString("group06.lab1.location", tvLocation.text.toString())
-        outState.putString("group06.lab1.profile", "profilepic.jpg")
+        outState.putString("group06.lab.fullName", tvFullName.text.toString())
+        outState.putString("group06.lab.nickName", tvNickName.text.toString())
+        outState.putString("group06.lab.email", tvEmail.text.toString())
+        outState.putString("group06.lab.location", tvLocation.text.toString())
+        outState.putString("group06.lab.profile", "profilepic.jpg")
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         if (savedInstanceState != null) {
-            tvFullName.text = savedInstanceState.getString("group06.lab1.fullName")
-            tvNickName.text = savedInstanceState.getString("group06.lab1.nickName")
-            tvEmail.text = savedInstanceState.getString("group06.lab1.email")
-            tvLocation.text = savedInstanceState.getString("group06.lab1.location")
+            tvFullName.text = savedInstanceState.getString("group06.lab.fullName")
+            tvNickName.text = savedInstanceState.getString("group06.lab.nickName")
+            tvEmail.text = savedInstanceState.getString("group06.lab.email")
+            tvLocation.text = savedInstanceState.getString("group06.lab.location")
             File(
                 context?.filesDir,
-                savedInstanceState.getString("group06.lab1.profile") ?: ""
+                savedInstanceState.getString("group06.lab.profile") ?: ""
             ).let {
                 if (it.exists()) imgProfile.setImageBitmap(BitmapFactory.decodeFile(it.absolutePath))
             }
@@ -198,11 +198,11 @@ class ShowProfileFragment : Fragment() {
     private fun editProfile() {
         setFragmentResult(
             "requestKeyShowToEdit", bundleOf(
-                "group06.lab1.fullName" to tvFullName.text.toString(),
-                "group06.lab1.nickName" to tvNickName.text.toString(),
-                "group06.lab1.email" to tvEmail.text.toString(),
-                "group06.lab1.location" to tvLocation.text.toString(),
-                "group06.lab1.profile" to "profilepic.jpg"
+                "group06.lab.fullName" to tvFullName.text.toString(),
+                "group06.lab.nickName" to tvNickName.text.toString(),
+                "group06.lab.email" to tvEmail.text.toString(),
+                "group06.lab.location" to tvLocation.text.toString(),
+                "group06.lab.profile" to "profilepic.jpg"
             )
 
         )

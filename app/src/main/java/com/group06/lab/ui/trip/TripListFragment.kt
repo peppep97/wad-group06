@@ -1,8 +1,6 @@
-package com.group06.lab1.ui.trip
+package com.group06.lab.ui.trip
 
-import android.graphics.BitmapFactory
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,13 +20,11 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
-import com.group06.lab1.R
-import com.group06.lab1.utils.Database
-import java.io.File
+import com.group06.lab.R
+import com.group06.lab.utils.Database
 import java.text.DecimalFormat
 import java.util.*
-import com.group06.lab1.extensions.toString
-import kotlin.collections.ArrayList
+import com.group06.lab.extensions.toString
 
 
 /**

@@ -1,4 +1,4 @@
-package com.group06.lab1.extensions
+package com.group06.lab.extensions
 
 import java.text.SimpleDateFormat
 import java.util.*

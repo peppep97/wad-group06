@@ -1,4 +1,4 @@
-package com.group06.lab1
+package com.group06.lab
 
 import org.junit.Test
 

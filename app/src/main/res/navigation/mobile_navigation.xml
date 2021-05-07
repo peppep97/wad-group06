@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/trip_details"
-        android:name="com.group06.lab1.ui.trip.TripDetailsFragment"
+        android:name="com.group06.lab.ui.trip.TripDetailsFragment"
         android:label="Trip Details"
         tools:layout="@layout/fragment_trip_details" >
         <action
@@ -22,7 +22,7 @@
     </fragment>
     <fragment
         android:id="@+id/trip_edit"
-        android:name="com.group06.lab1.ui.trip.TripEditFragment"
+        android:name="com.group06.lab.ui.trip.TripEditFragment"
         android:label="Edit Trip" >
         <action
             android:id="@+id/action_trip_edit_to_trip_list"
@@ -36,7 +36,7 @@
     </fragment>
     <fragment
         android:id="@+id/trip_list"
-        android:name="com.group06.lab1.ui.trip.TripListFragment"
+        android:name="com.group06.lab.ui.trip.TripListFragment"
         android:label="Lab2">
         <action
             android:id="@+id/action_trip_list_to_trip_details"
@@ -54,7 +54,7 @@
     </fragment>
     <fragment
         android:id="@+id/show_profile"
-        android:name="com.group06.lab1.profile.ShowProfileFragment"
+        android:name="com.group06.lab.profile.ShowProfileFragment"
         android:label="Show Profile"
         tools:layout="@layout/fragment_activity_show_profile">
         <action
@@ -72,7 +72,7 @@
     </fragment>
     <fragment
         android:id="@+id/editProfileActivity"
-        android:name="com.group06.lab1.profile.EditProfileFragment"
+        android:name="com.group06.lab.profile.EditProfileFragment"
         android:label="Edit Profile"
         tools:layout="@layout/fragment_activity_edit_profile">
         <action

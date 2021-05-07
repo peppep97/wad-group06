@@ -1,7 +1,7 @@
 <resources>
-    <string name="app_name">Lab1</string>
+    <string name="app_name">Lab</string>
     <string name="preference_file_key">profile_data</string>
-    <string name="title_activity_main">Group06-Lab2</string>
+
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Android Studio</string>

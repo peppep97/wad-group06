@@ -1,4 +1,4 @@
-package com.group06.lab1.ui.trip
+package com.group06.lab.ui.trip
 
 import java.util.*
 

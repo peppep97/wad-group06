@@ -1,22 +1,19 @@
-package com.group06.lab1.ui.trip
+package com.group06.lab.ui.trip
 
-import android.graphics.BitmapFactory
-import android.media.Image
 import android.os.Bundle
 import android.view.*
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import coil.load
 import coil.request.CachePolicy
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
-import com.group06.lab1.utils.Database
-import com.group06.lab1.R
+import com.group06.lab.utils.Database
+import com.group06.lab.R
 import java.lang.StringBuilder
-import com.group06.lab1.extensions.toString
+import com.group06.lab.extensions.toString
 import java.text.DecimalFormat
 import java.util.*
 
