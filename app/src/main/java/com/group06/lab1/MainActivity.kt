@@ -1,6 +1,7 @@
 package com.group06.lab1
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.provider.ContactsContract
@@ -19,13 +20,17 @@ import androidx.appcompat.widget.Toolbar
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.commit
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.group06.lab1.login.LoginActivity
 import com.group06.lab1.ui.trip.TripListFragment
 import com.group06.lab1.utils.Database
 import org.json.JSONObject
 import java.io.File
 
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var mAuth : FirebaseAuth
 
     private lateinit var appBarConfiguration: AppBarConfiguration
 
@@ -37,6 +42,16 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        // if user is not authenticated, send them to the LogInActivity
+        mAuth = FirebaseAuth.getInstance()
+        val user = mAuth.currentUser
+        if (user == null){
+            val loginIntent = Intent(this, LoginActivity::class.java)
+            startActivity(loginIntent)
+        }
+
+
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
 
