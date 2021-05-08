@@ -24,7 +24,7 @@
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@id/guideline"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_weight="3">
+        app:layout_constraintVertical_weight="4.25">
 
 
         <TextView
@@ -33,12 +33,12 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/allan"
             android:includeFontPadding="false"
+            android:paddingTop="10dp"
             android:shadowColor="#0E0E0E"
             android:text="Welcome To Carpooling"
             android:textAlignment="center"
             android:textColor="#ffffff"
-            android:textSize="45sp"
-            android:paddingTop="50dp"
+            android:textSize="40sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
@@ -50,7 +50,7 @@
             android:layout_marginTop="8dp"
             android:includeFontPadding="false"
             android:shadowColor="#0E0E0E"
-            android:text="LogIn with Google Acount !"
+            android:text="Login with Google Acount!"
             android:textAlignment="center"
             android:textColor="#ffffff"
             android:textSize="14sp"
@@ -61,8 +61,8 @@
 
         <ImageView
             android:id="@+id/ivLogin"
-            android:layout_width="300dp"
-            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:layout_height="270sp"
             android:layout_gravity="center_horizontal"
             android:src="@mipmap/bg_login_foreground" />
 
@@ -81,12 +81,12 @@
         app:layout_constraintEnd_toStartOf="@id/guideline4"
         app:layout_constraintStart_toStartOf="@id/guideline"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout4"
-        app:layout_constraintVertical_weight="1">
+        app:layout_constraintVertical_weight="0.75">
 
         <Button
             android:id="@+id/btnSignIn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="300dp"
+            android:layout_height="37dp"
             android:layout_marginStart="32dp"
             android:layout_marginEnd="32dp"
             android:background="@drawable/rounded_corner"
