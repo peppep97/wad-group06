@@ -8,8 +8,14 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import coil.load
 import coil.request.CachePolicy
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
+import com.group06.lab.MainActivity
 import com.group06.lab.utils.Database
 import com.group06.lab.R
 import java.lang.StringBuilder
@@ -23,7 +29,10 @@ private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
 private var index: Int? = null
-
+private var tripId: String? = ""
+private var caller: String? = ""
+private var showEditButton: Boolean = false
+private lateinit var snackBar: Snackbar
 /**
  * A simple [Fragment] subclass.
  * Use the [TripDetailsFragment.newInstance] factory method to
@@ -53,8 +62,23 @@ class TripDetailsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         index = arguments?.getInt("index")
+        tripId = arguments?.getString("tripId")
+        caller = arguments?.getString("caller")
 
-        val t = Database.getInstance(context).tripList[index!!]
+        var t = Trip()
+        if (caller == "UserTrips") {
+            t = ArrayList<Trip>(Database.getInstance(context).myTripList.filter {it.id == tripId})[0]
+        } else if (caller == "OtherTrips") {
+            t = ArrayList<Trip>(Database.getInstance(context).tripList.filter {it.id == tripId})[0]
+        } else {
+            t = ArrayList<Trip>(Database.getInstance(context).tripList.filter {it.id == tripId})[0]
+        }
+        showEditButton = t.userEmail == MainActivity.mAuth.currentUser!!.email!!
+
+        snackBar = Snackbar.make(requireActivity().findViewById(android.R.id.content), "Added to favorite trips list", Snackbar.LENGTH_LONG)
+        snackBar.setAction("Dismiss"){
+            snackBar.dismiss()
+        }
 
         val tvDepartureLocation = view.findViewById<TextView>(R.id.tvDepartureLocation)
         val tvArrivalLocation = view.findViewById<TextView>(R.id.tvArrivalLocation)
@@ -66,6 +90,29 @@ class TripDetailsFragment : Fragment() {
         val imgTrip = view.findViewById<ImageView>(R.id.imgTrip)
         val tvDepTime = view.findViewById<TextView>(R.id.tvDepTime)
         val tvArrTime = view.findViewById<TextView>(R.id.tvArrTime)
+
+        val fabFav = view.findViewById<FloatingActionButton>(R.id.fabFav)
+        fabFav.setOnClickListener {
+            val f = FavoriteTrip(
+                MainActivity.mAuth.currentUser!!.email!!,
+                t.id
+            )
+
+            val alreadyFavored = Database.getInstance(context).favoredList.filter{f -> f.tripId == t.id && f.userEmail == MainActivity.mAuth.currentUser!!.email!!}
+            if (alreadyFavored.isNotEmpty()) {
+                Snackbar.make(requireActivity().findViewById(android.R.id.content), "You have already liked this trip.", Snackbar.LENGTH_LONG).show()
+            } else {
+                val favoredList = FirebaseFirestore.getInstance().collection("favored_trips")
+                val doc = favoredList.document()
+
+                doc.set(f)
+                    .addOnSuccessListener {
+                        snackBar.show()
+                    }
+            }
+
+
+        }
 
         tvDepartureLocation.text = t.departure
         tvArrivalLocation.text = t.arrival
@@ -108,8 +155,9 @@ class TripDetailsFragment : Fragment() {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-
-        inflater.inflate(R.menu.fragment_trip_details, menu)
+        menu.clear()
+        if (showEditButton)
+            inflater.inflate(R.menu.fragment_trip_details, menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -118,6 +166,7 @@ class TripDetailsFragment : Fragment() {
                 findNavController().navigate(R.id.action_trip_details_to_trip_edit, Bundle().apply {
                     putBoolean("edit", true)
                     putInt("index", index!!)
+                    putString("tripId", tripId)
                 })
                 return true
             }

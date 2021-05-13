@@ -33,11 +33,14 @@
             app:popExitAnim="@anim/custom_to_top"
             app:popUpTo="@id/trip_list"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_trip_edit_to_othersTripListFragment"
+            app:destination="@id/trip_list" />
     </fragment>
     <fragment
-        android:id="@+id/trip_list"
+        android:id="@+id/my_trip_list"
         android:name="com.group06.lab.ui.trip.TripListFragment"
-        android:label="Lab2">
+        android:label="My Trips">
         <action
             android:id="@+id/action_trip_list_to_trip_details"
             app:destination="@id/trip_details"
@@ -84,5 +87,21 @@
             app:popExitAnim="@anim/custom_to_top"
             app:popUpTo="@+id/editProfileActivity"
             app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/trip_list"
+        android:name="com.group06.lab.ui.trip.OthersTripListFragment"
+        android:label="Trips" >
+        <action
+            android:id="@+id/action_othersTripListFragment_to_trip_details"
+            app:destination="@id/trip_details" />
+    </fragment>
+    <fragment
+        android:id="@+id/favored_trip_list"
+        android:name="com.group06.lab.ui.trip.FavoredTripsFragment"
+        android:label="Favored Trips" >
+        <action
+            android:id="@+id/action_favored_trip_list_to_trip_details"
+            app:destination="@id/trip_details" />
     </fragment>
 </navigation>

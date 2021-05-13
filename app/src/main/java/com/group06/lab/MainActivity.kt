@@ -1,8 +1,16 @@
 package com.group06.lab
 
+import android.annotation.SuppressLint
+import android.app.SearchManager
+import android.content.Context
+import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
+import android.view.inputmethod.EditorInfo
 import android.widget.ImageView
+import android.widget.SearchView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -12,14 +20,21 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.group06.lab.ui.trip.FavoriteTrip
+import com.group06.lab.ui.trip.OthersTripListFragment
+import com.group06.lab.ui.trip.Trip
+import com.group06.lab.ui.trip.TripAdapter
+import com.group06.lab.utils.Database
 import java.io.File
 
 class MainActivity : AppCompatActivity() {
-
-    private lateinit var mAuth : FirebaseAuth
+    companion object {
+        lateinit var mAuth: FirebaseAuth
+    }
 
     private lateinit var appBarConfiguration: AppBarConfiguration
 
@@ -47,20 +62,39 @@ class MainActivity : AppCompatActivity() {
         // menu should be considered as top level destinations.
         appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.trip_list
+                R.id.trip_list,
+                R.id.my_trip_list,
+                R.id.favored_trip_list,
+                R.id.show_profile
             ), drawerLayout
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+
+        FirebaseFirestore.getInstance().collection("favored_trips")
+            .addSnapshotListener { value, error ->
+                if (error != null) throw error
+                Database.getInstance(this).favoredList.clear()
+                for (doc in value!!) {
+                    val f = doc.toObject(FavoriteTrip::class.java)
+                    Database.getInstance(this).favoredList.add(f)
+                }
+            }
+
+        FirebaseFirestore.getInstance().collection("trips").addSnapshotListener { value, error ->
+            if (error != null) throw error
+            Database.getInstance(this).myTripList.clear()
+            for (doc in value!!) {
+                val f = doc.toObject(Trip::class.java)
+                f.id = doc.id
+                if (f.userEmail == mAuth.currentUser!!.email!!)
+                    Database.getInstance(this).myTripList.add(f)
+            }
+        }
     }
 
-    /*override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.main, menu)
-        return true
-    }*/
+    private fun loadData() {
 
-    fun loadData() {
         val drawer = navView.getHeaderView(0)
 
         tvHeaderName = drawer.findViewById(R.id.headerName)
@@ -72,18 +106,16 @@ class MainActivity : AppCompatActivity() {
 
         userDoc
             .get()
-            .addOnCompleteListener{
-                    value ->
-                if (value.isSuccessful){
-                    if (!value.result?.exists()!!){
+            .addOnCompleteListener { value ->
+                if (value.isSuccessful) {
+                    if (!value.result?.exists()!!) {
                         userDoc.set(HashMap<String, Any>()) //add empty document
                     }
                 }
             }
-        userDoc.addSnapshotListener{
-                value, error ->
+        userDoc.addSnapshotListener { value, error ->
             if (error != null) throw error
-            if (value != null){
+            if (value != null) {
                 if (value["name"] != null)
                     tvHeaderName.text = value["name"].toString()
                 tvHeaderEmail.text = mAuth.currentUser!!.email!!

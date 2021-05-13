@@ -2,47 +2,35 @@ package com.group06.lab.ui.trip
 
 import android.os.Bundle
 import android.view.*
-import android.widget.Button
-import android.widget.ImageView
+import android.view.inputmethod.EditorInfo
+import android.widget.SearchView
 import android.widget.TextView
-import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import coil.load
-import coil.request.CachePolicy
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.ktx.storage
-import com.group06.lab.MainActivity
 import com.group06.lab.R
 import com.group06.lab.utils.Database
-import java.text.DecimalFormat
-import java.util.*
-import com.group06.lab.extensions.toString
 
-
-/**
- * A simple [Fragment] subclass.
- * Use the [TripListFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-
-class TripListFragment : Fragment() {
+class OthersTripListFragment : Fragment() {
 
     private lateinit var tvEmpty: TextView
-    private lateinit var rvTripList: RecyclerView
+
+    companion object {
+        lateinit var rvTripList: RecyclerView
+    }
+
+    var adapter: TripAdapter? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        setHasOptionsMenu(true)
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_trip_list, container, false)
+        return inflater.inflate(R.layout.fragment_others_trip_list, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -58,11 +46,8 @@ class TripListFragment : Fragment() {
         tvEmpty = view.findViewById(R.id.tvEmpty)
         rvTripList = view.findViewById(R.id.rvTripList)
 
-        showList(Database.getInstance(activity).myTripList.size)
-        val adapter = TripAdapter(Database.getInstance(activity).myTripList,"UserTrips", parentFragmentManager)
+        showList(Database.getInstance(activity).tripList.size)
 
-        rvTripList.layoutManager = LinearLayoutManager(context)
-        rvTripList.adapter = adapter
 
         //tripList = Database.getInstance(context).tripList
 
@@ -70,26 +55,49 @@ class TripListFragment : Fragment() {
         db.collection("trips")
             .addSnapshotListener { value, error ->
                 if (error != null) throw error
-                Database.getInstance(activity).myTripList.clear()
-                for (doc in value!!){
+                Database.getInstance(activity).tripList.clear()
+                for (doc in value!!) {
                     val t = doc.toObject(Trip::class.java)
                     t.id = doc.id
-                    if (t.userEmail == MainActivity.mAuth.currentUser!!.email!!)
-                        Database.getInstance(activity).myTripList.add(t)
+                    Database.getInstance(activity).tripList.add(t)
                 }
 
-                adapter.notifyDataSetChanged()
-                showList(Database.getInstance(activity).myTripList.size)
+//                adapter.notifyDataSetChanged()
+                adapter = TripAdapter(
+                    Database.getInstance(activity).tripList,
+                    "OtherTrips",
+                    parentFragmentManager
+                )
+//
+                rvTripList.layoutManager = LinearLayoutManager(context)
+                rvTripList.adapter = adapter
+                showList(Database.getInstance(activity).tripList.size)
             }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        menu.clear()
+        inflater.inflate(R.menu.options_menu, menu)
+        val searchItem: MenuItem = menu.findItem(R.id.actionSearch)
+        val searchView: SearchView = searchItem.actionView as SearchView
+
+        searchView.imeOptions = EditorInfo.IME_ACTION_DONE
+        searchView.queryHint = "Location, Date, Price, ...";
+
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                adapter?.filter?.filter(newText)
+                return false
+            }
+        })
     }
 
-    private fun showList(size: Int){
-        if(size == 0){
+    private fun showList(size: Int) {
+        if (size == 0) {
             rvTripList.visibility = View.GONE
             tvEmpty.visibility = View.VISIBLE
         } else {

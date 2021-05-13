@@ -19,6 +19,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
@@ -63,11 +64,14 @@ class TripEditFragment : Fragment() {
 
     private var edit: Boolean? = false
     private var index = -1
+    private var tripId: String? = ""
     private var id: String = ""
+
+    private lateinit var mAuth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        mAuth = FirebaseAuth.getInstance()
         //Override action of the back button, otherwise the transition defined in mobile_navigation does not occur
 //        val callback = requireActivity().onBackPressedDispatcher.addCallback(this,
 //            object: OnBackPressedCallback(true){
@@ -117,8 +121,10 @@ class TripEditFragment : Fragment() {
         edit = arguments?.getBoolean("edit")
         if (edit!!){
             index = arguments?.getInt("index")!!
+            tripId = arguments?.getString("tripId")
 
-            val t = Database.getInstance(context).tripList[index]
+            val t = ArrayList<Trip>(Database.getInstance(context).tripList.filter {t -> t.id == tripId})[0]
+
             etDeparture.editText?.setText(t.departure)
             etArrival.editText?.setText(t.arrival)
             etDepartureDate.editText?.setText(t.departureDate.toString("yyyy/MM/dd - HH:mm"))
@@ -126,7 +132,7 @@ class TripEditFragment : Fragment() {
             etPrice.editText?.setText(t.price.toString())
             etDescription.editText?.setText(t.description)
 
-            id = t.docId
+//            id = t.docId
 
             imgName = t.imageUrl
             dateValue = t.departureDate
@@ -216,7 +222,7 @@ class TripEditFragment : Fragment() {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-
+        menu.clear()
         inflater.inflate(R.menu.fragment_trip_edit, menu)
     }
 
@@ -225,7 +231,8 @@ class TripEditFragment : Fragment() {
             R.id.save -> {
                 //save data
                 if (validateForm()){
-                    val t = Trip(imgName,
+                    val t = Trip("",
+                        imgName,
                         etDeparture.editText?.text.toString(),
                         etArrival.editText?.text.toString(),
                         dateValue,
@@ -234,14 +241,15 @@ class TripEditFragment : Fragment() {
                         minute,
                         etAvailableSeats.editText?.text.toString().toInt(),
                         etPrice.editText?.text.toString().toDouble(),
-                        etDescription.editText?.text.toString())
+                        etDescription.editText?.text.toString(),
+                        mAuth.currentUser!!.email!!
+                        )
 
                     val trips = FirebaseFirestore.getInstance().collection("trips")
-                    val doc: DocumentReference
-                    if (edit!!){
-                        doc = trips.document(id)
+                    val doc: DocumentReference = if (edit!!){
+                        trips.document(id)
                     }else{
-                        doc = trips.document()
+                        trips.document()
                     }
                     doc.set(t)
                         .addOnSuccessListener {
