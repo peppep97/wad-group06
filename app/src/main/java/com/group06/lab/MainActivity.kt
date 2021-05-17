@@ -71,15 +71,6 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
-        FirebaseFirestore.getInstance().collection("favored_trips")
-            .addSnapshotListener { value, error ->
-                if (error != null) throw error
-                Database.getInstance(this).favoredList.clear()
-                for (doc in value!!) {
-                    val f = doc.toObject(FavoriteTrip::class.java)
-                    Database.getInstance(this).favoredList.add(f)
-                }
-            }
 
         FirebaseFirestore.getInstance().collection("trips").addSnapshotListener { value, error ->
             if (error != null) throw error
@@ -91,6 +82,18 @@ class MainActivity : AppCompatActivity() {
                     Database.getInstance(this).myTripList.add(f)
             }
         }
+
+        FirebaseFirestore.getInstance().collection("favored_trips")
+            .addSnapshotListener { value, error ->
+                if (error != null) throw error
+                Database.getInstance(this).favoredList.clear()
+                for (doc in value!!) {
+                    val f = doc.toObject(FavoriteTrip::class.java)
+                    val currentUserTrips = Database.getInstance(this).myTripList.filter {t -> t.userEmail == mAuth.currentUser!!.email!!}.map {t -> t.id}
+                    if (currentUserTrips.contains(f.tripId))
+                        Database.getInstance(this).favoredList.add(f)
+                }
+            }
     }
 
     private fun loadData() {
