@@ -30,6 +30,14 @@
           }
         },
         {
+          "client_id": "340459550100-scj4v3r5dmquksept4ipno977h2j42vp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.group06.lab",
+            "certificate_hash": "864a433304a48ed560d9192f51258c262924ba24"
+          }
+        },
+        {
           "client_id": "340459550100-0mh9lobhaadg7f9tm3sdacb4tc4gidaa.apps.googleusercontent.com",
           "client_type": 3
         }
