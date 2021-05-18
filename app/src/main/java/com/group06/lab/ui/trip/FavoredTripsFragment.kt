@@ -177,7 +177,7 @@ class FavoredTripsFragment : Fragment() {
 //                    .document(tripId!!)
 //                    .update( "availableSeats" ,    )
 //
-//            }
+            }
 
 
             holder.cardUser.setOnClickListener {
