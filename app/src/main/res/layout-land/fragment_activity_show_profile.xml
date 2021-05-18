@@ -191,6 +191,20 @@
             </LinearLayout>
 
         </LinearLayout>
+
+        <Button
+            android:id="@+id/logout_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="80dp"
+            android:text="Logout"
+            android:textAlignment="center"
+
+
+
+            />
+
+
     </LinearLayout>
 
     <androidx.constraintlayout.widget.Guideline

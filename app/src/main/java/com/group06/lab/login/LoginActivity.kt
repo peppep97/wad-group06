@@ -35,6 +35,10 @@ class LoginActivity : AppCompatActivity() {
 
         googleSignInClient = GoogleSignIn.getClient(this, gso)
 
+        googleSignInClient.signOut()
+        FirebaseAuth.getInstance().signOut()
+
+
         mAuth = FirebaseAuth.getInstance()
 
         // if user is not authenticated, send them to the LogInActivity

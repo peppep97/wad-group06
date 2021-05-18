@@ -6,6 +6,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.*
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -16,12 +17,17 @@ import androidx.fragment.app.setFragmentResult
 import androidx.navigation.fragment.findNavController
 import coil.load
 import coil.request.CachePolicy
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
+import com.group06.lab.MainActivity
 import com.group06.lab.R
+import com.group06.lab.login.LoginActivity
 import java.io.File
 import java.io.FileOutputStream
 
@@ -32,6 +38,7 @@ class ShowProfileFragment : Fragment() {
     private lateinit var tvEmail: TextView
     private lateinit var tvLocation: TextView
     private lateinit var imgProfile: ImageView
+    private lateinit var googleSignInClient: GoogleSignInClient
 
     private lateinit var snackbar: Snackbar
 
@@ -42,12 +49,19 @@ class ShowProfileFragment : Fragment() {
         // enable option edit
         setHasOptionsMenu(true)
 
+
+
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_activity_show_profile, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val logoutButton = view.findViewById<Button>(R.id.logout_button)
+
+
+
 
         tvFullName = view.findViewById(R.id.tvFullName)
         tvNickName = view.findViewById(R.id.tvNickName)
@@ -102,6 +116,25 @@ class ShowProfileFragment : Fragment() {
             }.addOnFailureListener {
                 imgProfile.setImageResource(R.drawable.ic_no_photo)
             }
+
+
+        logoutButton.setOnClickListener {
+
+            FirebaseAuth.getInstance().signOut()
+
+            val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build()
+
+            googleSignInClient = GoogleSignIn.getClient( requireContext() , gso)
+
+
+
+            val intent = Intent(context, LoginActivity::class.java)
+            startActivity(intent)
+
+        }
 
     }
 
