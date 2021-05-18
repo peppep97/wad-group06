@@ -1,10 +1,14 @@
 package com.group06.lab.ui.trip
 
+import android.opengl.Visibility
 import android.os.Bundle
 import android.view.*
+import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import coil.load
 import coil.request.CachePolicy
@@ -20,6 +24,7 @@ import com.group06.lab.utils.Database
 import com.group06.lab.R
 import java.lang.StringBuilder
 import com.group06.lab.extensions.toString
+import kotlinx.android.synthetic.main.fragment_trip_detail.*
 import java.text.DecimalFormat
 import java.util.*
 
@@ -42,6 +47,8 @@ class TripDetailsFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+    private lateinit var fabFav: FloatingActionButton
+    private lateinit var btnShowFavoredList: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,15 +72,27 @@ class TripDetailsFragment : Fragment() {
         tripId = arguments?.getString("tripId")
         caller = arguments?.getString("caller")
 
-        var t = Trip()
-        if (caller == "UserTrips") {
-            t = ArrayList<Trip>(Database.getInstance(context).myTripList.filter {it.id == tripId})[0]
-        } else if (caller == "OtherTrips") {
-            t = ArrayList<Trip>(Database.getInstance(context).tripList.filter {it.id == tripId})[0]
-        } else {
-            t = ArrayList<Trip>(Database.getInstance(context).tripList.filter {it.id == tripId})[0]
+        fabFav = view.findViewById<FloatingActionButton>(R.id.fabFav)
+        btnShowFavoredList = view.findViewById<Button>(R.id.btnShowFavoredList)
+
+        val t: Trip = when (caller) {
+            "UserTrips" -> {
+                ArrayList<Trip>(Database.getInstance(context).myTripList.filter {it.id == tripId})[0]
+            }
+            "OtherTrips" -> {
+                ArrayList<Trip>(Database.getInstance(context).tripList.filter {it.id == tripId})[0]
+            }
+            else -> {
+                ArrayList<Trip>(Database.getInstance(context).tripList.filter {it.id == tripId})[0]
+            }
         }
-        showEditButton = t.userEmail == MainActivity.mAuth.currentUser!!.email!!
+        if (savedInstanceState != null) {
+            showEditButton = t.userEmail == MainActivity.mAuth.currentUser!!.email!!
+            fabFav.visibility =
+                if (t.userEmail == MainActivity.mAuth.currentUser!!.email!!) View.GONE else View.VISIBLE
+            btnShowFavoredList.visibility =
+                if (t.userEmail == MainActivity.mAuth.currentUser!!.email!!) View.VISIBLE else View.GONE
+        }
 
         snackBar = Snackbar.make(requireActivity().findViewById(android.R.id.content), "Added to favorite trips list", Snackbar.LENGTH_LONG)
         snackBar.setAction("Dismiss"){
@@ -91,7 +110,7 @@ class TripDetailsFragment : Fragment() {
         val tvDepTime = view.findViewById<TextView>(R.id.tvDepTime)
         val tvArrTime = view.findViewById<TextView>(R.id.tvArrTime)
 
-        val fabFav = view.findViewById<FloatingActionButton>(R.id.fabFav)
+
         fabFav.setOnClickListener {
             val f = FavoriteTrip(
                 MainActivity.mAuth.currentUser!!.email!!,
@@ -110,8 +129,6 @@ class TripDetailsFragment : Fragment() {
                         snackBar.show()
                     }
             }
-
-
         }
 
         tvDepartureLocation.text = t.departure
@@ -150,6 +167,12 @@ class TripDetailsFragment : Fragment() {
                         memoryCachePolicy(CachePolicy.DISABLED) //to force reloading when image changes
                     }
                 }
+        }
+
+        btnShowFavoredList.setOnClickListener {
+            findNavController().navigate(R.id.action_trip_details_to_favored_trip_list, Bundle().apply {
+                putString("tripId", tripId)
+            })
         }
     }
 

@@ -12,10 +12,10 @@
             android:id="@+id/my_trip_list"
             android:icon="@drawable/ic_baseline_list_24"
             android:title="My Trips" />
-        <item
-            android:id="@+id/favored_trip_list"
-            android:icon="@drawable/ic_baseline_list_24"
-            android:title="Favored Trips" />
+<!--        <item-->
+<!--            android:id="@+id/favored_trip_list"-->
+<!--            android:icon="@drawable/ic_baseline_list_24"-->
+<!--            android:title="Favored Trips" />-->
         <item
             android:id="@+id/show_profile"
             android:icon="@drawable/ic_baseline_list_24"

@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import coil.request.CachePolicy
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
@@ -29,6 +30,7 @@ class FavoredTripsFragment : Fragment() {
 
     private lateinit var tvEmpty: TextView
     private lateinit var rvTripList: RecyclerView
+    private var tripId: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,20 +42,35 @@ class FavoredTripsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
+        tripId = arguments?.getString("tripId")
+
         tvEmpty = view.findViewById(R.id.tvEmpty)
         rvTripList = view.findViewById(R.id.rvTripList)
 
-        val fTrips = Database.getInstance(activity).myTripList.map { t -> t.id }
-        val favoredTrips =
-            Database.getInstance(activity).favoredList.filter { f -> fTrips.contains(f.tripId) }
+//        val fTrips = Database.getInstance(activity).myTripList.map { t -> t.id }
+        val favoredTripsUsers =
+            Database.getInstance(activity).favoredList.filter { f -> f.tripId == tripId }.map {t -> t.userEmail}.distinct()
 
+        var usersList: ArrayList<User> = ArrayList()
+
+        val db = FirebaseFirestore.getInstance()
+        db.collection("users")
+            .addSnapshotListener { value, error ->
+                if (error != null) throw error
+                usersList.clear()
+                for (doc in value!!){
+                    val u = doc.toObject(User::class.java)
+                    u.id = doc.id
+                    if (favoredTripsUsers.contains(u.email))
+                        usersList.add(u)
+                }
+                showList(usersList.size)
+                val adapter = FavUsersAdapter(usersList)
+                rvTripList.layoutManager = LinearLayoutManager(context)
+                rvTripList.adapter = adapter
+            }
 //        val tripIds = favoredTrips.map{f -> f.tripId}
 //        val allTrips = Database.getInstance(activity).tripList.filter { f -> tripIds.contains(f.id) }
-        showList(favoredTrips.size)
-        val adapter = FavUsersAdapter(favoredTrips)
-
-        rvTripList.layoutManager = LinearLayoutManager(context)
-        rvTripList.adapter = adapter
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -62,7 +79,7 @@ class FavoredTripsFragment : Fragment() {
         inflater.inflate(R.menu.main, menu)
     }
 
-    fun showList(size: Int) {
+    private fun showList(size: Int) {
         if (size == 0) {
             rvTripList.visibility = View.GONE
             tvEmpty.visibility = View.VISIBLE
@@ -73,19 +90,29 @@ class FavoredTripsFragment : Fragment() {
     }
 
     class FavUsersAdapter(
-        private val data: List<FavoriteTrip>
+        private val data: List<User>
     ) :
         RecyclerView.Adapter<FavUsersAdapter.FavUsersViewHolder>() {
 
         class FavUsersViewHolder(v: View) : RecyclerView.ViewHolder(v) {
-            val tvUserEmail: TextView = v.findViewById(R.id.tvUserEmail)
-            val btnShowTrip: Button = v.findViewById(R.id.btnShowTrip)
-            val cardTrip = v.findViewById<CardView>(R.id.cardTrip)
+            val tvNickName: TextView = v.findViewById(R.id.tvNickName)
+            val tvEmail: TextView = v.findViewById(R.id.tvEmail)
+            val cardUser = v.findViewById<CardView>(R.id.cardUser)
+            val imgProfile = v.findViewById<ImageView>(R.id.imgProfile)
 
+            fun bind(u: User) {
+                tvNickName.text = u.nickName
+                tvEmail.text = u.email
 
-            fun bind(t: FavoriteTrip) {
-                tvUserEmail.text = t.userEmail
-                btnShowTrip.tag = t.tripId
+                Firebase.storage.reference
+                    .child(u.email).downloadUrl
+                    .addOnSuccessListener { uri ->
+                        imgProfile.load(uri.toString()) {
+                            memoryCachePolicy(CachePolicy.DISABLED) //to force reloading when image changes
+                        }
+                    }.addOnFailureListener {
+                        imgProfile.setImageResource(R.drawable.ic_no_photo)
+                    }
             }
         }
 
@@ -101,13 +128,14 @@ class FavoredTripsFragment : Fragment() {
 
         override fun onBindViewHolder(holder: FavUsersAdapter.FavUsersViewHolder, position: Int) {
             holder.bind(data[position])
-            holder.btnShowTrip.setOnClickListener {
-                holder.cardTrip.findNavController()
-                    .navigate(R.id.action_favored_trip_list_to_trip_details, Bundle().apply {
-                        putInt("index", position)
-                        putString("tripId", data[position].tripId)
-                        putString("caller", "favoredTrips")
-                    })
+            holder.cardUser.setOnClickListener {
+                // TODO: go to the profile details of this user
+//                holder.cardUser.findNavController()
+//                    .navigate(R.id.action_trip_list_to_trip_details, Bundle().apply {
+//                        putInt("index", position)
+//                        putString("tripId", data[position].id)
+//                        putString("caller", caller)
+//                    })
             }
         }
 
