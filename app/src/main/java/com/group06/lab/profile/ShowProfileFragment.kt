@@ -51,6 +51,7 @@ class ShowProfileFragment : Fragment() {
 
 
 
+
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_activity_show_profile, container, false)
     }
@@ -63,11 +64,19 @@ class ShowProfileFragment : Fragment() {
 
 
 
+
+
+
         tvFullName = view.findViewById(R.id.tvFullName)
         tvNickName = view.findViewById(R.id.tvNickName)
         tvEmail = view.findViewById(R.id.tvEmail)
         tvLocation = view.findViewById(R.id.tvLocation)
         imgProfile = view.findViewById(R.id.imgProfile)
+
+
+        //Use this to distinguish owner
+        var isOwner = tvEmail.toString() == MainActivity.mAuth.currentUser!!.email!!
+
 
         val fullNameLayout: LinearLayout = view.findViewById(R.id.fullNameLayout)
         val nicknameLayout: LinearLayout = view.findViewById(R.id.nicknameLayout)
