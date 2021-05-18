@@ -101,6 +101,8 @@ class ShowProfileFragment : Fragment() {
         //Use this to distinguish owner
         var isOwner = emailParameter == null
 
+
+        //Gets overwritten if the visitor is not the owner
         var getUserFromMail = MainActivity.mAuth.currentUser!!.email!!
 
         if(!isOwner){

@@ -34,7 +34,7 @@ private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
 private var index: Int? = null
-private var tripId: String? = ""
+public var tripId: String? = ""
 private var caller: String? = ""
 private var showEditButton: Boolean = false
 private lateinit var snackBar: Snackbar
@@ -184,6 +184,7 @@ class TripDetailsFragment : Fragment() {
         btnShowFavoredList.setOnClickListener {
             findNavController().navigate(R.id.action_trip_details_to_favored_trip_list, Bundle().apply {
                 putString("tripId", tripId)
+                putInt("AvailableSeats", t.availableSeats)
             })
         }
     }

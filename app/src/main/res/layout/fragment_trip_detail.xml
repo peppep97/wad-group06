@@ -234,7 +234,7 @@
 
                 android:id="@+id/cardDescription"
                 android:layout_width="0dp"
-                android:layout_height="150dp"
+                android:layout_height="80dp"
                 android:layout_marginStart="5dp"
                 android:layout_marginEnd="5dp"
                 android:checkable="true"
@@ -280,7 +280,7 @@
                 style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
-                android:text="Find out who liked this trip?"
+                android:text="Show interested users"
                 android:textSize="12sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

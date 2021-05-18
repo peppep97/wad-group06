@@ -5,8 +5,10 @@ import android.view.*
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
@@ -30,7 +32,9 @@ class FavoredTripsFragment : Fragment() {
 
     private lateinit var tvEmpty: TextView
     private lateinit var rvTripList: RecyclerView
-    private var tripId: String? = null
+
+    public var tripId: String? = null
+    public var availableSeats: Int? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,9 +47,13 @@ class FavoredTripsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         tripId = arguments?.getString("tripId")
+        availableSeats = arguments?.getInt("AvailableSeats")
 
         tvEmpty = view.findViewById(R.id.tvEmpty)
         rvTripList = view.findViewById(R.id.rvTripList)
+
+
+
 
 //        val fTrips = Database.getInstance(activity).myTripList.map { t -> t.id }
         val favoredTripsUsers =
@@ -54,6 +62,7 @@ class FavoredTripsFragment : Fragment() {
         var usersList: ArrayList<User> = ArrayList()
 
         val db = FirebaseFirestore.getInstance()
+
         db.collection("users")
             .addSnapshotListener { value, error ->
                 if (error != null) throw error
@@ -71,6 +80,10 @@ class FavoredTripsFragment : Fragment() {
             }
 //        val tripIds = favoredTrips.map{f -> f.tripId}
 //        val allTrips = Database.getInstance(activity).tripList.filter { f -> tripIds.contains(f.id) }
+
+
+
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -99,6 +112,8 @@ class FavoredTripsFragment : Fragment() {
 //            val tvEmail: TextView = v.findViewById(R.id.tvEmail)
             val cardUser = v.findViewById<CardView>(R.id.cardUser)
             val imgProfile = v.findViewById<ImageView>(R.id.imgProfile)
+            val acceptButton = v.findViewById<Button>(R.id.acceptUserButton)
+
 
             fun bind(u: User) {
                 tvNickName.text = u.nickName
@@ -128,6 +143,43 @@ class FavoredTripsFragment : Fragment() {
 
         override fun onBindViewHolder(holder: FavUsersAdapter.FavUsersViewHolder, position: Int) {
             holder.bind(data[position])
+
+            holder.acceptButton.setOnClickListener {
+
+//
+//
+//
+//                val db = FirebaseFirestore.getInstance()
+//
+//                var currentSeatsAvailability = db.collection("trips")
+//                    .document(tripId!!).addSnapshotListener{
+//                        data, error ->
+//                        if(error != null) throw error
+//                        if(data != null) {
+//                            println("DAI FAMMI VEDERE " + data["availableSeats"].toString().toInt())
+//
+//                            db.collection("trips")
+//                                .document(tripId!!)
+//                                .update( "availableSeats" , data["availableSeats"].toString().toInt() - 1 )
+//                                .addOnSuccessListener {
+//
+//                                    Toast.makeText( holder.itemView.context , "Confirmed", Toast.LENGTH_LONG).show()
+//
+//                                }
+//                        }
+//                    }
+//
+//
+//
+//
+//                //Update availability, if the availability != 0
+//                db.collection("trips")
+//                    .document(tripId!!)
+//                    .update( "availableSeats" ,    )
+//
+//            }
+
+
             holder.cardUser.setOnClickListener {
                 // TODO: go to the profile details of this user
 
