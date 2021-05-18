@@ -19,6 +19,9 @@
             app:popExitAnim="@anim/nav_default_exit_anim"
             app:popUpTo="@+id/trip_details"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_trip_details_to_favored_trip_list"
+            app:destination="@id/favored_trip_list" />
     </fragment>
     <fragment
         android:id="@+id/trip_edit"
@@ -99,9 +102,9 @@
     <fragment
         android:id="@+id/favored_trip_list"
         android:name="com.group06.lab.ui.trip.FavoredTripsFragment"
-        android:label="Favored Trips" >
-        <action
-            android:id="@+id/action_favored_trip_list_to_trip_details"
-            app:destination="@id/trip_details" />
-    </fragment>
+        app:enterAnim="@anim/custom_from_top"
+        app:exitAnim="@anim/nav_default_exit_anim"
+        app:popEnterAnim="@anim/nav_default_exit_anim"
+        app:popExitAnim="@anim/nav_default_exit_anim"
+        android:label="Users" />
 </navigation>
