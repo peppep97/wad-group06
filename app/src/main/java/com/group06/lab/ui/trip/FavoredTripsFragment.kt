@@ -96,13 +96,13 @@ class FavoredTripsFragment : Fragment() {
 
         class FavUsersViewHolder(v: View) : RecyclerView.ViewHolder(v) {
             val tvNickName: TextView = v.findViewById(R.id.tvNickName)
-            val tvEmail: TextView = v.findViewById(R.id.tvEmail)
+//            val tvEmail: TextView = v.findViewById(R.id.tvEmail)
             val cardUser = v.findViewById<CardView>(R.id.cardUser)
             val imgProfile = v.findViewById<ImageView>(R.id.imgProfile)
 
             fun bind(u: User) {
                 tvNickName.text = u.nickName
-                tvEmail.text = u.email
+//                tvEmail.text = u.email
 
                 Firebase.storage.reference
                     .child(u.email).downloadUrl
@@ -130,12 +130,18 @@ class FavoredTripsFragment : Fragment() {
             holder.bind(data[position])
             holder.cardUser.setOnClickListener {
                 // TODO: go to the profile details of this user
-//                holder.cardUser.findNavController()
-//                    .navigate(R.id.action_trip_list_to_trip_details, Bundle().apply {
+
+
+
+                holder.cardUser.findNavController()
+                    .navigate(R.id.action_favored_trip_list_to_show_profile, Bundle().apply {
+
+
+
 //                        putInt("index", position)
 //                        putString("tripId", data[position].id)
 //                        putString("caller", caller)
-//                    })
+                    })
             }
         }
 

@@ -39,6 +39,8 @@ class ShowProfileFragment : Fragment() {
     private lateinit var tvLocation: TextView
     private lateinit var imgProfile: ImageView
     private lateinit var googleSignInClient: GoogleSignInClient
+    private lateinit var fullNameLayout: LinearLayout
+    private lateinit var emailLayout: LinearLayout
 
     private lateinit var snackbar: Snackbar
 
@@ -72,10 +74,21 @@ class ShowProfileFragment : Fragment() {
         tvEmail = view.findViewById(R.id.tvEmail)
         tvLocation = view.findViewById(R.id.tvLocation)
         imgProfile = view.findViewById(R.id.imgProfile)
+        fullNameLayout = view.findViewById(R.id.fullNameLayout)
+        emailLayout = view.findViewById(R.id.emailLayout)
 
 
         //Use this to distinguish owner
         var isOwner = tvEmail.toString() == MainActivity.mAuth.currentUser!!.email!!
+
+        if(!isOwner){
+
+            fullNameLayout.visibility = View.GONE
+            emailLayout.visibility = View.GONE
+            logoutButton.visibility = View.GONE
+            setHasOptionsMenu(false)
+
+        }
 
 
         val fullNameLayout: LinearLayout = view.findViewById(R.id.fullNameLayout)

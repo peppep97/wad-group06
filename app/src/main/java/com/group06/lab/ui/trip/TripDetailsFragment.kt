@@ -75,6 +75,7 @@ class TripDetailsFragment : Fragment() {
         fabFav = view.findViewById<FloatingActionButton>(R.id.fabFav)
         btnShowFavoredList = view.findViewById<Button>(R.id.btnShowFavoredList)
 
+
         val t: Trip = when (caller) {
             "UserTrips" -> {
                 ArrayList<Trip>(Database.getInstance(context).myTripList.filter {it.id == tripId})[0]
@@ -86,10 +87,21 @@ class TripDetailsFragment : Fragment() {
                 ArrayList<Trip>(Database.getInstance(context).tripList.filter {it.id == tripId})[0]
             }
         }
+
+
+        fabFav.visibility =
+            if (t.userEmail == MainActivity.mAuth.currentUser!!.email!!) View.GONE else View.VISIBLE
+
+
+
         if (savedInstanceState != null) {
             showEditButton = t.userEmail == MainActivity.mAuth.currentUser!!.email!!
+
             fabFav.visibility =
                 if (t.userEmail == MainActivity.mAuth.currentUser!!.email!!) View.GONE else View.VISIBLE
+
+            if (t.userEmail == MainActivity.mAuth.currentUser!!.email!!) fabFav.hide()
+
             btnShowFavoredList.visibility =
                 if (t.userEmail == MainActivity.mAuth.currentUser!!.email!!) View.VISIBLE else View.GONE
         }

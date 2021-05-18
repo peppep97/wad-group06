@@ -106,5 +106,9 @@
         app:exitAnim="@anim/nav_default_exit_anim"
         app:popEnterAnim="@anim/nav_default_exit_anim"
         app:popExitAnim="@anim/nav_default_exit_anim"
-        android:label="Users" />
+        android:label="Users" >
+        <action
+            android:id="@+id/action_favored_trip_list_to_show_profile"
+            app:destination="@id/show_profile" />
+    </fragment>
 </navigation>
