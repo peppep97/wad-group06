@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#000000"
+    android:background="@mipmap/bg_main_screen_foreground"
     tools:context=".profile.EditProfileFragment">
 
     <androidx.constraintlayout.widget.Guideline
@@ -33,16 +33,17 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/allan"
             android:includeFontPadding="false"
+            android:paddingTop="50dp"
             android:shadowColor="#0E0E0E"
             android:text="Welcome To Carpooling"
             android:textAlignment="center"
             android:textColor="#ffffff"
             android:textSize="45sp"
-            android:paddingTop="50dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageView11" />
+
         <TextView
             android:id="@+id/textView9"
             android:layout_width="match_parent"
@@ -50,7 +51,7 @@
             android:layout_marginTop="8dp"
             android:includeFontPadding="false"
             android:shadowColor="#0E0E0E"
-            android:text="LogIn with Google Acount !"
+            android:text="Login with Google Account !"
             android:textAlignment="center"
             android:textColor="#ffffff"
             android:textSize="14sp"
@@ -65,8 +66,6 @@
             android:layout_height="match_parent"
             android:layout_gravity="center_horizontal"
             android:src="@mipmap/bg_login_foreground" />
-
-
 
 
     </LinearLayout>
