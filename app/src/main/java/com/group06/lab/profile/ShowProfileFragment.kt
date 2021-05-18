@@ -41,8 +41,11 @@ class ShowProfileFragment : Fragment() {
     private lateinit var googleSignInClient: GoogleSignInClient
     private lateinit var fullNameLayout: LinearLayout
     private lateinit var emailLayout: LinearLayout
+    private lateinit var db: FirebaseFirestore
 
     private lateinit var snackbar: Snackbar
+
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -63,6 +66,7 @@ class ShowProfileFragment : Fragment() {
 
         val logoutButton = view.findViewById<Button>(R.id.logout_button)
 
+        var emailParameter : String? = arguments?.getString("email")
 
 
 
@@ -78,17 +82,7 @@ class ShowProfileFragment : Fragment() {
         emailLayout = view.findViewById(R.id.emailLayout)
 
 
-        //Use this to distinguish owner
-        var isOwner = tvEmail.toString() == MainActivity.mAuth.currentUser!!.email!!
 
-        if(!isOwner){
-
-            fullNameLayout.visibility = View.GONE
-            emailLayout.visibility = View.GONE
-            logoutButton.visibility = View.GONE
-            setHasOptionsMenu(false)
-
-        }
 
 
         val fullNameLayout: LinearLayout = view.findViewById(R.id.fullNameLayout)
@@ -102,9 +96,34 @@ class ShowProfileFragment : Fragment() {
             findNavController().navigate(R.id.action_showProfileActivity_to_editProfileActivity)
         }
 
-        val db = FirebaseFirestore.getInstance()
+        if( emailParameter == null ) println("EMAIL PARAMETER NULL")
+
+        //Use this to distinguish owner
+        var isOwner = emailParameter == null
+
+        var getUserFromMail = MainActivity.mAuth.currentUser!!.email!!
+
+        if(!isOwner){
+
+            println( "EMAIL FROM LAYOUT" + emailParameter)
+            println( "EMAIL " + MainActivity.mAuth.currentUser!!.email!!)
+
+            fullNameLayout.visibility = View.GONE
+            emailLayout.visibility = View.GONE
+            logoutButton.visibility = View.GONE
+            setHasOptionsMenu(false)
+
+            getUserFromMail = emailParameter!!
+
+        }
+
+
+
+
+
+        db =  FirebaseFirestore.getInstance()
         db.collection("users")
-            .document(FirebaseAuth.getInstance().currentUser!!.email!!)
+            .document(getUserFromMail)
             .addSnapshotListener{
                     value, error ->
                 if (error != null) throw error
@@ -129,8 +148,11 @@ class ShowProfileFragment : Fragment() {
                 }
             }
 
+
+
+
         Firebase.storage.reference
-            .child(FirebaseAuth.getInstance().currentUser!!.email!!).downloadUrl
+            .child(getUserFromMail).downloadUrl
             .addOnSuccessListener { uri ->
                 imgProfile.load(uri.toString()) {
                     memoryCachePolicy(CachePolicy.DISABLED) //to force reloading when image changes

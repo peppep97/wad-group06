@@ -135,7 +135,7 @@ class FavoredTripsFragment : Fragment() {
 
                 holder.cardUser.findNavController()
                     .navigate(R.id.action_favored_trip_list_to_show_profile, Bundle().apply {
-
+                        putString("email", data[position].email )
 
 
 //                        putInt("index", position)
