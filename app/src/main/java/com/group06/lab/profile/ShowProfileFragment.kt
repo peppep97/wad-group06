@@ -160,7 +160,7 @@ class ShowProfileFragment : Fragment() {
                     memoryCachePolicy(CachePolicy.DISABLED) //to force reloading when image changes
                 }
             }.addOnFailureListener {
-                imgProfile.setImageResource(R.drawable.ic_no_photo)
+                imgProfile.setImageResource(R.drawable.ic_baseline_no_photography)
             }
 
 
@@ -175,6 +175,7 @@ class ShowProfileFragment : Fragment() {
 
             googleSignInClient = GoogleSignIn.getClient( requireContext() , gso)
 
+            googleSignInClient.signOut()
 
 
             val intent = Intent(context, LoginActivity::class.java)

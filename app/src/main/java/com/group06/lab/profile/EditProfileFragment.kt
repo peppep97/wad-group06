@@ -43,14 +43,6 @@ class EditProfileFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        val callback = requireActivity().onBackPressedDispatcher.addCallback(this,
-            object: OnBackPressedCallback(true){
-                override fun handleOnBackPressed() {
-                    findNavController().navigate(R.id.action_editProfileActivity_to_showProfileActivity)
-                }
-            }
-        )
     }
 
     override fun onCreateView(
@@ -113,7 +105,7 @@ class EditProfileFragment : Fragment() {
                             memoryCachePolicy(CachePolicy.DISABLED) //to force reloading when image changes
                         }
                     }.addOnFailureListener {
-                        imgProfile.setImageResource(R.drawable.ic_no_photo)
+                        imgProfile.setImageResource(R.drawable.ic_baseline_no_photography)
                     }
             }
         }else{
@@ -124,7 +116,7 @@ class EditProfileFragment : Fragment() {
                         memoryCachePolicy(CachePolicy.DISABLED) //to force reloading when image changes
                     }
                 }.addOnFailureListener {
-                    imgProfile.setImageResource(R.drawable.ic_no_photo)
+                    imgProfile.setImageResource(R.drawable.ic_baseline_no_photography)
                 }
         }
     }
@@ -193,10 +185,6 @@ class EditProfileFragment : Fragment() {
                 }else{
                     findNavController().navigate(R.id.action_editProfileActivity_to_showProfileActivity)
                 }
-                true
-            }
-            android.R.id.home -> { // the back button on action bar
-                findNavController().navigate(R.id.action_editProfileActivity_to_showProfileActivity)
                 true
             }
 

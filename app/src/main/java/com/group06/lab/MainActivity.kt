@@ -1,16 +1,7 @@
 package com.group06.lab
 
-import android.annotation.SuppressLint
-import android.app.SearchManager
-import android.content.Context
-import android.content.Intent
-import android.graphics.BitmapFactory
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
-import android.view.inputmethod.EditorInfo
 import android.widget.ImageView
-import android.widget.SearchView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -20,16 +11,16 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import androidx.recyclerview.widget.LinearLayoutManager
+import coil.load
+import coil.request.CachePolicy
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
 import com.group06.lab.ui.trip.FavoriteTrip
-import com.group06.lab.ui.trip.OthersTripListFragment
 import com.group06.lab.ui.trip.Trip
-import com.group06.lab.ui.trip.TripAdapter
 import com.group06.lab.utils.Database
-import java.io.File
 
 class MainActivity : AppCompatActivity() {
     companion object {
@@ -97,7 +88,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun loadData() {
-
         val drawer = navView.getHeaderView(0)
 
         tvHeaderName = drawer.findViewById(R.id.headerName)
@@ -125,9 +115,13 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        File(filesDir, "profilepic.jpg").let {
-            if (it.exists()) ivHeaderProfileImage.setImageBitmap(BitmapFactory.decodeFile(it.absolutePath))
-        }
+        Firebase.storage.reference
+            .child(FirebaseAuth.getInstance().currentUser!!.email!!).downloadUrl
+            .addOnSuccessListener { uri ->
+                ivHeaderProfileImage.load(uri.toString()) {
+                    memoryCachePolicy(CachePolicy.DISABLED) //to force reloading when image changes
+                }
+            }
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -135,6 +129,4 @@ class MainActivity : AppCompatActivity() {
         val navController = findNavController(R.id.nav_host_fragment)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
-
-
 }

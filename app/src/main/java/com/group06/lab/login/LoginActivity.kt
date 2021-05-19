@@ -35,9 +35,8 @@ class LoginActivity : AppCompatActivity() {
 
         googleSignInClient = GoogleSignIn.getClient(this, gso)
 
-        googleSignInClient.signOut()
-        FirebaseAuth.getInstance().signOut()
-
+        //googleSignInClient.signOut()
+        //FirebaseAuth.getInstance().signOut()
 
         mAuth = FirebaseAuth.getInstance()
 

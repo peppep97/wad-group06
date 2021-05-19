@@ -9,22 +9,30 @@
         android:id="@+id/trip_details"
         android:name="com.group06.lab.ui.trip.TripDetailsFragment"
         android:label="Trip Details"
-        tools:layout="@layout/fragment_trip_details" >
+        tools:layout="@layout/fragment_trip_detail" >
         <action
             android:id="@+id/action_trip_details_to_trip_edit"
             app:destination="@id/trip_edit"
             app:enterAnim="@anim/custom_from_top"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/custom_from_top"
-            app:popExitAnim="@anim/nav_default_exit_anim"
+            app:popExitAnim="@anim/custom_to_top"
             app:popUpTo="@+id/trip_details"
             app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_trip_details_to_favored_trip_list"
-            app:destination="@id/favored_trip_list" />
+            app:destination="@id/favored_trip_list"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
         <action
             android:id="@+id/action_trip_details_to_trip_list"
-            app:destination="@id/trip_list" />
+            app:destination="@id/trip_list"
+            app:enterAnim="@anim/custom_from_right"
+            app:exitAnim="@anim/custom_from_left"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     </fragment>
     <fragment
         android:id="@+id/trip_edit"
@@ -41,7 +49,11 @@
             app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_trip_edit_to_othersTripListFragment"
-            app:destination="@id/trip_list" />
+            app:destination="@id/trip_list"
+            app:enterAnim="@anim/custom_from_top"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/custom_to_top" />
     </fragment>
     <fragment
         android:id="@+id/my_trip_list"
@@ -51,6 +63,7 @@
             android:id="@+id/action_trip_list_to_trip_details"
             app:destination="@id/trip_details"
             app:enterAnim="@anim/custom_from_right"
+            app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/custom_from_right"
             app:popExitAnim="@anim/custom_to_right" />
         <action
@@ -58,8 +71,8 @@
             app:destination="@id/trip_edit"
             app:enterAnim="@anim/custom_from_top"
             app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_exit_anim"
-            app:popExitAnim="@anim/nav_default_exit_anim" />
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/custom_to_top" />
     </fragment>
     <fragment
         android:id="@+id/show_profile"
@@ -73,10 +86,9 @@
             app:enterAnim="@anim/custom_from_top"
             app:exitAnim="@anim/nav_default_exit_anim"
 
-            app:popEnterAnim="@anim/custom_from_top"
-            app:popExitAnim="@anim/nav_default_exit_anim"
-            app:popUpTo="@+id/show_profile"
-            app:popUpToInclusive="true" />
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/custom_to_top"
+            app:popUpTo="@+id/show_profile" />
 
     </fragment>
     <fragment
@@ -87,9 +99,9 @@
         <action
             android:id="@+id/action_editProfileActivity_to_showProfileActivity"
             app:destination="@id/show_profile"
-            app:enterAnim="@anim/custom_fade_in"
-            app:exitAnim="@anim/custom_to_top"
-            app:popEnterAnim="@anim/custom_fade_in"
+            app:enterAnim="@anim/custom_from_top"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/custom_to_top"
             app:popUpTo="@+id/editProfileActivity"
             app:popUpToInclusive="true" />
@@ -97,13 +109,22 @@
     <fragment
         android:id="@+id/trip_list"
         android:name="com.group06.lab.ui.trip.OthersTripListFragment"
-        android:label="Trips" >
+        android:label="Trips"
+        tools:layout="@layout/fragment_others_trip_list">
         <action
             android:id="@+id/action_othersTripListFragment_to_trip_details"
-            app:destination="@id/trip_details" />
+            app:destination="@id/trip_details"
+            app:enterAnim="@anim/custom_from_right"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/custom_from_right"
+            app:popExitAnim="@anim/custom_to_right" />
         <action
             android:id="@+id/action_trip_list_to_trip_edit2"
-            app:destination="@id/trip_edit" />
+            app:destination="@id/trip_edit"
+            app:enterAnim="@anim/custom_from_top"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/custom_to_top" />
     </fragment>
     <fragment
         android:id="@+id/favored_trip_list"
@@ -115,6 +136,10 @@
         android:label="Users" >
         <action
             android:id="@+id/action_favored_trip_list_to_show_profile"
-            app:destination="@id/show_profile" />
+            app:destination="@id/show_profile"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     </fragment>
 </navigation>

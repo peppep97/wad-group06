@@ -75,9 +75,9 @@ class TripDetailsFragment : Fragment() {
         tripId = arguments?.getString("tripId")
         caller = arguments?.getString("caller")
 
-        fabFav = view.findViewById<FloatingActionButton>(R.id.fabFav)
-        btnShowFavoredList = view.findViewById<Button>(R.id.btnShowFavoredList)
-        btnDeleteTrip = view.findViewById<Button>(R.id.btnDeleteTrip)
+        fabFav = view.findViewById(R.id.fabFav)
+        btnShowFavoredList = view.findViewById(R.id.btnShowFavoredList)
+        btnDeleteTrip = view.findViewById(R.id.btnDeleteTrip)
 
         val t: Trip = when (caller) {
             "UserTrips" -> {
@@ -92,23 +92,13 @@ class TripDetailsFragment : Fragment() {
         }
 
 
-        fabFav.visibility =
-            if (t.userEmail == MainActivity.mAuth.currentUser!!.email!!) View.GONE else View.VISIBLE
-
-
-
+        fabFav.visibility = if (t.userEmail == MainActivity.mAuth.currentUser!!.email!!) View.GONE else View.VISIBLE
         showEditButton = t.userEmail == MainActivity.mAuth.currentUser!!.email!!
-
-        fabFav.visibility =
-            if (t.userEmail == MainActivity.mAuth.currentUser!!.email!!) View.GONE else View.VISIBLE
-
+        fabFav.visibility = if (t.userEmail == MainActivity.mAuth.currentUser!!.email!!) View.GONE else View.VISIBLE
         btnShowFavoredList.visibility = if (t.userEmail == MainActivity.mAuth.currentUser!!.email!!) View.VISIBLE else View.GONE
         btnDeleteTrip.visibility = if (t.userEmail == MainActivity.mAuth.currentUser!!.email!!) View.VISIBLE else View.GONE
-
         if (t.userEmail == MainActivity.mAuth.currentUser!!.email!!) fabFav.hide()
-
-        btnShowFavoredList.visibility =
-            if (t.userEmail == MainActivity.mAuth.currentUser!!.email!!) View.VISIBLE else View.GONE
+        btnShowFavoredList.visibility = if (t.userEmail == MainActivity.mAuth.currentUser!!.email!!) View.VISIBLE else View.GONE
 
         snackBar = Snackbar.make(
             requireActivity().findViewById(android.R.id.content),
@@ -184,7 +174,7 @@ class TripDetailsFragment : Fragment() {
         tvEstimatedDuration.text = "(${sBuilder.toString()} )"
 
         if (t.imageUrl == "") {
-            imgTrip.setImageResource(R.drawable.ic_no_photo)
+            imgTrip.setImageResource(R.drawable.ic_baseline_no_photography)
         } else {
             Firebase.storage.reference.child(t.imageUrl)
                 .downloadUrl.addOnSuccessListener { uri ->
@@ -205,36 +195,24 @@ class TripDetailsFragment : Fragment() {
 
         btnDeleteTrip.setOnClickListener {
 
-
-
-
             Dialog().show(parentFragmentManager, "dialog")
 
             //Delete trip from database
-            var db = FirebaseFirestore.getInstance()
-
-            var batch = db.batch()
+            val db = FirebaseFirestore.getInstance()
+            val batch = db.batch()
 
             db.collection("trips").document(tripId!!).collection("confirmedUsers").get().addOnSuccessListener {
 
-                res ->
-                    res.documents.forEach { batch.delete(it.reference) }
-                    //Works only for small collection I guess?
-                    batch.commit()
-                    db.collection("trips")
-                        .document(tripId!!)
-                        .delete()
+                    res ->
+                res.documents.forEach { batch.delete(it.reference) }
+                //Works only for small collection I guess?
+                batch.commit()
+                db.collection("trips")
+                    .document(tripId!!)
+                    .delete()
 
 
             }
-
-
-
-
-
-
-
-
 
             findNavController().navigate(
                 R.id.action_trip_details_to_trip_list,

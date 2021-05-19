@@ -152,7 +152,7 @@ class TripEditFragment : Fragment() {
 
             etDuration.editText?.setText(sBuilder.toString())
             if (t.imageUrl == "") {
-                imgTrip.setImageResource(R.drawable.ic_no_photo)
+                imgTrip.setImageResource(R.drawable.ic_baseline_no_photography)
             } else {
                 Firebase.storage.reference.child(t.imageUrl)
                     .downloadUrl.addOnSuccessListener {
@@ -267,11 +267,6 @@ class TripEditFragment : Fragment() {
                         findNavController().navigate(R.id.action_trip_edit_to_othersTripListFragment)
                     }
                 }
-                return true
-            }
-            android.R.id.home -> {
-                //Handling the toolbar back button
-                findNavController().navigate(R.id.action_trip_edit_to_othersTripListFragment)
                 return true
             }
         }

@@ -81,6 +81,17 @@ class TripListFragment : Fragment() {
                 adapter.notifyDataSetChanged()
                 showList(Database.getInstance(activity).myTripList.size)
             }
+
+        rvTripList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if (dy > 0 && addFab.visibility == View.VISIBLE) {
+                    addFab.hide()
+                } else if (dy < 0 && addFab.visibility != View.VISIBLE) {
+                    addFab.show()
+                }
+            }
+        })
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

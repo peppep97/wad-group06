@@ -48,9 +48,6 @@ class OthersTripListFragment : Fragment() {
 
         showList(Database.getInstance(activity).tripList.size)
 
-
-        //tripList = Database.getInstance(context).tripList
-
         val db = FirebaseFirestore.getInstance()
         db.collection("trips")
             .addSnapshotListener { value, error ->
@@ -73,6 +70,17 @@ class OthersTripListFragment : Fragment() {
                 rvTripList.adapter = adapter
                 showList(Database.getInstance(activity).tripList.size)
             }
+
+        rvTripList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if (dy > 0 && addFab.visibility == View.VISIBLE) {
+                    addFab.hide()
+                } else if (dy < 0 && addFab.visibility != View.VISIBLE) {
+                    addFab.show()
+                }
+            }
+        })
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

@@ -132,7 +132,7 @@ class FavoredTripsFragment : Fragment() {
                             memoryCachePolicy(CachePolicy.DISABLED) //to force reloading when image changes
                         }
                     }.addOnFailureListener {
-                        imgProfile.setImageResource(R.drawable.ic_no_photo)
+                        imgProfile.setImageResource(R.drawable.ic_baseline_no_photography)
                     }
             }
         }

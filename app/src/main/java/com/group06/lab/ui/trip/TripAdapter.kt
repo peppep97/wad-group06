@@ -26,8 +26,8 @@ class TripAdapter() :
     RecyclerView.Adapter<TripAdapter.TripViewHolder>(), Filterable {
 
     var fm: FragmentManager? = null
-    var data: MutableList<Trip> = ArrayList<Trip>()
-    var dataFull: MutableList<Trip> = ArrayList<Trip>()
+    var data: MutableList<Trip> = ArrayList()
+    var dataFull: MutableList<Trip> = ArrayList()
     var caller: String = ""
 
     constructor(
@@ -69,7 +69,7 @@ class TripAdapter() :
             tvPrice.text = String.format("%s €", format.format(t.price).toString())
             tvSeat.text = t.availableSeats.toString()
             if (t.imageUrl == "") {
-                imgCar.setImageResource(R.drawable.ic_no_photo)
+                imgCar.setImageResource(R.drawable.ic_baseline_no_photography)
             } else {
                 Firebase.storage.reference.child(t.imageUrl)
                     .downloadUrl.addOnSuccessListener { uri ->
@@ -77,9 +77,6 @@ class TripAdapter() :
                             memoryCachePolicy(CachePolicy.DISABLED) //to force reloading when image changes
                         }
                     }
-                /*File(imgCar.context?.filesDir, t.imageUrl).let {
-                    if (it.exists()) imgCar.setImageBitmap(BitmapFactory.decodeFile(it.absolutePath))
-                }*/
             }
         }
     }
@@ -94,7 +91,7 @@ class TripAdapter() :
         )
     }
 
-    override fun onBindViewHolder(holder: TripAdapter.TripViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: TripViewHolder, position: Int) {
         holder.bind(data[position])
         holder.cardTrip.setOnClickListener {
             if (caller == "UserTrips")
@@ -187,7 +184,6 @@ class TripAdapter() :
             data.addAll(results?.values as MutableList<Trip>)
             notifyDataSetChanged()
         }
-
     }
 }
 

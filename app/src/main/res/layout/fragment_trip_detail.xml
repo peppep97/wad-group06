@@ -34,11 +34,12 @@
                 android:id="@+id/imgTrip"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
+                android:scaleType="centerInside"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_no_photo" />
+                app:srcCompat="@drawable/ic_baseline_no_photography" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
 
