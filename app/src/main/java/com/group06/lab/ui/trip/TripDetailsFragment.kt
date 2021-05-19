@@ -24,6 +24,7 @@ import com.group06.lab.utils.Database
 import com.group06.lab.R
 import java.lang.StringBuilder
 import com.group06.lab.extensions.toString
+import com.group06.lab.utils.Dialog
 import kotlinx.android.synthetic.main.fragment_trip_detail.*
 import java.text.DecimalFormat
 import java.util.*
@@ -203,6 +204,11 @@ class TripDetailsFragment : Fragment() {
         }
 
         btnDeleteTrip.setOnClickListener {
+
+
+
+
+            Dialog().show(parentFragmentManager, "dialog")
 
             //Delete trip from database
             var db = FirebaseFirestore.getInstance()
