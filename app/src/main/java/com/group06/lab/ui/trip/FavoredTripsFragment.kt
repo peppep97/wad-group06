@@ -27,6 +27,7 @@ import com.group06.lab.extensions.toString
 import com.group06.lab.utils.Database
 import java.text.DecimalFormat
 import java.util.*
+import kotlin.properties.Delegates
 
 class FavoredTripsFragment : Fragment() {
 
@@ -57,7 +58,7 @@ class FavoredTripsFragment : Fragment() {
 
 //        val fTrips = Database.getInstance(activity).myTripList.map { t -> t.id }
         val favoredTripsUsers =
-            Database.getInstance(activity).favoredList.filter { f -> f.tripId == tripId }.map {t -> t.userEmail}.distinct()
+            Database.getInstance(activity).favoredList.filter { f -> f.tripId == tripId }.filter{ f -> f.userEmail != MainActivity.mAuth.currentUser!!.email!! }.map {t -> t.userEmail}.distinct()
 
         var usersList: ArrayList<User> = ArrayList()
 
@@ -146,6 +147,37 @@ class FavoredTripsFragment : Fragment() {
 
             holder.acceptButton.setOnClickListener {
 
+
+                Toast.makeText( holder.itemView.context , "Confirmed", Toast.LENGTH_LONG).show()
+
+                val db = FirebaseFirestore.getInstance()
+
+
+
+                var currentSeatsAvailability = db.collection("trips")
+                    .document(tripId!!).get().addOnSuccessListener {
+                        res ->
+                            val Trip = res.toObject(Trip::class.java)
+                            println("HERE IS THE TRIP " + Trip?.availableSeats)
+                            val db = FirebaseFirestore.getInstance()
+                            db.collection("trips")
+                                .document(tripId!!)
+                                .update("availableSeats" , Trip?.availableSeats?.minus(1))
+                                .addOnSuccessListener {
+
+                                    Toast.makeText( holder.itemView.context , "Confirmed", Toast.LENGTH_LONG).show()
+
+                                }
+                    }
+
+
+
+
+                        }
+//                    }
+
+
+
 //
 //
 //
@@ -177,7 +209,7 @@ class FavoredTripsFragment : Fragment() {
 //                    .document(tripId!!)
 //                    .update( "availableSeats" ,    )
 //
-            }
+//            }
 
 
             holder.cardUser.setOnClickListener {
