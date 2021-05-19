@@ -205,9 +205,28 @@ class TripDetailsFragment : Fragment() {
         btnDeleteTrip.setOnClickListener {
 
             //Delete trip from database
-            var db = FirebaseFirestore.getInstance().collection("trips")
-                .document(tripId!!)
-                .delete()
+            var db = FirebaseFirestore.getInstance()
+
+            var batch = db.batch()
+
+            db.collection("trips").document(tripId!!).collection("confirmedUsers").get().addOnSuccessListener {
+
+                res ->
+                    res.documents.forEach { batch.delete(it.reference) }
+                    //Works only for small collection I guess?
+                    batch.commit()
+                    db.collection("trips")
+                        .document(tripId!!)
+                        .delete()
+
+
+            }
+
+
+
+
+
+
 
 
 
