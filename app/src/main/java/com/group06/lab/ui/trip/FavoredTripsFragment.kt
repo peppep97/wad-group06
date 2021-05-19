@@ -114,11 +114,16 @@ class FavoredTripsFragment : Fragment() {
             val cardUser = v.findViewById<CardView>(R.id.cardUser)
             val imgProfile = v.findViewById<ImageView>(R.id.imgProfile)
             val acceptButton = v.findViewById<Button>(R.id.acceptUserButton)
-
+            val confirmedTextView = v.findViewById<TextView>(R.id.AcceptedTextView)
 
             fun bind(u: User) {
                 tvNickName.text = u.nickName
 //                tvEmail.text = u.email
+
+                acceptButton.visibility = View.GONE
+                acceptButton.isEnabled = false
+
+                confirmedTextView.visibility = View.GONE
 
                 Firebase.storage.reference
                     .child(u.email).downloadUrl
@@ -145,12 +150,50 @@ class FavoredTripsFragment : Fragment() {
         override fun onBindViewHolder(holder: FavUsersAdapter.FavUsersViewHolder, position: Int) {
             holder.bind(data[position])
 
+            var acceptButtonHide = false
+
+
+            FirebaseFirestore.getInstance().collection("trips").document(tripId!!)
+                .collection("confirmedUsers").addSnapshotListener  {
+                    res, error ->
+                    if(error != null) throw error
+                    if(res != null) {
+                        println("CONFIRMEDUSERS" + res.documents.filter { it.get("email") == data[position].email })
+                        println("CHECKISNULL" + res.documents.filter { it.get("email") == data[position].email }
+                            .isEmpty())
+                        if (res.documents.filter { it.get("email") == data[position].email }
+                                .isEmpty()) {
+                            println("HIDEBUTTON")
+
+                            holder.acceptButton.visibility = View.VISIBLE
+                            holder.acceptButton.isEnabled = true
+
+                            acceptButtonHide = true
+                        }
+                        else{
+
+                            holder.confirmedTextView.visibility = View.VISIBLE
+
+                        }
+                    }
+                }
+
+
+
+
+
+
             holder.acceptButton.setOnClickListener {
 
 
                 Toast.makeText( holder.itemView.context , "Confirmed", Toast.LENGTH_LONG).show()
 
                 val db = FirebaseFirestore.getInstance()
+
+
+
+
+                db.collection("trips").document(tripId!!).collection("confirmedUsers").add(  data[position] )
 
 
 
@@ -173,6 +216,10 @@ class FavoredTripsFragment : Fragment() {
                                             "Confirmed",
                                             Toast.LENGTH_LONG
                                         ).show()
+
+                                        holder.acceptButton.visibility = View.GONE
+                                        holder.acceptButton.isEnabled = false
+                                        holder.confirmedTextView.visibility = View.VISIBLE
 
                                     }
                             }

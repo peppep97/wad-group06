@@ -54,9 +54,9 @@
                         android:id="@+id/tvNickName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="40dp"
                         android:text="Marco Rossi"
                         android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.076"
                         app:layout_constraintStart_toStartOf="parent"
@@ -74,6 +74,18 @@
                         app:layout_constraintStart_toEndOf="@+id/tvNickName"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintVertical_bias="0.49" />
+
+                    <TextView
+                        android:id="@+id/AcceptedTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Confirmed"
+                        android:textColor="#489C13"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.683"
+                        app:layout_constraintStart_toEndOf="@+id/tvNickName"
+                        app:layout_constraintTop_toTopOf="parent" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </LinearLayout>

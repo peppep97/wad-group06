@@ -298,7 +298,7 @@
                         android:text="Find out who liked this trip?"
                         android:textSize="12sp"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@+id/btnShowFavoredList2"
+                        app:layout_constraintEnd_toStartOf="@+id/btnDeleteTrip"
                         app:layout_constraintHorizontal_bias="0.5"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="@+id/tvDescription"
@@ -306,7 +306,7 @@
                         tools:ignore="MissingConstraints" />
 
                     <Button
-                        android:id="@+id/btnShowFavoredList2"
+                        android:id="@+id/btnDeleteTrip"
                         style="@style/Widget.MaterialComponents.Button.TextButton"
                         android:layout_width="wrap_content"
                         android:layout_height="50dp"
