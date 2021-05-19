@@ -177,12 +177,9 @@ class ShowProfileFragment : Fragment() {
 
             googleSignInClient.signOut()
 
-
             val intent = Intent(context, LoginActivity::class.java)
             startActivity(intent)
-
         }
-
     }
 
 

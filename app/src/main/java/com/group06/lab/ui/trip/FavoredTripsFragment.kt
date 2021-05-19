@@ -8,34 +8,26 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.FragmentManager
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import coil.request.CachePolicy
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import com.group06.lab.MainActivity
 import com.group06.lab.R
-import com.group06.lab.extensions.toString
 import com.group06.lab.utils.Database
-import java.text.DecimalFormat
 import java.util.*
-import kotlin.properties.Delegates
 
 class FavoredTripsFragment : Fragment() {
 
     private lateinit var tvEmpty: TextView
     private lateinit var rvTripList: RecyclerView
 
-    public var tripId: String? = null
-    public var availableSeats: Int? = null
+    var tripId: String? = null
+    var availableSeats: Int? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -53,10 +45,6 @@ class FavoredTripsFragment : Fragment() {
         tvEmpty = view.findViewById(R.id.tvEmpty)
         rvTripList = view.findViewById(R.id.rvTripList)
 
-
-
-
-//        val fTrips = Database.getInstance(activity).myTripList.map { t -> t.id }
         val favoredTripsUsers =
             Database.getInstance(activity).favoredList.filter { f -> f.tripId == tripId }.filter{ f -> f.userEmail != MainActivity.mAuth.currentUser!!.email!! }.map {t -> t.userEmail}.distinct()
 
@@ -79,18 +67,6 @@ class FavoredTripsFragment : Fragment() {
                 rvTripList.layoutManager = LinearLayoutManager(context)
                 rvTripList.adapter = adapter
             }
-//        val tripIds = favoredTrips.map{f -> f.tripId}
-//        val allTrips = Database.getInstance(activity).tripList.filter { f -> tripIds.contains(f.id) }
-
-
-
-
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        menu.clear()
-        inflater.inflate(R.menu.main, menu)
     }
 
     private fun showList(size: Int) {
@@ -110,7 +86,6 @@ class FavoredTripsFragment : Fragment() {
 
         class FavUsersViewHolder(v: View) : RecyclerView.ViewHolder(v) {
             val tvNickName: TextView = v.findViewById(R.id.tvNickName)
-//            val tvEmail: TextView = v.findViewById(R.id.tvEmail)
             val cardUser = v.findViewById<CardView>(R.id.cardUser)
             val imgProfile = v.findViewById<ImageView>(R.id.imgProfile)
             val acceptButton = v.findViewById<Button>(R.id.acceptUserButton)
@@ -118,7 +93,6 @@ class FavoredTripsFragment : Fragment() {
 
             fun bind(u: User) {
                 tvNickName.text = u.nickName
-//                tvEmail.text = u.email
 
                 acceptButton.visibility = View.GONE
                 acceptButton.isEnabled = false
@@ -152,10 +126,9 @@ class FavoredTripsFragment : Fragment() {
 
             var acceptButtonHide = false
 
-
             FirebaseFirestore.getInstance().collection("trips").document(tripId!!)
                 .collection("confirmedUsers").addSnapshotListener  {
-                    res, error ->
+                        res, error ->
                     if(error != null) throw error
                     if(res != null) {
                         println("CONFIRMEDUSERS" + res.documents.filter { it.get("email") == data[position].email })
@@ -171,122 +144,60 @@ class FavoredTripsFragment : Fragment() {
                             acceptButtonHide = true
                         }
                         else{
-
                             holder.confirmedTextView.visibility = View.VISIBLE
-
                         }
                     }
                 }
 
-
-
-
-
-
             holder.acceptButton.setOnClickListener {
-
-
                 Toast.makeText( holder.itemView.context , "Confirmed", Toast.LENGTH_LONG).show()
-
                 val db = FirebaseFirestore.getInstance()
-
-
-
 
                 db.collection("trips").document(tripId!!).collection("confirmedUsers").add(  data[position] )
 
-
-
                 var currentSeatsAvailability = db.collection("trips")
                     .document(tripId!!).get().addOnSuccessListener {
-                        res ->
-                            val Trip = res.toObject(Trip::class.java)
-                            println("HERE IS THE TRIP " + Trip?.availableSeats)
+                            res ->
+                        val Trip = res.toObject(Trip::class.java)
+                        println("HERE IS THE TRIP " + Trip?.availableSeats)
 
 
-                            if(Trip?.availableSeats!! > 0) {
-                                val db = FirebaseFirestore.getInstance()
-                                db.collection("trips")
-                                    .document(tripId!!)
-                                    .update("availableSeats", Trip?.availableSeats?.minus(1))
-                                    .addOnSuccessListener {
+                        if(Trip?.availableSeats!! > 0) {
+                            val db = FirebaseFirestore.getInstance()
+                            db.collection("trips")
+                                .document(tripId!!)
+                                .update("availableSeats", Trip?.availableSeats?.minus(1))
+                                .addOnSuccessListener {
 
-                                        Toast.makeText(
-                                            holder.itemView.context,
-                                            "Confirmed",
-                                            Toast.LENGTH_LONG
-                                        ).show()
+                                    Toast.makeText(
+                                        holder.itemView.context,
+                                        "Confirmed",
+                                        Toast.LENGTH_LONG
+                                    ).show()
 
-                                        holder.acceptButton.visibility = View.GONE
-                                        holder.acceptButton.isEnabled = false
-                                        holder.confirmedTextView.visibility = View.VISIBLE
+                                    holder.acceptButton.visibility = View.GONE
+                                    holder.acceptButton.isEnabled = false
+                                    holder.confirmedTextView.visibility = View.VISIBLE
 
-                                    }
-                            }
+                                }
+                        }
                         else{
-                                Toast.makeText(
-                                    holder.itemView.context,
-                                    "No more seats available",
-                                    Toast.LENGTH_LONG
-                                ).show()
-                            }
+                            Toast.makeText(
+                                holder.itemView.context,
+                                "No more seats available",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
                     }
 
-
-
-
-                        }
-//                    }
-
-
-
-//
-//
-//
-//                val db = FirebaseFirestore.getInstance()
-//
-//                var currentSeatsAvailability = db.collection("trips")
-//                    .document(tripId!!).addSnapshotListener{
-//                        data, error ->
-//                        if(error != null) throw error
-//                        if(data != null) {
-//                            println("DAI FAMMI VEDERE " + data["availableSeats"].toString().toInt())
-//
-//                            db.collection("trips")
-//                                .document(tripId!!)
-//                                .update( "availableSeats" , data["availableSeats"].toString().toInt() - 1 )
-//                                .addOnSuccessListener {
-//
-//                                    Toast.makeText( holder.itemView.context , "Confirmed", Toast.LENGTH_LONG).show()
-//
-//                                }
-//                        }
-//                    }
-//
-//
-//
-//
-//                //Update availability, if the availability != 0
-//                db.collection("trips")
-//                    .document(tripId!!)
-//                    .update( "availableSeats" ,    )
-//
-//            }
-
+            }
 
             holder.cardUser.setOnClickListener {
                 // TODO: go to the profile details of this user
 
-
-
                 holder.cardUser.findNavController()
                     .navigate(R.id.action_favored_trip_list_to_show_profile, Bundle().apply {
                         putString("email", data[position].email )
-
-
-//                        putInt("index", position)
-//                        putString("tripId", data[position].id)
-//                        putString("caller", caller)
                     })
             }
         }

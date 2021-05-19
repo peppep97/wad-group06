@@ -18,8 +18,11 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
+import com.group06.lab.profile.ShowProfileFragment
 import com.group06.lab.ui.trip.FavoriteTrip
+import com.group06.lab.ui.trip.OthersTripListFragment
 import com.group06.lab.ui.trip.Trip
+import com.group06.lab.ui.trip.TripListFragment
 import com.group06.lab.utils.Database
 
 class MainActivity : AppCompatActivity() {
@@ -87,6 +90,7 @@ class MainActivity : AppCompatActivity() {
             }
     }
 
+
     private fun loadData() {
         val drawer = navView.getHeaderView(0)
 
@@ -128,5 +132,14 @@ class MainActivity : AppCompatActivity() {
         loadData()
         val navController = findNavController(R.id.nav_host_fragment)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+    }
+
+    override fun onBackPressed() {
+        //prevent going back to login activity
+        val navFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment)
+        val mapFragment = navFragment!!.childFragmentManager.primaryNavigationFragment
+        if (mapFragment !is  OthersTripListFragment && mapFragment !is TripListFragment && mapFragment !is ShowProfileFragment){
+            super.onBackPressed()
+        }
     }
 }

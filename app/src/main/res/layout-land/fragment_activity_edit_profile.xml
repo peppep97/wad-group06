@@ -78,70 +78,61 @@
         app:layout_constraintStart_toEndOf="@+id/constraintLayout"
         app:layout_constraintTop_toTopOf="parent">
 
-        <EditText
+        <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/etFullName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:drawableStart="@drawable/ic_person"
-            android:drawablePadding="5dp"
             android:hint="Full Name"
-            android:inputType="textShortMessage|textAutoCorrect|text"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:textColor="@color/textColorMain"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:startIconDrawable="@drawable/ic_person">
 
-        <EditText
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textShortMessage|textAutoCorrect|text" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/etNickName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:drawableStart="@drawable/ic_keyboard"
-            android:drawablePadding="5dp"
-            android:gravity="clip_horizontal"
             android:hint="Nickname"
-            android:inputType="textShortMessage|textAutoCorrect|text"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:textColor="@color/textColorMain"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/etFullName" />
+            android:layout_marginTop="16dp"
+            app:startIconDrawable="@drawable/ic_keyboard">
 
-        <EditText
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textShortMessage|textAutoCorrect|text" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/etEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:drawableStart="@drawable/ic_email"
-            android:drawablePadding="5dp"
-            android:gravity="clip_horizontal"
             android:hint="Email Address"
-            android:inputType="textAutoCorrect|textEmailAddress"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:textColor="@color/textColorMain"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/etNickName" />
+            android:layout_marginTop="16dp"
+            app:startIconDrawable="@drawable/ic_email">
 
-        <EditText
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textAutoCorrect|textEmailAddress"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/etLocation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:drawableStart="@drawable/ic_location_on"
-            android:drawablePadding="5dp"
-            android:gravity="clip_horizontal"
             android:hint="Location"
-            android:inputType="textShortMessage|textAutoCorrect|text"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:textColor="@color/textColorMain"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/etEmail" />
+            android:layout_marginTop="16dp"
+            app:startIconDrawable="@drawable/ic_location_on">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textShortMessage|textAutoCorrect|text"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
     </LinearLayout>
 
 

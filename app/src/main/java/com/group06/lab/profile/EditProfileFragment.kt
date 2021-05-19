@@ -1,24 +1,24 @@
 package com.group06.lab.profile
 
 import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.*
+import android.view.inputmethod.InputMethodManager
 import android.widget.*
-import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.drawable.toBitmap
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
 import coil.load
 import coil.request.CachePolicy
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
@@ -34,10 +34,10 @@ class EditProfileFragment : Fragment() {
     val REQUEST_IMAGE_GALLERY = 2
     private var profileChanged = false
 
-    private lateinit var etFullName: EditText
-    private lateinit var etNickName: EditText
-    private lateinit var etEmail: EditText
-    private lateinit var etLocation: EditText
+    private lateinit var etFullName: TextInputLayout
+    private lateinit var etNickName: TextInputLayout
+    private lateinit var etEmail: TextInputLayout
+    private lateinit var etLocation: TextInputLayout
     private lateinit var imgProfile: ImageView
     private lateinit var snackBar: Snackbar
 
@@ -71,7 +71,7 @@ class EditProfileFragment : Fragment() {
         imgProfile = view.findViewById(R.id.imgProfile)
 
         etEmail.isEnabled = false
-        etEmail.setText(FirebaseAuth.getInstance().currentUser!!.email!!)
+        etEmail.editText?.setText(FirebaseAuth.getInstance().currentUser!!.email!!)
 
         snackBar = Snackbar.make(requireActivity().findViewById(android.R.id.content),
             "Profile updated correctly", Snackbar.LENGTH_LONG)
@@ -80,17 +80,17 @@ class EditProfileFragment : Fragment() {
         }
 
         setFragmentResultListener("requestKeyShowToEdit") { _, bundle ->
-            etFullName.setText(bundle.getString("group06.lab.fullName"))
-            etNickName.setText(bundle.getString("group06.lab.nickName"))
+            etFullName.editText?.setText(bundle.getString("group06.lab.fullName"))
+            etNickName.editText?.setText(bundle.getString("group06.lab.nickName"))
             //etEmail.setText(bundle.getString("group06.lab.email"))
-            etLocation.setText(bundle.getString("group06.lab.location"))
+            etLocation.editText?.setText(bundle.getString("group06.lab.location"))
         }
 
         if (savedInstanceState != null){
-            etFullName.setText(savedInstanceState.getString("group06.lab.fullName"))
-            etNickName.setText(savedInstanceState.getString("group06.lab.nickName"))
+            etFullName.editText?.setText(savedInstanceState.getString("group06.lab.fullName"))
+            etNickName.editText?.setText(savedInstanceState.getString("group06.lab.nickName"))
             //etEmail.setText(savedInstanceState.getString("group06.lab.email"))
-            etLocation.setText(savedInstanceState.getString("group06.lab.location"))
+            etLocation.editText?.setText(savedInstanceState.getString("group06.lab.location"))
 
             profileChanged = savedInstanceState.getBoolean("group06.lab.profileChanged")
             if (profileChanged){
@@ -157,8 +157,8 @@ class EditProfileFragment : Fragment() {
         return when (item.itemId) {
             R.id.saveEdit -> {
 
-                var user = User(etFullName.text.toString(), etNickName.text.toString(),
-                etEmail.text.toString(), etLocation.text.toString())
+                val user = User(etFullName.editText?.text.toString(), etNickName.editText?.text.toString(),
+                etEmail.editText?.text.toString(), etLocation.editText?.text.toString())
 
                 val db = FirebaseFirestore.getInstance()
                 db.collection("users")
@@ -181,9 +181,11 @@ class EditProfileFragment : Fragment() {
                         .addOnSuccessListener { taskSnapshot ->
                             snackBar.show()
                             findNavController().navigate(R.id.action_editProfileActivity_to_showProfileActivity)
+                            view?.hideKeyboard()
                         }
                 }else{
                     findNavController().navigate(R.id.action_editProfileActivity_to_showProfileActivity)
+                    view?.hideKeyboard()
                 }
                 true
             }
@@ -194,10 +196,10 @@ class EditProfileFragment : Fragment() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putString("group06.lab.fullName", etFullName.text.toString())
-        outState.putString("group06.lab.nickName", etNickName.text.toString())
-        outState.putString("group06.lab.email", etEmail.text.toString())
-        outState.putString("group06.lab.location", etLocation.text.toString())
+        outState.putString("group06.lab.fullName", etFullName.editText?.text.toString())
+        outState.putString("group06.lab.nickName", etNickName.editText?.text.toString())
+        outState.putString("group06.lab.email", etEmail.editText?.text.toString())
+        outState.putString("group06.lab.location", etLocation.editText?.text.toString())
         outState.putString("group06.lab.image", "profilepictemp.jpg")
         outState.putBoolean("group06.lab.profileChanged", profileChanged)
     }
@@ -244,6 +246,11 @@ class EditProfileFragment : Fragment() {
         val data = baos.toByteArray()
 
         return imgRef.putBytes(data)
+    }
+
+    fun View.hideKeyboard() {
+        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(windowToken, 0)
     }
 
 }

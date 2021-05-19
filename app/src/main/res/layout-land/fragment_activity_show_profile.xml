@@ -38,14 +38,18 @@
         <LinearLayout
             android:id="@+id/fullNameLayout"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:orientation="horizontal">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp">
 
             <ImageView
                 android:id="@+id/imageView"
-                android:layout_width="35dp"
-                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_gravity="bottom"
+                android:paddingRight="16dp"
                 android:scaleType="fitCenter"
                 app:srcCompat="@drawable/ic_person" />
 
@@ -60,8 +64,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Full Name:"
-                    android:textColor="@color/textColorAccent" />
+                    android:text="Full Name"
+                    android:textColor="@color/textColorAccent"
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/tvFullName"
@@ -69,7 +74,8 @@
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
                     android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                    android:textColor="@color/textColorMain" />
+                    android:textColor="@color/textColorMain"
+                    android:textSize="14sp" />
             </LinearLayout>
 
         </LinearLayout>
@@ -77,15 +83,18 @@
         <LinearLayout
             android:id="@+id/nicknameLayout"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp">
 
             <ImageView
                 android:id="@+id/imageView2"
-                android:layout_width="35dp"
-                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_gravity="bottom"
+                android:paddingRight="16dp"
                 android:scaleType="fitCenter"
                 app:srcCompat="@drawable/ic_keyboard" />
 
@@ -99,8 +108,9 @@
                     android:id="@+id/textView3"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Nick Name:"
-                    android:textColor="@color/textColorAccent" />
+                    android:text="Nick Name"
+                    android:textColor="@color/textColorAccent"
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/tvNickName"
@@ -108,7 +118,8 @@
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
                     android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                    android:textColor="@color/textColorMain" />
+                    android:textColor="@color/textColorMain"
+                    android:textSize="14sp" />
             </LinearLayout>
 
         </LinearLayout>
@@ -116,15 +127,18 @@
         <LinearLayout
             android:id="@+id/emailLayout"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp">
 
             <ImageView
                 android:id="@+id/imageView3"
-                android:layout_width="35dp"
-                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_gravity="bottom"
+                android:paddingRight="16dp"
                 android:scaleType="fitCenter"
                 app:srcCompat="@drawable/ic_email" />
 
@@ -138,8 +152,9 @@
                     android:id="@+id/textView4"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Email:"
-                    android:textColor="@color/textColorAccent" />
+                    android:text="Email"
+                    android:textColor="@color/textColorAccent"
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/tvEmail"
@@ -147,7 +162,8 @@
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
                     android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                    android:textColor="@color/textColorMain" />
+                    android:textColor="@color/textColorMain"
+                    android:textSize="14sp" />
 
             </LinearLayout>
 
@@ -156,15 +172,18 @@
         <LinearLayout
             android:id="@+id/locationLayout"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp">
 
             <ImageView
                 android:id="@+id/imageView4"
-                android:layout_width="35dp"
-                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_gravity="bottom"
+                android:paddingRight="16dp"
                 android:scaleType="fitCenter"
                 app:srcCompat="@drawable/ic_location_on" />
 
@@ -178,8 +197,9 @@
                     android:id="@+id/textView5"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Location:"
-                    android:textColor="@color/textColorAccent" />
+                    android:text="Location"
+                    android:textColor="@color/textColorAccent"
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/tvLocation"
@@ -187,7 +207,8 @@
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
                     android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                    android:textColor="@color/textColorMain" />
+                    android:textColor="@color/textColorMain"
+                    android:textSize="14sp" />
             </LinearLayout>
 
         </LinearLayout>
@@ -196,13 +217,11 @@
             android:id="@+id/logout_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="80dp"
+            android:layout_marginTop="16dp"
             android:text="Logout"
-            android:textAlignment="center"
 
 
-
-            />
+            android:textAlignment="center" />
 
 
     </LinearLayout>
