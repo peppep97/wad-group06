@@ -159,15 +159,30 @@ class FavoredTripsFragment : Fragment() {
                         res ->
                             val Trip = res.toObject(Trip::class.java)
                             println("HERE IS THE TRIP " + Trip?.availableSeats)
-                            val db = FirebaseFirestore.getInstance()
-                            db.collection("trips")
-                                .document(tripId!!)
-                                .update("availableSeats" , Trip?.availableSeats?.minus(1))
-                                .addOnSuccessListener {
 
-                                    Toast.makeText( holder.itemView.context , "Confirmed", Toast.LENGTH_LONG).show()
 
-                                }
+                            if(Trip?.availableSeats!! > 0) {
+                                val db = FirebaseFirestore.getInstance()
+                                db.collection("trips")
+                                    .document(tripId!!)
+                                    .update("availableSeats", Trip?.availableSeats?.minus(1))
+                                    .addOnSuccessListener {
+
+                                        Toast.makeText(
+                                            holder.itemView.context,
+                                            "Confirmed",
+                                            Toast.LENGTH_LONG
+                                        ).show()
+
+                                    }
+                            }
+                        else{
+                                Toast.makeText(
+                                    holder.itemView.context,
+                                    "No more seats available",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            }
                     }
 
 

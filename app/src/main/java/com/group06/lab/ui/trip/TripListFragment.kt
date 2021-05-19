@@ -50,7 +50,7 @@ class TripListFragment : Fragment() {
         val addFab = view.findViewById<FloatingActionButton>(R.id.addFab)
 
         addFab.setOnClickListener {
-            findNavController().navigate(R.id.action_trip_list_to_trip_edit, Bundle().apply {
+            findNavController().navigate(R.id.action_trip_list_to_trip_edit2, Bundle().apply {
                 putBoolean("edit", false)
             })
         }

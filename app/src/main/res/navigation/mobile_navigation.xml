@@ -22,6 +22,9 @@
         <action
             android:id="@+id/action_trip_details_to_favored_trip_list"
             app:destination="@id/favored_trip_list" />
+        <action
+            android:id="@+id/action_trip_details_to_trip_list"
+            app:destination="@id/trip_list" />
     </fragment>
     <fragment
         android:id="@+id/trip_edit"
@@ -98,6 +101,9 @@
         <action
             android:id="@+id/action_othersTripListFragment_to_trip_details"
             app:destination="@id/trip_details" />
+        <action
+            android:id="@+id/action_trip_list_to_trip_edit2"
+            app:destination="@id/trip_edit" />
     </fragment>
     <fragment
         android:id="@+id/favored_trip_list"

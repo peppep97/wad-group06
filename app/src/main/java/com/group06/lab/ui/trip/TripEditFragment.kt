@@ -247,7 +247,7 @@ class TripEditFragment : Fragment() {
 
                     val trips = FirebaseFirestore.getInstance().collection("trips")
                     val doc: DocumentReference = if (edit!!){
-                        trips.document(id)
+                        trips.document(tripId!!)
                     }else{
                         trips.document()
                     }
@@ -261,17 +261,17 @@ class TripEditFragment : Fragment() {
                             .addOnFailureListener {
                                 // Handle unsuccessful uploads
                             }.addOnSuccessListener { taskSnapshot ->
-                                findNavController().navigate(R.id.action_trip_edit_to_trip_list)
+                                findNavController().navigate(R.id.action_trip_edit_to_othersTripListFragment)
                             }
                     }else{
-                        findNavController().navigate(R.id.action_trip_edit_to_trip_list)
+                        findNavController().navigate(R.id.action_trip_edit_to_othersTripListFragment)
                     }
                 }
                 return true
             }
             android.R.id.home -> {
                 //Handling the toolbar back button
-                findNavController().navigate(R.id.action_trip_edit_to_trip_list)
+                findNavController().navigate(R.id.action_trip_edit_to_othersTripListFragment)
                 return true
             }
         }

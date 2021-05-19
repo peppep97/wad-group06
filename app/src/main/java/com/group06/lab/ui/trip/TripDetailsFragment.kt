@@ -50,6 +50,7 @@ class TripDetailsFragment : Fragment() {
     private var param2: String? = null
     private lateinit var fabFav: FloatingActionButton
     private lateinit var btnShowFavoredList: Button
+    private lateinit var btnDeleteTrip: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,7 +76,7 @@ class TripDetailsFragment : Fragment() {
 
         fabFav = view.findViewById<FloatingActionButton>(R.id.fabFav)
         btnShowFavoredList = view.findViewById<Button>(R.id.btnShowFavoredList)
-
+        btnDeleteTrip = view.findViewById<Button>(R.id.btnDeleteTrip)
 
         val t: Trip = when (caller) {
             "UserTrips" -> {
@@ -99,6 +100,9 @@ class TripDetailsFragment : Fragment() {
 
         fabFav.visibility =
             if (t.userEmail == MainActivity.mAuth.currentUser!!.email!!) View.GONE else View.VISIBLE
+
+        btnShowFavoredList.visibility = if (t.userEmail == MainActivity.mAuth.currentUser!!.email!!) View.VISIBLE else View.GONE
+        btnDeleteTrip.visibility = if (t.userEmail == MainActivity.mAuth.currentUser!!.email!!) View.VISIBLE else View.GONE
 
         if (t.userEmail == MainActivity.mAuth.currentUser!!.email!!) fabFav.hide()
 
@@ -197,6 +201,26 @@ class TripDetailsFragment : Fragment() {
                     putInt("AvailableSeats", t.availableSeats)
                 })
         }
+
+        btnDeleteTrip.setOnClickListener {
+
+            //Delete trip from database
+            var db = FirebaseFirestore.getInstance().collection("trips")
+                .document(tripId!!)
+                .delete()
+
+
+
+            findNavController().navigate(
+                R.id.action_trip_details_to_trip_list,
+                Bundle().apply {
+                    putString("tripId", tripId)
+                    putInt("AvailableSeats", t.availableSeats)
+                })
+
+        }
+
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
