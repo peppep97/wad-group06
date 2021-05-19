@@ -38,6 +38,7 @@ public var tripId: String? = ""
 private var caller: String? = ""
 private var showEditButton: Boolean = false
 private lateinit var snackBar: Snackbar
+
 /**
  * A simple [Fragment] subclass.
  * Use the [TripDetailsFragment.newInstance] factory method to
@@ -78,13 +79,13 @@ class TripDetailsFragment : Fragment() {
 
         val t: Trip = when (caller) {
             "UserTrips" -> {
-                ArrayList<Trip>(Database.getInstance(context).myTripList.filter {it.id == tripId})[0]
+                ArrayList<Trip>(Database.getInstance(context).myTripList.filter { it.id == tripId })[0]
             }
             "OtherTrips" -> {
-                ArrayList<Trip>(Database.getInstance(context).tripList.filter {it.id == tripId})[0]
+                ArrayList<Trip>(Database.getInstance(context).tripList.filter { it.id == tripId })[0]
             }
             else -> {
-                ArrayList<Trip>(Database.getInstance(context).tripList.filter {it.id == tripId})[0]
+                ArrayList<Trip>(Database.getInstance(context).tripList.filter { it.id == tripId })[0]
             }
         }
 
@@ -94,20 +95,22 @@ class TripDetailsFragment : Fragment() {
 
 
 
-        if (savedInstanceState != null) {
-            showEditButton = t.userEmail == MainActivity.mAuth.currentUser!!.email!!
+        showEditButton = t.userEmail == MainActivity.mAuth.currentUser!!.email!!
 
-            fabFav.visibility =
-                if (t.userEmail == MainActivity.mAuth.currentUser!!.email!!) View.GONE else View.VISIBLE
+        fabFav.visibility =
+            if (t.userEmail == MainActivity.mAuth.currentUser!!.email!!) View.GONE else View.VISIBLE
 
-            if (t.userEmail == MainActivity.mAuth.currentUser!!.email!!) fabFav.hide()
+        if (t.userEmail == MainActivity.mAuth.currentUser!!.email!!) fabFav.hide()
 
-            btnShowFavoredList.visibility =
-                if (t.userEmail == MainActivity.mAuth.currentUser!!.email!!) View.VISIBLE else View.GONE
-        }
+        btnShowFavoredList.visibility =
+            if (t.userEmail == MainActivity.mAuth.currentUser!!.email!!) View.VISIBLE else View.GONE
 
-        snackBar = Snackbar.make(requireActivity().findViewById(android.R.id.content), "Added to favorite trips list", Snackbar.LENGTH_LONG)
-        snackBar.setAction("Dismiss"){
+        snackBar = Snackbar.make(
+            requireActivity().findViewById(android.R.id.content),
+            "Added to favorite trips list",
+            Snackbar.LENGTH_LONG
+        )
+        snackBar.setAction("Dismiss") {
             snackBar.dismiss()
         }
 
@@ -129,9 +132,14 @@ class TripDetailsFragment : Fragment() {
                 t.id
             )
 
-            val alreadyFavored = Database.getInstance(context).favoredList.filter{f -> f.tripId == t.id && f.userEmail == MainActivity.mAuth.currentUser!!.email!!}
+            val alreadyFavored =
+                Database.getInstance(context).favoredList.filter { f -> f.tripId == t.id && f.userEmail == MainActivity.mAuth.currentUser!!.email!! }
             if (alreadyFavored.isNotEmpty()) {
-                Snackbar.make(requireActivity().findViewById(android.R.id.content), "You have already liked this trip.", Snackbar.LENGTH_LONG).show()
+                Snackbar.make(
+                    requireActivity().findViewById(android.R.id.content),
+                    "You have already liked this trip.",
+                    Snackbar.LENGTH_LONG
+                ).show()
             } else {
                 val favoredList = FirebaseFirestore.getInstance().collection("favored_trips")
                 val doc = favoredList.document()
@@ -174,18 +182,20 @@ class TripDetailsFragment : Fragment() {
             imgTrip.setImageResource(R.drawable.ic_no_photo)
         } else {
             Firebase.storage.reference.child(t.imageUrl)
-                .downloadUrl.addOnSuccessListener {
-                        uri -> imgTrip.load(uri.toString()){
+                .downloadUrl.addOnSuccessListener { uri ->
+                    imgTrip.load(uri.toString()) {
                         memoryCachePolicy(CachePolicy.DISABLED) //to force reloading when image changes
                     }
                 }
         }
 
         btnShowFavoredList.setOnClickListener {
-            findNavController().navigate(R.id.action_trip_details_to_favored_trip_list, Bundle().apply {
-                putString("tripId", tripId)
-                putInt("AvailableSeats", t.availableSeats)
-            })
+            findNavController().navigate(
+                R.id.action_trip_details_to_favored_trip_list,
+                Bundle().apply {
+                    putString("tripId", tripId)
+                    putInt("AvailableSeats", t.availableSeats)
+                })
         }
     }
 
