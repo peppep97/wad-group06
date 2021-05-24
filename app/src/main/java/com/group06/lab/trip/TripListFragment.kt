@@ -1,41 +1,26 @@
-package com.group06.lab.ui.trip
+package com.group06.lab.trip
 
 import android.os.Bundle
+import android.util.Log
 import android.view.*
-import android.widget.Button
-import android.widget.ImageView
 import android.widget.TextView
-import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.navigation.findNavController
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import coil.load
-import coil.request.CachePolicy
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.ktx.storage
-import com.group06.lab.MainActivity
 import com.group06.lab.R
 import com.group06.lab.utils.Database
-import java.text.DecimalFormat
-import java.util.*
-import com.group06.lab.extensions.toString
 
-
-/**
- * A simple [Fragment] subclass.
- * Use the [TripListFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 
 class TripListFragment : Fragment() {
 
     private lateinit var tvEmpty: TextView
     private lateinit var rvTripList: RecyclerView
+
+    private val vm by viewModels<TripViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -59,14 +44,18 @@ class TripListFragment : Fragment() {
         rvTripList = view.findViewById(R.id.rvTripList)
 
         showList(Database.getInstance(activity).myTripList.size)
-        val adapter = TripAdapter(Database.getInstance(activity).myTripList,"UserTrips", parentFragmentManager)
+
+        val adapter = TripAdapter(Database.getInstance(activity).myTripList,
+            "UserTrips",
+            parentFragmentManager
+        )
 
         rvTripList.layoutManager = LinearLayoutManager(context)
         rvTripList.adapter = adapter
 
         //tripList = Database.getInstance(context).tripList
 
-        val db = FirebaseFirestore.getInstance()
+       /* val db = FirebaseFirestore.getInstance()
         db.collection("trips")
             .addSnapshotListener { value, error ->
                 if (error != null) throw error
@@ -80,7 +69,12 @@ class TripListFragment : Fragment() {
 
                 adapter.notifyDataSetChanged()
                 showList(Database.getInstance(activity).myTripList.size)
-            }
+            }*/
+
+
+        vm.getTrips().observe(viewLifecycleOwner, Observer {
+            trips -> Log.d("new", "new data " + trips.size)
+        })
 
         rvTripList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {

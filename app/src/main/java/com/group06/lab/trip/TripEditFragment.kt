@@ -1,4 +1,4 @@
-package com.group06.lab.ui.trip
+package com.group06.lab.trip
 
 import android.app.AlertDialog
 import android.content.ActivityNotFoundException
@@ -123,7 +123,7 @@ class TripEditFragment : Fragment() {
             index = arguments?.getInt("index")!!
             tripId = arguments?.getString("tripId")
 
-            val t = ArrayList<Trip>(Database.getInstance(context).tripList.filter {t -> t.id == tripId})[0]
+            val t = ArrayList<Trip>(Database.getInstance(context).tripList.filter { t -> t.id == tripId})[0]
 
             etDeparture.editText?.setText(t.departure)
             etArrival.editText?.setText(t.arrival)
@@ -231,7 +231,8 @@ class TripEditFragment : Fragment() {
             R.id.save -> {
                 //save data
                 if (validateForm()){
-                    val t = Trip("",
+                    val t = Trip(
+                        "",
                         imgName,
                         etDeparture.editText?.text.toString(),
                         etArrival.editText?.text.toString(),
@@ -243,7 +244,7 @@ class TripEditFragment : Fragment() {
                         etPrice.editText?.text.toString().toDouble(),
                         etDescription.editText?.text.toString(),
                         mAuth.currentUser!!.email!!
-                        )
+                    )
 
                     val trips = FirebaseFirestore.getInstance().collection("trips")
                     val doc: DocumentReference = if (edit!!){

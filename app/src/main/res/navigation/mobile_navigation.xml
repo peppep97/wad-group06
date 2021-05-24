@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/trip_details"
-        android:name="com.group06.lab.ui.trip.TripDetailsFragment"
+        android:name="com.group06.lab.trip.TripDetailsFragment"
         android:label="Trip Details"
         tools:layout="@layout/fragment_trip_detail" >
         <action
@@ -36,7 +36,7 @@
     </fragment>
     <fragment
         android:id="@+id/trip_edit"
-        android:name="com.group06.lab.ui.trip.TripEditFragment"
+        android:name="com.group06.lab.trip.TripEditFragment"
         android:label="Edit Trip" >
         <action
             android:id="@+id/action_trip_edit_to_trip_list"
@@ -57,7 +57,7 @@
     </fragment>
     <fragment
         android:id="@+id/my_trip_list"
-        android:name="com.group06.lab.ui.trip.TripListFragment"
+        android:name="com.group06.lab.trip.TripListFragment"
         android:label="My Trips">
         <action
             android:id="@+id/action_trip_list_to_trip_details"
@@ -108,7 +108,7 @@
     </fragment>
     <fragment
         android:id="@+id/trip_list"
-        android:name="com.group06.lab.ui.trip.OthersTripListFragment"
+        android:name="com.group06.lab.trip.OthersTripListFragment"
         android:label="Trips"
         tools:layout="@layout/fragment_others_trip_list">
         <action
@@ -128,7 +128,7 @@
     </fragment>
     <fragment
         android:id="@+id/favored_trip_list"
-        android:name="com.group06.lab.ui.trip.FavoredTripsFragment"
+        android:name="com.group06.lab.trip.FavoredTripsFragment"
         app:enterAnim="@anim/custom_from_top"
         app:exitAnim="@anim/nav_default_exit_anim"
         app:popEnterAnim="@anim/nav_default_exit_anim"

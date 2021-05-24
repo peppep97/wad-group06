@@ -1,9 +1,8 @@
-package com.group06.lab.ui.trip
+package com.group06.lab.trip
 
 import android.annotation.SuppressLint
-import android.content.Context
-import android.opengl.Visibility
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,12 +25,12 @@ class TripAdapter() :
     RecyclerView.Adapter<TripAdapter.TripViewHolder>(), Filterable {
 
     var fm: FragmentManager? = null
-    var data: MutableList<Trip> = ArrayList()
+    var data: List<Trip> = ArrayList()
     var dataFull: MutableList<Trip> = ArrayList()
     var caller: String = ""
 
     constructor(
-        allData: MutableList<Trip>,
+        allData: List<Trip>,
         caller: String,
         fragmentManager: FragmentManager?
     ) : this() {
@@ -84,7 +83,7 @@ class TripAdapter() :
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): TripAdapter.TripViewHolder {
+    ): TripViewHolder {
         return TripViewHolder(
             LayoutInflater.from(parent.context)
                 .inflate(R.layout.trip_list_item, parent, false)
@@ -99,15 +98,17 @@ class TripAdapter() :
                     .navigate(R.id.action_trip_list_to_trip_details, Bundle().apply {
                         putInt("index", position)
                         putString("tripId", data[position].id)
+                        Log.d("dataid", data[position].id)
                         putString("caller", caller)
                     })
-            else if (caller == "OtherTrips")
+            else if (caller == "OtherTrips"){
                 holder.cardTrip.findNavController()
                     .navigate(R.id.action_othersTripListFragment_to_trip_details, Bundle().apply {
                         putInt("index", position)
                         putString("tripId", data[position].id)
                         putString("caller", caller)
                     })
+            }
         }
 
         if (caller == "UserTrips") {
@@ -179,10 +180,11 @@ class TripAdapter() :
             return results
         }
 
+        //TODO fix
         override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
-            data.clear()
+            /*data.clear()
             data.addAll(results?.values as MutableList<Trip>)
-            notifyDataSetChanged()
+            notifyDataSetChanged()*/
         }
     }
 }

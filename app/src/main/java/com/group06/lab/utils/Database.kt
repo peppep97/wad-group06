@@ -1,8 +1,8 @@
 package com.group06.lab.utils
 
 import android.content.Context
-import com.group06.lab.ui.trip.FavoriteTrip
-import com.group06.lab.ui.trip.Trip
+import com.group06.lab.trip.FavoriteTrip
+import com.group06.lab.trip.Trip
 
 class Database private constructor (context: Context?) {
 
@@ -14,8 +14,6 @@ class Database private constructor (context: Context?) {
                 ?: Database(context)
                     .also { INSTANCE = it }
     }
-
-    private val sharedPreferences = context?.getSharedPreferences("database", Context.MODE_PRIVATE)
 
     var tripList: ArrayList<Trip> = ArrayList()
     var myTripList: ArrayList<Trip> = ArrayList()

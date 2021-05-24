@@ -1,4 +1,4 @@
-package com.group06.lab.ui.trip
+package com.group06.lab.trip
 
 import android.os.Bundle
 import android.view.*
@@ -63,7 +63,10 @@ class FavoredTripsFragment : Fragment() {
                         usersList.add(u)
                 }
                 showList(usersList.size)
-                val adapter = FavUsersAdapter(usersList)
+                val adapter =
+                    FavUsersAdapter(
+                        usersList
+                    )
                 rvTripList.layoutManager = LinearLayoutManager(context)
                 rvTripList.adapter = adapter
             }
@@ -114,14 +117,14 @@ class FavoredTripsFragment : Fragment() {
         override fun onCreateViewHolder(
             parent: ViewGroup,
             viewType: Int
-        ): FavUsersAdapter.FavUsersViewHolder {
+        ): FavUsersViewHolder {
             return FavUsersViewHolder(
                 LayoutInflater.from(parent.context)
                     .inflate(R.layout.favored_trips_users_item, parent, false)
             )
         }
 
-        override fun onBindViewHolder(holder: FavUsersAdapter.FavUsersViewHolder, position: Int) {
+        override fun onBindViewHolder(holder: FavUsersViewHolder, position: Int) {
             holder.bind(data[position])
 
             var acceptButtonHide = false

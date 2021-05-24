@@ -1,35 +1,35 @@
-package com.group06.lab.ui.trip
+package com.group06.lab.trip
 
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.view.inputmethod.EditorInfo
 import android.widget.SearchView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.firebase.firestore.FirebaseFirestore
 import com.group06.lab.R
-import com.group06.lab.utils.Database
 
 class OthersTripListFragment : Fragment() {
 
     private lateinit var tvEmpty: TextView
-
-    companion object {
-        lateinit var rvTripList: RecyclerView
-    }
+    private lateinit var rvTripList: RecyclerView
 
     var adapter: TripAdapter? = null
+
+    private val vm by viewModels<TripViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         setHasOptionsMenu(true)
-        // Inflate the layout for this fragment
+
         return inflater.inflate(R.layout.fragment_others_trip_list, container, false)
     }
 
@@ -46,30 +46,38 @@ class OthersTripListFragment : Fragment() {
         tvEmpty = view.findViewById(R.id.tvEmpty)
         rvTripList = view.findViewById(R.id.rvTripList)
 
-        showList(Database.getInstance(activity).tripList.size)
+        rvTripList.layoutManager = LinearLayoutManager(context)
 
-        val db = FirebaseFirestore.getInstance()
-        db.collection("trips")
-            .addSnapshotListener { value, error ->
-                if (error != null) throw error
-                Database.getInstance(activity).tripList.clear()
-                for (doc in value!!) {
-                    val t = doc.toObject(Trip::class.java)
-                    t.id = doc.id
-                    Database.getInstance(activity).tripList.add(t)
-                }
+        //showList(Database.getInstance(activity).tripList.size)
 
-//                adapter.notifyDataSetChanged()
-                adapter = TripAdapter(
-                    Database.getInstance(activity).tripList,
-                    "OtherTrips",
-                    parentFragmentManager
-                )
-//
-                rvTripList.layoutManager = LinearLayoutManager(context)
-                rvTripList.adapter = adapter
-                showList(Database.getInstance(activity).tripList.size)
-            }
+        /* val db = FirebaseFirestore.getInstance()
+         db.collection("trips")
+             .addSnapshotListener { value, error ->
+                 if (error != null) throw error
+                 Database.getInstance(activity).tripList.clear()
+                 for (doc in value!!) {
+                     val t = doc.toObject(Trip::class.java)
+                     t.id = doc.id
+                     Database.getInstance(activity).tripList.add(t)
+                 }
+
+                 adapter = TripAdapter(
+                     Database.getInstance(activity).tripList,
+                     "OtherTrips",
+                     parentFragmentManager
+                 )
+
+                 showList(Database.getInstance(activity).tripList.size)
+             }*/
+
+        vm.getTrips().observe(viewLifecycleOwner, Observer {trips ->
+            Log.d("new", "new data " + trips.size)
+
+            adapter = TripAdapter(trips, "OtherTrips", parentFragmentManager)
+            rvTripList.adapter = adapter
+
+            showList(trips.size)
+        })
 
         rvTripList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
