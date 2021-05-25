@@ -19,11 +19,8 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import com.group06.lab.profile.ShowProfileFragment
-import com.group06.lab.trip.FavoriteTrip
 import com.group06.lab.trip.OthersTripListFragment
-import com.group06.lab.trip.Trip
 import com.group06.lab.trip.TripListFragment
-import com.group06.lab.utils.Database
 
 class MainActivity : AppCompatActivity() {
     companion object {
@@ -65,8 +62,7 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
-
-        FirebaseFirestore.getInstance().collection("trips").addSnapshotListener { value, error ->
+        /*FirebaseFirestore.getInstance().collection("trips").addSnapshotListener { value, error ->
             if (error != null) throw error
             Database.getInstance(this).myTripList.clear()
             for (doc in value!!) {
@@ -75,10 +71,10 @@ class MainActivity : AppCompatActivity() {
                 if (f.userEmail == mAuth.currentUser!!.email!!)
                     Database.getInstance(this).myTripList.add(f)
             }
-        }
+        }*/
 
         //take all users which are interested in my trips
-        FirebaseFirestore.getInstance().collection("favored_trips")
+        /*FirebaseFirestore.getInstance().collection("favored_trips")
             .addSnapshotListener { value, error ->
                 if (error != null) throw error
                 Database.getInstance(this).favoredList.clear()
@@ -88,9 +84,8 @@ class MainActivity : AppCompatActivity() {
                     if (currentUserTrips.contains(f.tripId))
                         Database.getInstance(this).favoredList.add(f)
                 }
-            }
+            }*/
     }
-
 
     private fun loadData() {
         val drawer = navView.getHeaderView(0)

@@ -8,6 +8,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -16,15 +17,15 @@ import coil.request.CachePolicy
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
-import com.group06.lab.MainActivity
 import com.group06.lab.R
-import com.group06.lab.utils.Database
 import java.util.*
 
 class FavoredTripsFragment : Fragment() {
 
     private lateinit var tvEmpty: TextView
     private lateinit var rvTripList: RecyclerView
+
+    private val vm by viewModels<TripViewModel>()
 
     var tripId: String? = null
     var availableSeats: Int? = null
@@ -45,31 +46,30 @@ class FavoredTripsFragment : Fragment() {
         tvEmpty = view.findViewById(R.id.tvEmpty)
         rvTripList = view.findViewById(R.id.rvTripList)
 
-        val favoredTripsUsers =
-            Database.getInstance(activity).favoredList.filter { f -> f.tripId == tripId }.filter{ f -> f.userEmail != MainActivity.mAuth.currentUser!!.email!! }.map {t -> t.userEmail}.distinct()
+        vm.getFavoredUsersByTrip(tripId!!).observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            val favoredTripsUsers = it.map {t -> t.userEmail}.distinct()
 
-        var usersList: ArrayList<User> = ArrayList()
+            var usersList: ArrayList<User> = ArrayList()
 
-        val db = FirebaseFirestore.getInstance()
+            val db = FirebaseFirestore.getInstance()
 
-        db.collection("users")
-            .addSnapshotListener { value, error ->
-                if (error != null) throw error
-                usersList.clear()
-                for (doc in value!!){
-                    val u = doc.toObject(User::class.java)
-                    u.id = doc.id
-                    if (favoredTripsUsers.contains(u.email))
-                        usersList.add(u)
+            db.collection("users")
+                .addSnapshotListener { value, error ->
+                    if (error != null) throw error
+                    usersList.clear()
+                    for (doc in value!!){
+                        val u = doc.toObject(User::class.java)
+                        u.id = doc.id
+                        if (favoredTripsUsers.contains(u.email))
+                            usersList.add(u)
+                    }
+                    showList(usersList.size)
+
+                    val adapter = FavUsersAdapter(usersList, tripId!!)
+                    rvTripList.layoutManager = LinearLayoutManager(context)
+                    rvTripList.adapter = adapter
                 }
-                showList(usersList.size)
-                val adapter =
-                    FavUsersAdapter(
-                        usersList
-                    )
-                rvTripList.layoutManager = LinearLayoutManager(context)
-                rvTripList.adapter = adapter
-            }
+        })
     }
 
     private fun showList(size: Int) {
@@ -82,9 +82,7 @@ class FavoredTripsFragment : Fragment() {
         }
     }
 
-    class FavUsersAdapter(
-        private val data: List<User>
-    ) :
+    class FavUsersAdapter(private val data: List<User>, val tripId : String) :
         RecyclerView.Adapter<FavUsersAdapter.FavUsersViewHolder>() {
 
         class FavUsersViewHolder(v: View) : RecyclerView.ViewHolder(v) {
@@ -129,7 +127,7 @@ class FavoredTripsFragment : Fragment() {
 
             var acceptButtonHide = false
 
-            FirebaseFirestore.getInstance().collection("trips").document(tripId!!)
+            FirebaseFirestore.getInstance().collection("trips").document(tripId)
                 .collection("confirmedUsers").addSnapshotListener  {
                         res, error ->
                     if(error != null) throw error
@@ -196,8 +194,6 @@ class FavoredTripsFragment : Fragment() {
             }
 
             holder.cardUser.setOnClickListener {
-                // TODO: go to the profile details of this user
-
                 holder.cardUser.findNavController()
                     .navigate(R.id.action_favored_trip_list_to_show_profile, Bundle().apply {
                         putString("email", data[position].email )

@@ -1,7 +1,6 @@
 package com.group06.lab.trip
 
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.TextView
 import androidx.fragment.app.Fragment
@@ -12,13 +11,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.group06.lab.R
-import com.group06.lab.utils.Database
 
 
 class TripListFragment : Fragment() {
 
     private lateinit var tvEmpty: TextView
     private lateinit var rvTripList: RecyclerView
+
+    var adapter: TripAdapter? = null
 
     private val vm by viewModels<TripViewModel>()
 
@@ -43,15 +43,7 @@ class TripListFragment : Fragment() {
         tvEmpty = view.findViewById(R.id.tvEmpty)
         rvTripList = view.findViewById(R.id.rvTripList)
 
-        showList(Database.getInstance(activity).myTripList.size)
-
-        val adapter = TripAdapter(Database.getInstance(activity).myTripList,
-            "UserTrips",
-            parentFragmentManager
-        )
-
         rvTripList.layoutManager = LinearLayoutManager(context)
-        rvTripList.adapter = adapter
 
         //tripList = Database.getInstance(context).tripList
 
@@ -72,8 +64,11 @@ class TripListFragment : Fragment() {
             }*/
 
 
-        vm.getTrips().observe(viewLifecycleOwner, Observer {
-            trips -> Log.d("new", "new data " + trips.size)
+        vm.getMyTrips().observe(viewLifecycleOwner, Observer {trips ->
+            adapter = TripAdapter(trips, "UserTrips", parentFragmentManager)
+            rvTripList.adapter = adapter
+
+            showList(trips.size)
         })
 
         rvTripList.addOnScrollListener(object : RecyclerView.OnScrollListener() {

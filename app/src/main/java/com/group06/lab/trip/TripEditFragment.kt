@@ -12,6 +12,7 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import coil.load
 import com.google.android.material.datepicker.MaterialDatePicker
@@ -27,7 +28,6 @@ import com.google.firebase.storage.UploadTask
 import com.google.firebase.storage.ktx.storage
 import com.group06.lab.R
 import com.group06.lab.extensions.toString
-import com.group06.lab.utils.Database
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
@@ -69,17 +69,12 @@ class TripEditFragment : Fragment() {
 
     private lateinit var mAuth: FirebaseAuth
 
+    private val vm by viewModels<TripViewModel>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         mAuth = FirebaseAuth.getInstance()
-        //Override action of the back button, otherwise the transition defined in mobile_navigation does not occur
-//        val callback = requireActivity().onBackPressedDispatcher.addCallback(this,
-//            object: OnBackPressedCallback(true){
-//                override fun handleOnBackPressed() {
-//                    findNavController().navigate(R.id.action_trip_edit_to_trip_list)
-//                }
-//            }
-//        )
     }
 
     override fun onCreateView(
@@ -123,42 +118,44 @@ class TripEditFragment : Fragment() {
             index = arguments?.getInt("index")!!
             tripId = arguments?.getString("tripId")
 
-            val t = ArrayList<Trip>(Database.getInstance(context).tripList.filter { t -> t.id == tripId})[0]
+            vm.getTripById(tripId!!).observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+                val t: Trip = it
 
-            etDeparture.editText?.setText(t.departure)
-            etArrival.editText?.setText(t.arrival)
-            etDepartureDate.editText?.setText(t.departureDate.toString("yyyy/MM/dd - HH:mm"))
-            etAvailableSeats.editText?.setText(t.availableSeats.toString())
-            etPrice.editText?.setText(t.price.toString())
-            etDescription.editText?.setText(t.description)
+                etDeparture.editText?.setText(t.departure)
+                etArrival.editText?.setText(t.arrival)
+                etDepartureDate.editText?.setText(t.departureDate.toString("yyyy/MM/dd - HH:mm"))
+                etAvailableSeats.editText?.setText(t.availableSeats.toString())
+                etPrice.editText?.setText(t.price.toString())
+                etDescription.editText?.setText(t.description)
 
-//            id = t.docId
+                imgName = t.imageUrl
+                dateValue = t.departureDate
 
-            imgName = t.imageUrl
-            dateValue = t.departureDate
+                dateOk = true
+                day = t.estimatedDay
+                hour = t.estimatedHour
+                minute = t.estimatedMinute
 
-            dateOk = true
-            day = t.estimatedDay
-            hour = t.estimatedHour
-            minute = t.estimatedMinute
+                val sBuilder = StringBuilder()
+                if (t.estimatedDay > 0)
+                    sBuilder.append(String.format("%dd", t.estimatedDay))
+                if (t.estimatedHour > 0)
+                    sBuilder.append(String.format(" %dh", t.estimatedHour))
+                if (t.estimatedMinute > 0)
+                    sBuilder.append(String.format(" %dm", t.estimatedMinute))
 
-            val sBuilder = StringBuilder()
-            if (t.estimatedDay > 0)
-                sBuilder.append(String.format("%dd", t.estimatedDay))
-            if (t.estimatedHour > 0)
-                sBuilder.append(String.format(" %dh", t.estimatedHour))
-            if (t.estimatedMinute > 0)
-                sBuilder.append(String.format(" %dm", t.estimatedMinute))
+                etDuration.editText?.setText(sBuilder.toString())
+                if (t.imageUrl == "") {
+                    imgTrip.setImageResource(R.drawable.ic_baseline_no_photography)
+                } else {
+                    Firebase.storage.reference.child(t.imageUrl)
+                        .downloadUrl.addOnSuccessListener {
+                                uri -> imgTrip.load(uri.toString())
+                        }
+                }
+            })
 
-            etDuration.editText?.setText(sBuilder.toString())
-            if (t.imageUrl == "") {
-                imgTrip.setImageResource(R.drawable.ic_baseline_no_photography)
-            } else {
-                Firebase.storage.reference.child(t.imageUrl)
-                    .downloadUrl.addOnSuccessListener {
-                            uri -> imgTrip.load(uri.toString())
-                    }
-            }
+
         }
 
         etDepartureDate.editText?.setOnClickListener {
@@ -258,10 +255,10 @@ class TripEditFragment : Fragment() {
                         }
 
                     if (imgChanged){
-                        saveImageOnCloudStorage(imgTrip.drawable.toBitmap(), "$imgName")
+                        saveImageOnCloudStorage(imgTrip.drawable.toBitmap(), imgName)
                             .addOnFailureListener {
                                 // Handle unsuccessful uploads
-                            }.addOnSuccessListener { taskSnapshot ->
+                            }.addOnSuccessListener {
                                 findNavController().navigate(R.id.action_trip_edit_to_othersTripListFragment)
                             }
                     }else{
@@ -304,7 +301,7 @@ class TripEditFragment : Fragment() {
         return res
     }
 
-    fun showDialog() {
+    private fun showDialog() {
         val builder = AlertDialog.Builder(context)
         val inflater = layoutInflater
         builder.setTitle("Select duration")

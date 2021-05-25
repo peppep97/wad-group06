@@ -71,8 +71,6 @@ class OthersTripListFragment : Fragment() {
              }*/
 
         vm.getTrips().observe(viewLifecycleOwner, Observer {trips ->
-            Log.d("new", "new data " + trips.size)
-
             adapter = TripAdapter(trips, "OtherTrips", parentFragmentManager)
             rvTripList.adapter = adapter
 

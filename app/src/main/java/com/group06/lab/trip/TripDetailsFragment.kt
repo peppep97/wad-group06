@@ -1,7 +1,6 @@
 package com.group06.lab.trip
 
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.Button
 import android.widget.ImageView
@@ -17,16 +16,14 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import com.group06.lab.MainActivity
-import com.group06.lab.utils.Database
 import com.group06.lab.R
-import java.lang.StringBuilder
 import com.group06.lab.extensions.toString
 import com.group06.lab.utils.Dialog
 import java.text.DecimalFormat
 import java.util.*
 
 private var index: Int? = null
-public var tripId: String? = ""
+private var tripId: String? = ""
 private var caller: String? = ""
 private var showEditButton: Boolean = false
 private lateinit var snackBar: Snackbar
@@ -37,6 +34,8 @@ class TripDetailsFragment : Fragment() {
     private lateinit var btnDeleteTrip: Button
 
     private val vm by viewModels<TripViewModel>()
+
+    var myMenu: Menu? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,11 +74,8 @@ class TripDetailsFragment : Fragment() {
         snackBar = Snackbar.make(
             requireActivity().findViewById(android.R.id.content),
             "Added to favorite trips list",
-            Snackbar.LENGTH_LONG
+            Snackbar.LENGTH_SHORT
         )
-        snackBar.setAction("Dismiss") {
-            snackBar.dismiss()
-        }
 
         val tvDepartureLocation = view.findViewById<TextView>(R.id.tvDepartureLocation)
         val tvArrivalLocation = view.findViewById<TextView>(R.id.tvArrivalLocation)
@@ -101,28 +97,7 @@ class TripDetailsFragment : Fragment() {
             if (t.userEmail == MainActivity.mAuth.currentUser!!.email!!) fabFav.hide()
             btnShowFavoredList.visibility = if (t.userEmail == MainActivity.mAuth.currentUser!!.email!!) View.VISIBLE else View.GONE
 
-            fabFav.setOnClickListener {
-                val f = FavoriteTrip(
-                    MainActivity.mAuth.currentUser!!.email!!,
-                    t.id
-                )
-
-                val alreadyFavored = Database.getInstance(context).favoredList.filter {f -> f.tripId == t.id && f.userEmail == MainActivity.mAuth.currentUser!!.email!! }
-                if (alreadyFavored.isNotEmpty()) {
-                    Snackbar.make(
-                        requireActivity().findViewById(android.R.id.content),
-                        "You have already liked this trip.",
-                        Snackbar.LENGTH_LONG
-                    ).show()
-                } else {
-                    val favoredList = FirebaseFirestore.getInstance().collection("favored_trips")
-                    val doc = favoredList.document()
-                    doc.set(f)
-                        .addOnSuccessListener {
-                            snackBar.show()
-                        }
-                }
-            }
+            myMenu?.findItem(R.id.edit)?.isVisible = showEditButton
 
             tvDepartureLocation.text = t.departure
             tvArrivalLocation.text = t.arrival
@@ -198,13 +173,36 @@ class TripDetailsFragment : Fragment() {
                     })
             }
         })
+
+
+        fabFav.setOnClickListener {
+
+            vm.isAlreadyFavored(tripId!!).observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+                val f = FavoriteTrip(MainActivity.mAuth.currentUser!!.email!!, tripId!!)
+
+                if (it){ //if it is not favorite
+                    val favoredList = FirebaseFirestore.getInstance().collection("favored_trips")
+                    val doc = favoredList.document()
+                    doc.set(f)
+                        .addOnSuccessListener {
+                            snackBar.show()
+                        }
+                }else{
+                    Snackbar.make(
+                        requireActivity().findViewById(android.R.id.content),
+                        "You have already liked this trip.",
+                        Snackbar.LENGTH_LONG
+                    ).show()
+                }
+            })
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        menu.clear()
-        if (showEditButton)
-            inflater.inflate(R.menu.fragment_trip_details, menu)
+        myMenu = menu
+        inflater.inflate(R.menu.fragment_trip_details, menu)
+        menu.findItem(R.id.edit).isVisible = false
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
