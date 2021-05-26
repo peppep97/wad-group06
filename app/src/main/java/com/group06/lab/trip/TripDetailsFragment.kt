@@ -32,6 +32,7 @@ class TripDetailsFragment : Fragment() {
     private lateinit var fabFav: FloatingActionButton
     private lateinit var btnShowFavoredList: Button
     private lateinit var btnDeleteTrip: Button
+    private lateinit var btnCompleteTrip : Button
 
     private val vm by viewModels<TripViewModel>()
 
@@ -57,7 +58,8 @@ class TripDetailsFragment : Fragment() {
 
         fabFav = view.findViewById(R.id.fabFav)
         btnShowFavoredList = view.findViewById(R.id.btnShowFavoredList)
-        btnDeleteTrip = view.findViewById(R.id.CompleteTrip)
+        btnCompleteTrip = view.findViewById(R.id.CompleteTrip)
+        btnDeleteTrip = view.findViewById(R.id.DeleteTrip)
 
         /*val t: Trip = when (caller) {
             "UserTrips" -> {
@@ -94,6 +96,7 @@ class TripDetailsFragment : Fragment() {
             showEditButton = t.userEmail == MainActivity.mAuth.currentUser!!.email!!
             fabFav.visibility = if (t.userEmail == MainActivity.mAuth.currentUser!!.email!!) View.GONE else View.VISIBLE
             btnDeleteTrip.visibility = if (t.userEmail == MainActivity.mAuth.currentUser!!.email!!) View.VISIBLE else View.GONE
+            btnCompleteTrip.visibility = if (t.userEmail == MainActivity.mAuth.currentUser!!.email!!) View.VISIBLE else View.GONE
             if (t.userEmail == MainActivity.mAuth.currentUser!!.email!!) fabFav.hide()
             btnShowFavoredList.visibility = if (t.userEmail == MainActivity.mAuth.currentUser!!.email!!) View.VISIBLE else View.GONE
 
