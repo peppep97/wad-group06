@@ -286,7 +286,7 @@
                 android:text="Show interested users"
                 android:textSize="12sp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/btnDeleteTrip"
+                app:layout_constraintEnd_toStartOf="@+id/DeleteTrip"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/cardDescription"
@@ -294,7 +294,7 @@
                 tools:ignore="MissingConstraints" />
 
             <Button
-                android:id="@+id/btnDeleteTrip"
+                android:id="@+id/DeleteTrip"
                 style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
@@ -311,6 +311,20 @@
                 app:layout_constraintVertical_bias="0.0"
                 tools:ignore="MissingConstraints" />
 
+            <Button
+                android:id="@+id/CompleteTrip"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:background="#FFFFFF"
+                android:text="Complete Trip"
+                android:textColor="#79D63F"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/btnShowFavoredList"
+                tools:ignore="MissingConstraints" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

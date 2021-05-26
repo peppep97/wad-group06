@@ -57,7 +57,7 @@ class TripDetailsFragment : Fragment() {
 
         fabFav = view.findViewById(R.id.fabFav)
         btnShowFavoredList = view.findViewById(R.id.btnShowFavoredList)
-        btnDeleteTrip = view.findViewById(R.id.btnDeleteTrip)
+        btnDeleteTrip = view.findViewById(R.id.CompleteTrip)
 
         /*val t: Trip = when (caller) {
             "UserTrips" -> {
