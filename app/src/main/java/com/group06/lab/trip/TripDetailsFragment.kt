@@ -101,6 +101,12 @@ class TripDetailsFragment : Fragment() {
             if (t.userEmail == MainActivity.mAuth.currentUser!!.email!!) fabFav.hide()
             btnShowFavoredList.visibility = if (t.userEmail == MainActivity.mAuth.currentUser!!.email!!) View.VISIBLE else View.GONE
 
+            btnCompleteTrip.visibility = if(t.completed == true) View.GONE else View.VISIBLE
+            btnDeleteTrip.visibility = if(t.completed == true) View.GONE else View.VISIBLE
+            btnShowFavoredList.visibility = if(t.completed == true) View.GONE else View.VISIBLE
+
+
+
             myMenu?.findItem(R.id.edit)?.isVisible = showEditButton
 
             tvDepartureLocation.text = t.departure
@@ -204,7 +210,10 @@ class TripDetailsFragment : Fragment() {
         btnCompleteTrip.setOnClickListener {
 
             //Complete the trip
+            val db = FirebaseFirestore.getInstance()
 
+            db.collection("trips").document(tripId!!)
+                .update("completed", true)
 
 
 

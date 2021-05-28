@@ -233,6 +233,7 @@ class TripEditFragment : Fragment() {
                         imgName,
                         etDeparture.editText?.text.toString(),
                         etArrival.editText?.text.toString(),
+                        false,
                         dateValue,
                         day,
                         hour,

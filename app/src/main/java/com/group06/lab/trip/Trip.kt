@@ -4,10 +4,10 @@ import android.util.Log
 import com.google.firebase.firestore.DocumentSnapshot
 import java.util.*
 
-class Trip(var id: String, val imageUrl: String, val departure:String, val arrival:String,
+class Trip(var id: String, val imageUrl: String, val departure:String, val arrival:String, val completed: Boolean?,
                 val departureDate: Date, val estimatedDay: Int, val estimatedHour: Int, val estimatedMinute: Int,
                 val availableSeats: Int, val price: Double, val description: String, val userEmail: String){
-    constructor() : this("","","","",Date(),0,
+    constructor() : this("","","","", false ,Date(),0,
         0,0,0,0.0,"", "")
 
     companion object {
@@ -16,6 +16,7 @@ class Trip(var id: String, val imageUrl: String, val departure:String, val arriv
                 val imageUrl = getString("imageUrl")!!
                 val departure = getString("departure")!!
                 val arrival = getString("arrival")!!
+                val completed = getBoolean("completed")
                 val departureDate = getDate("departureDate")!!
                 val estimatedDay = getLong("estimatedDay")!!.toInt()
                 val estimatedHour = getLong("estimatedHour")!!.toInt()
@@ -24,7 +25,7 @@ class Trip(var id: String, val imageUrl: String, val departure:String, val arriv
                 val price = getDouble("price")!!
                 val description = getString("description")!!
                 val userEmail = getString("userEmail")!!
-                return Trip(id, imageUrl, departure, arrival, departureDate, estimatedDay,
+                return Trip(id, imageUrl, departure, arrival, completed , departureDate, estimatedDay,
                 estimatedHour, estimatedMinute, availableSeats, price, description, userEmail)
             } catch (e: Exception) {
                 Log.e(TAG, "Error converting trip", e)
