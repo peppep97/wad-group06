@@ -1,6 +1,7 @@
 package com.group06.lab.trip
 
 import android.os.Bundle
+import android.os.Debug
 import android.view.*
 import android.widget.Button
 import android.widget.ImageView
@@ -199,6 +200,20 @@ class TripDetailsFragment : Fragment() {
                 }
             })
         }
+
+        btnCompleteTrip.setOnClickListener {
+
+            //Complete the trip
+
+
+
+
+
+
+
+        }
+
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
