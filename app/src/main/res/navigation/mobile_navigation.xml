@@ -82,14 +82,11 @@
         <action
             android:id="@+id/action_showProfileActivity_to_editProfileActivity"
             app:destination="@id/editProfileActivity"
-
             app:enterAnim="@anim/custom_from_top"
             app:exitAnim="@anim/nav_default_exit_anim"
-
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/custom_to_top"
             app:popUpTo="@+id/show_profile" />
-
     </fragment>
     <fragment
         android:id="@+id/editProfileActivity"
@@ -141,5 +138,17 @@
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+    </fragment>
+    <fragment
+        android:id="@+id/interest_trip_list"
+        android:name="com.group06.lab.trip.TripsOfInterestListFragment"
+        android:label="Trips of interest">
+        <action
+            android:id="@+id/action_interest_trip_list_to_trip_details"
+            app:destination="@id/trip_details"
+            app:enterAnim="@anim/custom_from_right"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/custom_from_right"
+            app:popExitAnim="@anim/custom_to_right" />
     </fragment>
 </navigation>

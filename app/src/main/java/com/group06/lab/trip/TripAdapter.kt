@@ -108,6 +108,13 @@ class TripAdapter() :
                         putString("tripId", data[position].id)
                         putString("caller", caller)
                     })
+            }else if (caller == "InterestTrips"){
+                holder.cardTrip.findNavController()
+                    .navigate(R.id.action_interest_trip_list_to_trip_details, Bundle().apply {
+                        putInt("index", position)
+                        putString("tripId", data[position].id)
+                        putString("caller", caller)
+                    })
             }
         }
 
@@ -122,7 +129,7 @@ class TripAdapter() :
                         putString("caller", caller)
                     })
             }
-        } else if (caller == "OtherTrips")
+        } else
             holder.btnEdit.visibility = View.GONE
     }
 

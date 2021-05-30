@@ -49,7 +49,7 @@ class FavoredTripsFragment : Fragment() {
         vm.getFavoredUsersByTrip(tripId!!).observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             val favoredTripsUsers = it.map {t -> t.userEmail}.distinct()
 
-            var usersList: ArrayList<User> = ArrayList()
+            val usersList: ArrayList<User> = ArrayList()
 
             val db = FirebaseFirestore.getInstance()
 
@@ -154,10 +154,10 @@ class FavoredTripsFragment : Fragment() {
                 Toast.makeText( holder.itemView.context , "Confirmed", Toast.LENGTH_LONG).show()
                 val db = FirebaseFirestore.getInstance()
 
-                db.collection("trips").document(tripId!!).collection("confirmedUsers").add(  data[position] )
+                db.collection("trips").document(tripId).collection("confirmedUsers").add(  data[position] )
 
                 var currentSeatsAvailability = db.collection("trips")
-                    .document(tripId!!).get().addOnSuccessListener {
+                    .document(tripId).get().addOnSuccessListener {
                             res ->
                         val Trip = res.toObject(Trip::class.java)
                         println("HERE IS THE TRIP " + Trip?.availableSeats)
@@ -166,8 +166,8 @@ class FavoredTripsFragment : Fragment() {
                         if(Trip?.availableSeats!! > 0) {
                             val db = FirebaseFirestore.getInstance()
                             db.collection("trips")
-                                .document(tripId!!)
-                                .update("availableSeats", Trip?.availableSeats?.minus(1))
+                                .document(tripId)
+                                .update("availableSeats", Trip.availableSeats.minus(1))
                                 .addOnSuccessListener {
 
                                     Toast.makeText(

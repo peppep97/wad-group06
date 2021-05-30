@@ -31,7 +31,6 @@ import com.group06.lab.login.LoginActivity
 import java.io.File
 import java.io.FileOutputStream
 
-
 class ShowProfileFragment : Fragment() {
     private lateinit var tvFullName: TextView
     private lateinit var tvNickName: TextView
@@ -45,17 +44,12 @@ class ShowProfileFragment : Fragment() {
 
     private lateinit var snackbar: Snackbar
 
-
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // enable option edit
         setHasOptionsMenu(true)
-
-
-
 
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_activity_show_profile, container, false)
@@ -66,12 +60,7 @@ class ShowProfileFragment : Fragment() {
 
         val logoutButton = view.findViewById<Button>(R.id.logout_button)
 
-        var emailParameter : String? = arguments?.getString("email")
-
-
-
-
-
+        val emailParameter : String? = arguments?.getString("email")
 
         tvFullName = view.findViewById(R.id.tvFullName)
         tvNickName = view.findViewById(R.id.tvNickName)
@@ -80,9 +69,6 @@ class ShowProfileFragment : Fragment() {
         imgProfile = view.findViewById(R.id.imgProfile)
         fullNameLayout = view.findViewById(R.id.fullNameLayout)
         emailLayout = view.findViewById(R.id.emailLayout)
-
-
-
 
 
         val fullNameLayout: LinearLayout = view.findViewById(R.id.fullNameLayout)
@@ -96,19 +82,18 @@ class ShowProfileFragment : Fragment() {
             findNavController().navigate(R.id.action_showProfileActivity_to_editProfileActivity)
         }
 
-        if( emailParameter == null ) println("EMAIL PARAMETER NULL")
+        //if( emailParameter == null ) println("EMAIL PARAMETER NULL")
 
         //Use this to distinguish owner
-        var isOwner = emailParameter == null
-
+        val isOwner = emailParameter == null
 
         //Gets overwritten if the visitor is not the owner
         var getUserFromMail = MainActivity.mAuth.currentUser!!.email!!
 
         if(!isOwner){
 
-            println( "EMAIL FROM LAYOUT" + emailParameter)
-            println( "EMAIL " + MainActivity.mAuth.currentUser!!.email!!)
+            //println( "EMAIL FROM LAYOUT" + emailParameter)
+            //println( "EMAIL " + MainActivity.mAuth.currentUser!!.email!!)
 
             fullNameLayout.visibility = View.GONE
             emailLayout.visibility = View.GONE
@@ -116,12 +101,7 @@ class ShowProfileFragment : Fragment() {
             setHasOptionsMenu(false)
 
             getUserFromMail = emailParameter!!
-
         }
-
-
-
-
 
         db =  FirebaseFirestore.getInstance()
         db.collection("users")
@@ -149,9 +129,6 @@ class ShowProfileFragment : Fragment() {
                     tvEmail.text = FirebaseAuth.getInstance().currentUser!!.email!!
                 }
             }
-
-
-
 
         Firebase.storage.reference
             .child(getUserFromMail).downloadUrl
