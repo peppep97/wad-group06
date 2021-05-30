@@ -56,6 +56,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.trip_list,
                 R.id.my_trip_list,
                 R.id.interest_trip_list,
+                R.id.bought_trip_list,
                 R.id.show_profile
             ), drawerLayout
         )

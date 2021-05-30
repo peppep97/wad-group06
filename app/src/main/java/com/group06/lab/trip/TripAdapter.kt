@@ -115,6 +115,13 @@ class TripAdapter() :
                         putString("tripId", data[position].id)
                         putString("caller", caller)
                     })
+            }else if (caller == "BoughtTrips"){
+                holder.cardTrip.findNavController()
+                    .navigate(R.id.action_bought_trip_list_to_trip_details, Bundle().apply {
+                        putInt("index", position)
+                        putString("tripId", data[position].id)
+                        putString("caller", caller)
+                    })
             }
         }
 

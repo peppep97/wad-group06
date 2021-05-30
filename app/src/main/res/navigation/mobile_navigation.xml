@@ -151,4 +151,16 @@
             app:popEnterAnim="@anim/custom_from_right"
             app:popExitAnim="@anim/custom_to_right" />
     </fragment>
+    <fragment
+        android:id="@+id/bought_trip_list"
+        android:name="com.group06.lab.trip.BoughtTripsListFragment"
+        android:label="Bought Trips">
+        <action
+            android:id="@+id/action_bought_trip_list_to_trip_details"
+            app:destination="@id/trip_details"
+            app:enterAnim="@anim/custom_from_right"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/custom_from_right"
+            app:popExitAnim="@anim/custom_to_right" />
+    </fragment>
 </navigation>

@@ -13,12 +13,14 @@ class TripViewModel : ViewModel() {
     private val trips = MutableLiveData<List<Trip>>()
     private val myTrips = MutableLiveData<List<Trip>>()
     private val favoredTrips = MutableLiveData<List<Trip>>()
+    private val boughtTrips = MutableLiveData<List<Trip>>()
 
     init {
         viewModelScope.launch {
             trips.value = loadTrips()
             myTrips.value = loadMyTrips()
             favoredTrips.value = loadFavoredTrips()
+            boughtTrips.value = loadBoughtTrips()
         }
     }
 
@@ -33,6 +35,11 @@ class TripViewModel : ViewModel() {
     fun getFavoredTrips() : LiveData<List<Trip>> {
         return favoredTrips
     }
+
+    fun getBoughtTrips() : LiveData<List<Trip>> {
+        return boughtTrips
+    }
+
 
     fun getTripById(id : String) : LiveData<Trip> {
         val data = MutableLiveData<Trip>()
@@ -108,5 +115,24 @@ class TripViewModel : ViewModel() {
             .documents.mapNotNull {
                 it.toTrip()
             }
+    }
+
+    private suspend fun loadBoughtTrips() : List<Trip> {
+        val tripList = arrayListOf<Trip>()
+        FirebaseFirestore.getInstance().collectionGroup("confirmedUsers")
+            .whereEqualTo("email", FirebaseAuth.getInstance().currentUser!!.email!!)
+            .get().await()
+            .documents.forEach {
+                val t = it.reference.parent.parent
+                    ?.get()
+                    ?.await()
+                    ?.toTrip()
+
+                if (t != null) tripList.add(t)
+            }
+            /*.documents.mapNotNull {
+                it.toTrip()
+            }*/
+        return tripList
     }
 }
