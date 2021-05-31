@@ -6,10 +6,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.*
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.*
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
@@ -28,6 +25,7 @@ import com.google.firebase.storage.ktx.storage
 import com.group06.lab.MainActivity
 import com.group06.lab.R
 import com.group06.lab.login.LoginActivity
+import com.group06.lab.trip.tripId
 import java.io.File
 import java.io.FileOutputStream
 
@@ -41,6 +39,9 @@ class ShowProfileFragment : Fragment() {
     private lateinit var fullNameLayout: LinearLayout
     private lateinit var emailLayout: LinearLayout
     private lateinit var db: FirebaseFirestore
+    private lateinit var ratingBarProfile : RatingBar
+    private lateinit var rateButton : Button
+
 
     private lateinit var snackbar: Snackbar
 
@@ -61,6 +62,8 @@ class ShowProfileFragment : Fragment() {
         val logoutButton = view.findViewById<Button>(R.id.logout_button)
 
         val emailParameter : String? = arguments?.getString("email")
+        val rating : Boolean? = arguments?.getBoolean("Rating")
+        val userId : String? = arguments?.getString("userId")
 
         tvFullName = view.findViewById(R.id.tvFullName)
         tvNickName = view.findViewById(R.id.tvNickName)
@@ -69,6 +72,8 @@ class ShowProfileFragment : Fragment() {
         imgProfile = view.findViewById(R.id.imgProfile)
         fullNameLayout = view.findViewById(R.id.fullNameLayout)
         emailLayout = view.findViewById(R.id.emailLayout)
+        ratingBarProfile = view.findViewById(R.id.ratingbarprofile)
+        rateButton = view.findViewById(R.id.RateButtonProfile)
 
 
         val fullNameLayout: LinearLayout = view.findViewById(R.id.fullNameLayout)
@@ -102,6 +107,68 @@ class ShowProfileFragment : Fragment() {
 
             getUserFromMail = emailParameter!!
         }
+
+
+
+
+        ratingBarProfile.visibility = View.GONE
+        rateButton.visibility = View.GONE
+
+        if(rating!!){
+
+            ratingBarProfile.visibility = View.VISIBLE
+            rateButton.visibility = View.VISIBLE
+
+        }
+
+
+        FirebaseFirestore.getInstance().collection("users")
+            .document(emailParameter!!).collection( "Ratings" )
+            .addSnapshotListener { value, error ->
+                if(error != null) throw error
+                if(value != null )
+                {
+
+
+
+
+                    if (value?.documents.filter { it.get("userMail") == MainActivity.mAuth.currentUser!!.email!! }
+                            .isNotEmpty()) {
+
+
+                        ratingBarProfile.visibility = View.GONE
+                        rateButton.visibility = View.GONE
+                    }
+
+
+                }
+
+
+
+
+            }
+
+
+
+        rateButton.setOnClickListener {
+
+            //Rate
+            //Send Rating
+            val db = FirebaseFirestore.getInstance()
+
+
+
+            var dataToUser = hashMapOf( "userMail" to MainActivity.mAuth.currentUser!!.email!! ,
+                "Score" to ratingBarProfile.numStars )
+
+
+
+            db.collection("users").document(emailParameter!!)
+                .collection("Ratings").add( dataToUser )
+
+
+        }
+
 
         db =  FirebaseFirestore.getInstance()
         db.collection("users")

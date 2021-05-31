@@ -66,6 +66,28 @@ class TripViewModel : ViewModel() {
         return data
     }
 
+
+    fun getConfirmedUsersByTrip(tripId: String) : LiveData<List<User>> {
+
+        val data = MutableLiveData<List<User>>()
+
+        FirebaseFirestore.getInstance().collection("trips")
+            .document(tripId)
+            .collection("confirmedUsers")
+            .addSnapshotListener { value, error ->
+
+                if(error != null) throw error
+                data.value = value?.toObjects(User::class.java)
+
+            }
+
+        return data
+
+    }
+
+
+
+
     fun getFavoredUsersByTrip(tripId : String) : LiveData<List<FavoriteTrip>> {
         val data = MutableLiveData<List<FavoriteTrip>>()
         FirebaseFirestore.getInstance().collection("favored_trips")

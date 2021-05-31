@@ -25,7 +25,7 @@ import java.text.DecimalFormat
 import java.util.*
 
 private var index: Int? = null
-private var tripId: String? = ""
+var tripId: String? = ""
 private var caller: String? = ""
 private var showEditButton: Boolean = false
 private lateinit var snackBar: Snackbar
@@ -42,6 +42,7 @@ class TripDetailsFragment : Fragment() {
     private var showRatingBar: Boolean = false
     private var showTripDetailsButtons: Boolean = false
     private var showFAB: Boolean = false
+    private var ownerOfCompletedTrip: Boolean = false
 
     private val vm by viewModels<TripViewModel>()
 
@@ -111,6 +112,9 @@ class TripDetailsFragment : Fragment() {
 
             showFAB = ( t.userEmail != MainActivity.mAuth.currentUser!!.email!! && t.completed == false )
 
+            ownerOfCompletedTrip = ( t.userEmail == MainActivity.mAuth.currentUser!!.email!! && t.completed == true  )
+
+
 
             showEditButton = t.userEmail == MainActivity.mAuth.currentUser!!.email!!
             fabFav.visibility = if (showFAB) View.VISIBLE else  View.VISIBLE
@@ -123,6 +127,14 @@ class TripDetailsFragment : Fragment() {
             ratingBar.visibility = if(showRatingBar) View.VISIBLE else View.GONE
             btnRate.visibility = if(showRatingBar) View.VISIBLE else View.GONE
 
+
+            if( ownerOfCompletedTrip ){
+
+                btnShowFavoredList.text = "Rate riders"
+                btnShowFavoredList.visibility = View.VISIBLE
+
+
+            }
 
             myMenu?.findItem(R.id.edit)?.isVisible = showEditButton
 
@@ -168,12 +180,29 @@ class TripDetailsFragment : Fragment() {
 
 
             btnShowFavoredList.setOnClickListener {
-                findNavController().navigate(
-                    R.id.action_trip_details_to_favored_trip_list,
-                    Bundle().apply {
-                        putString("tripId", tripId)
-                        putInt("AvailableSeats", t.availableSeats)
-                    })
+
+                if( t.completed == true ){
+
+                    findNavController().navigate(
+                        R.id.action_trip_details_to_favored_trip_list,
+                        Bundle().apply {
+                            putString("tripId", tripId)
+                            putInt("AvailableSeats", t.availableSeats)
+                            putBoolean("TripIsComplete", true)
+                        })
+
+
+                }
+
+                else {
+                    findNavController().navigate(
+                        R.id.action_trip_details_to_favored_trip_list,
+                        Bundle().apply {
+                            putString("tripId", tripId)
+                            putInt("AvailableSeats", t.availableSeats)
+                            putBoolean("TripIsComplete", false)
+                        })
+                }
             }
 
             btnDeleteTrip.setOnClickListener {
@@ -195,6 +224,20 @@ class TripDetailsFragment : Fragment() {
                         .delete()
                 }
 
+                db.collection("trips").document(tripId!!).collection("Ratings").get().addOnSuccessListener {
+
+                        res ->
+                    res.documents.forEach { batch.delete(it.reference) }
+                    //Works only for small collection I guess?
+                    batch.commit()
+                    db.collection("trips")
+                        .document(tripId!!)
+                        .delete()
+                }
+
+
+
+
                 findNavController().navigate(
                     R.id.action_trip_details_to_trip_list,
                     Bundle().apply {
@@ -212,7 +255,8 @@ class TripDetailsFragment : Fragment() {
                 var dataToTrips = hashMapOf( "userMail" to MainActivity.mAuth.currentUser!!.email!! ,
                                         "Score" to ratingBar.numStars )
 
-                var dataToUser = hashMapOf( "Score" to ratingBar.numStars )
+                var dataToUser = hashMapOf( "userMail" to MainActivity.mAuth.currentUser!!.email!! ,
+                    "Score" to ratingBar.numStars )
 
 
 
@@ -220,7 +264,7 @@ class TripDetailsFragment : Fragment() {
                     .collection("Ratings").add( dataToTrips )
 
                 db.collection("users").document(t.userEmail)
-                    .collection("ratings").add( dataToUser )
+                    .collection("Ratings").add( dataToUser )
 
 
 

@@ -17,7 +17,9 @@ import coil.request.CachePolicy
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
+import com.group06.lab.MainActivity
 import com.group06.lab.R
+import com.group06.lab.utils.Dialog
 import java.util.*
 
 class FavoredTripsFragment : Fragment() {
@@ -29,6 +31,7 @@ class FavoredTripsFragment : Fragment() {
 
     var tripId: String? = null
     var availableSeats: Int? = null
+    var tripIsComplete: Boolean? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,34 +45,62 @@ class FavoredTripsFragment : Fragment() {
 
         tripId = arguments?.getString("tripId")
         availableSeats = arguments?.getInt("AvailableSeats")
+        tripIsComplete = arguments?.getBoolean("TripIsComplete")
 
         tvEmpty = view.findViewById(R.id.tvEmpty)
         rvTripList = view.findViewById(R.id.rvTripList)
+        if (!tripIsComplete!!){
 
-        vm.getFavoredUsersByTrip(tripId!!).observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            val favoredTripsUsers = it.map {t -> t.userEmail}.distinct()
+            vm.getFavoredUsersByTrip(tripId!!)
+                .observe(viewLifecycleOwner, androidx.lifecycle.Observer {
 
-            val usersList: ArrayList<User> = ArrayList()
 
-            val db = FirebaseFirestore.getInstance()
+                    val favoredTripsUsers = it.map { t -> t.userEmail }.distinct()
 
-            db.collection("users")
-                .addSnapshotListener { value, error ->
-                    if (error != null) throw error
-                    usersList.clear()
-                    for (doc in value!!){
-                        val u = doc.toObject(User::class.java)
-                        u.id = doc.id
-                        if (favoredTripsUsers.contains(u.email))
-                            usersList.add(u)
-                    }
-                    showList(usersList.size)
+                    val usersList: ArrayList<User> = ArrayList()
 
-                    val adapter = FavUsersAdapter(usersList, tripId!!)
-                    rvTripList.layoutManager = LinearLayoutManager(context)
-                    rvTripList.adapter = adapter
+                    val db = FirebaseFirestore.getInstance()
+                    db.collection("users")
+                        .addSnapshotListener { value, error ->
+                            if (error != null) throw error
+                            usersList.clear()
+                            for (doc in value!!) {
+                                val u = doc.toObject(User::class.java)
+                                u.id = doc.id
+                                if (favoredTripsUsers.contains(u.email))
+                                    usersList.add(u)
+                            }
+                            showList(usersList.size)
+
+                            val adapter = FavUsersAdapter(usersList, tripId!!, tripIsComplete!!)
+                            rvTripList.layoutManager = LinearLayoutManager(context)
+                            rvTripList.adapter = adapter
+                        }
+                })
+    }
+        else{
+
+            vm.getConfirmedUsersByTrip(tripId!!).observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+
+
+
+
+                val usersList: ArrayList<User> = ArrayList()
+
+                it.forEach {
+                    usersList.add(it)
                 }
-        })
+
+                showList(usersList.size)
+                val adapter = FavUsersAdapter(usersList, tripId!!, tripIsComplete!!)
+                rvTripList.layoutManager = LinearLayoutManager(context)
+                rvTripList.adapter = adapter
+
+            })
+
+
+
+        }
     }
 
     private fun showList(size: Int) {
@@ -82,7 +113,7 @@ class FavoredTripsFragment : Fragment() {
         }
     }
 
-    class FavUsersAdapter(private val data: List<User>, val tripId : String) :
+    class FavUsersAdapter(private val data: List<User>, val tripId : String, val tripIsComplete:Boolean ) :
         RecyclerView.Adapter<FavUsersAdapter.FavUsersViewHolder>() {
 
         class FavUsersViewHolder(v: View) : RecyclerView.ViewHolder(v) {
@@ -127,76 +158,101 @@ class FavoredTripsFragment : Fragment() {
 
             var acceptButtonHide = false
 
-            FirebaseFirestore.getInstance().collection("trips").document(tripId)
-                .collection("confirmedUsers").addSnapshotListener  {
-                        res, error ->
-                    if(error != null) throw error
-                    if(res != null) {
-                        println("CONFIRMEDUSERS" + res.documents.filter { it.get("email") == data[position].email })
-                        println("CHECKISNULL" + res.documents.filter { it.get("email") == data[position].email }
-                            .isEmpty())
-                        if (res.documents.filter { it.get("email") == data[position].email }
-                                .isEmpty()) {
-                            println("HIDEBUTTON")
+            if( tripIsComplete ){
 
-                            holder.acceptButton.visibility = View.VISIBLE
-                            holder.acceptButton.isEnabled = true
+                holder.acceptButton.visibility = View.VISIBLE
+                holder.acceptButton.isEnabled = true
 
-                            acceptButtonHide = true
-                        }
-                        else{
-                            holder.confirmedTextView.visibility = View.VISIBLE
-                        }
-                    }
+                holder.acceptButton.text = "Rate"
+
+                holder.acceptButton.setOnClickListener {
+
+
+                    holder.cardUser.findNavController()
+                        .navigate(R.id.action_favored_trip_list_to_show_profile, Bundle().apply {
+                            putString("email", data[position].email )
+                            putString("userId", data[position].id)
+                            putBoolean("Rating" , true)
+                        })
+
+
                 }
 
-            holder.acceptButton.setOnClickListener {
-                Toast.makeText( holder.itemView.context , "Confirmed", Toast.LENGTH_LONG).show()
-                val db = FirebaseFirestore.getInstance()
 
-                db.collection("trips").document(tripId).collection("confirmedUsers").add(  data[position] )
+            }
 
-                var currentSeatsAvailability = db.collection("trips")
-                    .document(tripId).get().addOnSuccessListener {
-                            res ->
-                        val Trip = res.toObject(Trip::class.java)
-                        println("HERE IS THE TRIP " + Trip?.availableSeats)
+            else {
+                FirebaseFirestore.getInstance().collection("trips").document(tripId)
+                    .collection("confirmedUsers").addSnapshotListener { res, error ->
+                        if (error != null) throw error
+                        if (res != null) {
+                            println("CONFIRMEDUSERS" + res.documents.filter { it.get("email") == data[position].email })
+                            println("CHECKISNULL" + res.documents.filter { it.get("email") == data[position].email }
+                                .isEmpty())
+                            if (res.documents.filter { it.get("email") == data[position].email }
+                                    .isEmpty()) {
+                                println("HIDEBUTTON")
 
+                                holder.acceptButton.visibility = View.VISIBLE
+                                holder.acceptButton.isEnabled = true
 
-                        if(Trip?.availableSeats!! > 0) {
-                            val db = FirebaseFirestore.getInstance()
-                            db.collection("trips")
-                                .document(tripId)
-                                .update("availableSeats", Trip.availableSeats.minus(1))
-                                .addOnSuccessListener {
-
-                                    Toast.makeText(
-                                        holder.itemView.context,
-                                        "Confirmed",
-                                        Toast.LENGTH_LONG
-                                    ).show()
-
-                                    holder.acceptButton.visibility = View.GONE
-                                    holder.acceptButton.isEnabled = false
-                                    holder.confirmedTextView.visibility = View.VISIBLE
-
-                                }
-                        }
-                        else{
-                            Toast.makeText(
-                                holder.itemView.context,
-                                "No more seats available",
-                                Toast.LENGTH_LONG
-                            ).show()
+                                acceptButtonHide = true
+                            } else {
+                                holder.confirmedTextView.visibility = View.VISIBLE
+                            }
                         }
                     }
 
+
+                holder.acceptButton.setOnClickListener {
+                    Toast.makeText(holder.itemView.context, "Confirmed", Toast.LENGTH_LONG).show()
+                    val db = FirebaseFirestore.getInstance()
+
+                    db.collection("trips").document(tripId).collection("confirmedUsers")
+                        .add(data[position])
+
+                    var currentSeatsAvailability = db.collection("trips")
+                        .document(tripId).get().addOnSuccessListener { res ->
+                            val Trip = res.toObject(Trip::class.java)
+                            println("HERE IS THE TRIP " + Trip?.availableSeats)
+
+
+                            if (Trip?.availableSeats!! > 0) {
+                                val db = FirebaseFirestore.getInstance()
+                                db.collection("trips")
+                                    .document(tripId)
+                                    .update("availableSeats", Trip.availableSeats.minus(1))
+                                    .addOnSuccessListener {
+
+                                        Toast.makeText(
+                                            holder.itemView.context,
+                                            "Confirmed",
+                                            Toast.LENGTH_LONG
+                                        ).show()
+
+                                        holder.acceptButton.visibility = View.GONE
+                                        holder.acceptButton.isEnabled = false
+                                        holder.confirmedTextView.visibility = View.VISIBLE
+
+                                    }
+                            } else {
+                                Toast.makeText(
+                                    holder.itemView.context,
+                                    "No more seats available",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            }
+                        }
+
+                }
             }
 
             holder.cardUser.setOnClickListener {
                 holder.cardUser.findNavController()
                     .navigate(R.id.action_favored_trip_list_to_show_profile, Bundle().apply {
                         putString("email", data[position].email )
+                        putBoolean("Rating" , true)
+
                     })
             }
         }

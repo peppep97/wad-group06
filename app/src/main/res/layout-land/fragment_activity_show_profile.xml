@@ -223,6 +223,27 @@
 
             android:textAlignment="center" />
 
+        <RatingBar
+            android:id="@+id/ratingbarprofile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:layout_gravity="center_horizontal"
+
+            />
+
+        <Button
+            android:id="@+id/RateButtonProfile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:text="Rate"
+            android:textAlignment="center"
+
+
+            />
+
+
 
     </LinearLayout>
 
