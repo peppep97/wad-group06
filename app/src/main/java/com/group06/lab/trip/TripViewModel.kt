@@ -91,13 +91,15 @@ class TripViewModel : ViewModel() {
                 it.toObject(FavoriteTrip::class.java)?.tripId
             }
 
-        return FirebaseFirestore.getInstance().collection("trips")
-            .whereIn(FieldPath.documentId(), tripsIds)
-            .get()
-            .await()
-            .documents.mapNotNull {
-                it.toTrip()
-            }
+        if(tripsIds.isEmpty()) return emptyList()
+        else
+            return FirebaseFirestore.getInstance().collection("trips")
+                .whereIn(FieldPath.documentId(), tripsIds)
+                .get()
+                .await()
+                .documents.mapNotNull {
+                    it.toTrip()
+                }
     }
 
     private suspend fun loadTrips() : List<Trip> {
