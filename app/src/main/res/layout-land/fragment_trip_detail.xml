@@ -343,6 +343,24 @@
                 app:layout_constraintVertical_bias="0.0"
                 tools:ignore="MissingConstraints" />
 
+            <Button
+                android:id="@+id/RateButton"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:background="#FFFFFF"
+                android:text="Rate driver"
+                android:textColor="#79D63F"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ratingbar"
+                tools:ignore="MissingConstraints" />
+
+
+
+
             <RatingBar
                 android:id="@+id/ratingbar"
                 android:layout_width="wrap_content"

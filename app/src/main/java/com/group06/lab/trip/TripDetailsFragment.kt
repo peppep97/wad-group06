@@ -35,6 +35,7 @@ class TripDetailsFragment : Fragment() {
     private lateinit var btnShowFavoredList: Button
     private lateinit var btnDeleteTrip: Button
     private lateinit var btnCompleteTrip : Button
+    private lateinit var btnRate : Button
     private lateinit var ratingBar: RatingBar
 
 
@@ -68,6 +69,7 @@ class TripDetailsFragment : Fragment() {
         btnShowFavoredList = view.findViewById(R.id.btnShowFavoredList)
         btnCompleteTrip = view.findViewById(R.id.CompleteTrip)
         btnDeleteTrip = view.findViewById(R.id.DeleteTrip)
+        btnRate = view.findViewById<Button>(R.id.RateButton)
 
         ratingBar = view.findViewById(R.id.ratingbar)
 
@@ -119,6 +121,7 @@ class TripDetailsFragment : Fragment() {
             btnShowFavoredList.visibility = if(showTripDetailsButtons) View.VISIBLE else View.GONE
 
             ratingBar.visibility = if(showRatingBar) View.VISIBLE else View.GONE
+            btnRate.visibility = if(showRatingBar) View.VISIBLE else View.GONE
 
 
             myMenu?.findItem(R.id.edit)?.isVisible = showEditButton
@@ -161,6 +164,9 @@ class TripDetailsFragment : Fragment() {
                     }
             }
 
+
+
+
             btnShowFavoredList.setOnClickListener {
                 findNavController().navigate(
                     R.id.action_trip_details_to_favored_trip_list,
@@ -196,6 +202,32 @@ class TripDetailsFragment : Fragment() {
                         putInt("AvailableSeats", t.availableSeats)
                     })
             }
+
+
+            btnRate.setOnClickListener {
+
+                //Send Rating
+                val db = FirebaseFirestore.getInstance()
+
+                var dataToTrips = hashMapOf( "userMail" to MainActivity.mAuth.currentUser!!.email!! ,
+                                        "Score" to ratingBar.numStars )
+
+                var dataToUser = hashMapOf( "Score" to ratingBar.numStars )
+
+
+
+                db.collection("trips").document(tripId!!)
+                    .collection("Ratings").add( dataToTrips )
+
+                db.collection("users").document(t.userEmail)
+                    .collection("ratings").add( dataToUser )
+
+
+
+
+            }
+
+
         })
 
 
@@ -235,6 +267,35 @@ class TripDetailsFragment : Fragment() {
 
 
         }
+
+
+        FirebaseFirestore.getInstance().collection("trips")
+            .document(tripId!!).collection( "Ratings" )
+            .addSnapshotListener { value, error ->
+                if(error != null) throw error
+                if(value != null )
+                {
+
+
+
+
+                    if (value?.documents.filter { it.get("userMail") == MainActivity.mAuth.currentUser!!.email!! }
+                            .isNotEmpty()) {
+
+
+                        ratingBar.visibility = View.GONE
+                        btnRate.visibility = View.GONE
+                    }
+
+
+                }
+
+
+
+
+            }
+
+
 
 
     }
