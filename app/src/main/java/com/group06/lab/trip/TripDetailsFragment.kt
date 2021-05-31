@@ -5,6 +5,7 @@ import android.os.Debug
 import android.view.*
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.RatingBar
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -34,6 +35,12 @@ class TripDetailsFragment : Fragment() {
     private lateinit var btnShowFavoredList: Button
     private lateinit var btnDeleteTrip: Button
     private lateinit var btnCompleteTrip : Button
+    private lateinit var ratingBar: RatingBar
+
+
+    private var showRatingBar: Boolean = false
+    private var showTripDetailsButtons: Boolean = false
+    private var showFAB: Boolean = false
 
     private val vm by viewModels<TripViewModel>()
 
@@ -61,6 +68,8 @@ class TripDetailsFragment : Fragment() {
         btnShowFavoredList = view.findViewById(R.id.btnShowFavoredList)
         btnCompleteTrip = view.findViewById(R.id.CompleteTrip)
         btnDeleteTrip = view.findViewById(R.id.DeleteTrip)
+
+        ratingBar = view.findViewById(R.id.ratingbar)
 
         /*val t: Trip = when (caller) {
             "UserTrips" -> {
@@ -94,17 +103,22 @@ class TripDetailsFragment : Fragment() {
         vm.getTripById(tripId!!).observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             val t : Trip = it
 
+            showRatingBar = (t.completed == true && t.userEmail != MainActivity.mAuth.currentUser!!.email!!)
+
+            showTripDetailsButtons = (t.completed == false && t.userEmail == MainActivity.mAuth.currentUser!!.email!!)
+
+            showFAB = ( t.userEmail != MainActivity.mAuth.currentUser!!.email!! && t.completed == false )
+
+
             showEditButton = t.userEmail == MainActivity.mAuth.currentUser!!.email!!
-            fabFav.visibility = if (t.userEmail == MainActivity.mAuth.currentUser!!.email!!) View.GONE else View.VISIBLE
-            btnDeleteTrip.visibility = if (t.userEmail == MainActivity.mAuth.currentUser!!.email!!) View.VISIBLE else View.GONE
-            btnCompleteTrip.visibility = if (t.userEmail == MainActivity.mAuth.currentUser!!.email!!) View.VISIBLE else View.GONE
-            if (t.userEmail == MainActivity.mAuth.currentUser!!.email!!) fabFav.hide()
-            btnShowFavoredList.visibility = if (t.userEmail == MainActivity.mAuth.currentUser!!.email!!) View.VISIBLE else View.GONE
+            fabFav.visibility = if (showFAB) View.VISIBLE else  View.VISIBLE
+            if (!showFAB) fabFav.hide()
 
-            btnCompleteTrip.visibility = if(t.completed == true) View.GONE else View.VISIBLE
-            btnDeleteTrip.visibility = if(t.completed == true) View.GONE else View.VISIBLE
-            btnShowFavoredList.visibility = if(t.completed == true) View.GONE else View.VISIBLE
+            btnCompleteTrip.visibility = if(showTripDetailsButtons) View.VISIBLE else View.GONE
+            btnDeleteTrip.visibility = if(showTripDetailsButtons) View.VISIBLE else View.GONE
+            btnShowFavoredList.visibility = if(showTripDetailsButtons) View.VISIBLE else View.GONE
 
+            ratingBar.visibility = if(showRatingBar) View.VISIBLE else View.GONE
 
 
             myMenu?.findItem(R.id.edit)?.isVisible = showEditButton
