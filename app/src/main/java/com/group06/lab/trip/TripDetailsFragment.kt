@@ -253,10 +253,14 @@ class TripDetailsFragment : Fragment() {
                 val db = FirebaseFirestore.getInstance()
 
                 var dataToTrips = hashMapOf( "userMail" to MainActivity.mAuth.currentUser!!.email!! ,
-                                        "Score" to ratingBar.numStars )
+                                        "Score" to ratingBar.numStars ,
+                                        "TripId" to tripId,
+                                        "Role" to "Drive")
 
                 var dataToUser = hashMapOf( "userMail" to MainActivity.mAuth.currentUser!!.email!! ,
-                    "Score" to ratingBar.numStars )
+                    "Score" to ratingBar.numStars,
+                    "TripId" to tripId,
+                    "Role" to "Driver")
 
 
 

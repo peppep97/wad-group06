@@ -18,6 +18,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
@@ -41,7 +42,7 @@ class ShowProfileFragment : Fragment() {
     private lateinit var db: FirebaseFirestore
     private lateinit var ratingBarProfile : RatingBar
     private lateinit var rateButton : Button
-
+    private lateinit var messageToUserText : TextInputLayout
 
     private lateinit var snackbar: Snackbar
 
@@ -61,9 +62,12 @@ class ShowProfileFragment : Fragment() {
 
         val logoutButton = view.findViewById<Button>(R.id.logout_button)
 
-        val emailParameter : String? = arguments?.getString("email")
-        val rating : Boolean? = arguments?.getBoolean("Rating")
-        val userId : String? = arguments?.getString("userId")
+        val emailParameter: String? = arguments?.getString("email")
+        var rating: Boolean? = arguments?.getBoolean("Rating")
+        val userId: String? = arguments?.getString("userId")
+
+        if (rating == null) rating = false
+
 
         tvFullName = view.findViewById(R.id.tvFullName)
         tvNickName = view.findViewById(R.id.tvNickName)
@@ -74,16 +78,18 @@ class ShowProfileFragment : Fragment() {
         emailLayout = view.findViewById(R.id.emailLayout)
         ratingBarProfile = view.findViewById(R.id.ratingbarprofile)
         rateButton = view.findViewById(R.id.RateButtonProfile)
-
+        messageToUserText = view.findViewById(R.id.commentRating)
 
         val fullNameLayout: LinearLayout = view.findViewById(R.id.fullNameLayout)
         val nicknameLayout: LinearLayout = view.findViewById(R.id.nicknameLayout)
         val locationLayout: LinearLayout = view.findViewById(R.id.locationLayout)
 
-        snackbar = Snackbar.make(requireActivity().findViewById(android.R.id.content),
-            "Your profile seems empty, update it!", Snackbar.LENGTH_INDEFINITE)
+        snackbar = Snackbar.make(
+            requireActivity().findViewById(android.R.id.content),
+            "Your profile seems empty, update it!", Snackbar.LENGTH_INDEFINITE
+        )
 
-        snackbar.setAction("Update"){
+        snackbar.setAction("Update") {
             findNavController().navigate(R.id.action_showProfileActivity_to_editProfileActivity)
         }
 
@@ -95,7 +101,7 @@ class ShowProfileFragment : Fragment() {
         //Gets overwritten if the visitor is not the owner
         var getUserFromMail = MainActivity.mAuth.currentUser!!.email!!
 
-        if(!isOwner){
+        if (!isOwner) {
 
             //println( "EMAIL FROM LAYOUT" + emailParameter)
             //println( "EMAIL " + MainActivity.mAuth.currentUser!!.email!!)
@@ -113,42 +119,46 @@ class ShowProfileFragment : Fragment() {
 
         ratingBarProfile.visibility = View.GONE
         rateButton.visibility = View.GONE
+        messageToUserText.visibility = View.GONE
 
-        if(rating!!){
+        if (rating!!) {
 
             ratingBarProfile.visibility = View.VISIBLE
             rateButton.visibility = View.VISIBLE
+            messageToUserText.visibility = View.VISIBLE
+
 
         }
 
-
-        FirebaseFirestore.getInstance().collection("users")
-            .document(emailParameter!!).collection( "Ratings" )
-            .addSnapshotListener { value, error ->
-                if(error != null) throw error
-                if(value != null )
-                {
-
+        if (emailParameter != null){
+            FirebaseFirestore.getInstance().collection("users")
+                .document(emailParameter!!).collection("Ratings")
+                .addSnapshotListener { value, error ->
+                    if (error != null) throw error
+                    if (value != null) {
 
 
+                        if (value?.documents.filter {
+                                it.get("userMail") == MainActivity.mAuth.currentUser!!.email!! && it.get(
+                                    "TripId"
+                                ) == tripId
+                            }
+                                .isNotEmpty()) {
 
-                    if (value?.documents.filter { it.get("userMail") == MainActivity.mAuth.currentUser!!.email!! }
-                            .isNotEmpty()) {
+
+                            ratingBarProfile.visibility = View.GONE
+                            rateButton.visibility = View.GONE
+                            messageToUserText.visibility = View.GONE
+
+                        }
 
 
-                        ratingBarProfile.visibility = View.GONE
-                        rateButton.visibility = View.GONE
                     }
 
 
                 }
 
-
-
-
-            }
-
-
+    }
 
         rateButton.setOnClickListener {
 
@@ -159,7 +169,9 @@ class ShowProfileFragment : Fragment() {
 
 
             var dataToUser = hashMapOf( "userMail" to MainActivity.mAuth.currentUser!!.email!! ,
-                "Score" to ratingBarProfile.numStars )
+                "Score" to ratingBarProfile.numStars ,
+                "TripId" to tripId,
+                "Role" to "Passenger")
 
 
 
