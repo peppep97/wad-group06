@@ -5,6 +5,7 @@ import android.os.Debug
 import android.view.*
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.RatingBar
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -34,6 +35,7 @@ class TripDetailsFragment : Fragment() {
     private lateinit var btnShowFavoredList: Button
     private lateinit var btnDeleteTrip: Button
     private lateinit var btnCompleteTrip : Button
+    private lateinit var ratingBar : RatingBar
 
     private val vm by viewModels<TripViewModel>()
 
@@ -61,6 +63,8 @@ class TripDetailsFragment : Fragment() {
         btnShowFavoredList = view.findViewById(R.id.btnShowFavoredList)
         btnCompleteTrip = view.findViewById(R.id.CompleteTrip)
         btnDeleteTrip = view.findViewById(R.id.DeleteTrip)
+
+        ratingBar = view.findViewById(R.id.RatingBar)
 
         /*val t: Trip = when (caller) {
             "UserTrips" -> {
@@ -105,7 +109,8 @@ class TripDetailsFragment : Fragment() {
             btnDeleteTrip.visibility = if(t.completed == true) View.GONE else View.VISIBLE
             btnShowFavoredList.visibility = if(t.completed == true) View.GONE else View.VISIBLE
 
-
+            ratingBar.visibility = if(t.completed == true) View.VISIBLE else View.GONE
+            ratingBar.visibility = if(t.userEmail == MainActivity.mAuth.currentUser!!.email!!) View.GONE else View.VISIBLE
 
             myMenu?.findItem(R.id.edit)?.isVisible = showEditButton
 
