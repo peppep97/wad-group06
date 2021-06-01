@@ -43,6 +43,8 @@ class ShowProfileFragment : Fragment() {
     private lateinit var ratingBarProfile : RatingBar
     private lateinit var rateButton : Button
     private lateinit var messageToUserText : TextInputLayout
+    private lateinit var ratingAsDriverTextView : TextView
+    private lateinit var ratingAsPassengerTextView : TextView
 
     private lateinit var snackbar: Snackbar
 
@@ -66,6 +68,10 @@ class ShowProfileFragment : Fragment() {
         var rating: Boolean? = arguments?.getBoolean("Rating")
         val userId: String? = arguments?.getString("userId")
 
+
+        println("DEBUGVIEWPARAMETER " + rating)
+
+
         if (rating == null) rating = false
 
 
@@ -79,6 +85,10 @@ class ShowProfileFragment : Fragment() {
         ratingBarProfile = view.findViewById(R.id.ratingbarprofile)
         rateButton = view.findViewById(R.id.RateButtonProfile)
         messageToUserText = view.findViewById(R.id.commentRating)
+        ratingAsDriverTextView = view.findViewById(R.id.ratingAsDriver)
+        ratingAsPassengerTextView = view.findViewById(R.id.ratingAsPassenger)
+
+
 
         val fullNameLayout: LinearLayout = view.findViewById(R.id.fullNameLayout)
         val nicknameLayout: LinearLayout = view.findViewById(R.id.nicknameLayout)
@@ -113,6 +123,36 @@ class ShowProfileFragment : Fragment() {
 
             getUserFromMail = emailParameter!!
         }
+
+
+        FirebaseFirestore.getInstance().collection("users")
+            .document(MainActivity.mAuth.currentUser!!.email!!)
+            .collection("Ratings")
+            .addSnapshotListener { value, error ->
+                if(error != null) throw error
+                if(value != null){
+
+                    var averageScorePassenger : Float = 0f
+
+                    var numberOfScoresPassenger : Int = 0
+
+                    value.documents.filter { it.get("Role") == "Passenger" }.forEach { averageScorePassenger += it.get("Score").toString().toFloat(); numberOfScoresPassenger++  }
+
+                    ratingAsPassengerTextView.text = if(numberOfScoresPassenger != 0) (averageScorePassenger / numberOfScoresPassenger).toString() + "/5" else "No ratings yet!"
+
+                    var averageScoreDriver : Float = 0f
+
+                    var numberOfScoresDriver : Int = 0
+
+                    value.documents.filter { it.get("Role") == "Driver" }.forEach { averageScoreDriver += it.get("Score").toString().toFloat() ; numberOfScoresDriver++  }
+
+                    ratingAsDriverTextView.text = if(numberOfScoresDriver != 0) (averageScoreDriver / numberOfScoresDriver).toString() + "/5" else "No ratings yet!"
+
+
+                }
+
+
+            }
 
 
 
@@ -160,6 +200,15 @@ class ShowProfileFragment : Fragment() {
 
     }
 
+
+
+        if(savedInstanceState != null){
+
+            messageToUserText.editText?.setText(savedInstanceState.getString("UserMessage"))
+
+
+        }
+
         rateButton.setOnClickListener {
 
             //Rate
@@ -169,9 +218,10 @@ class ShowProfileFragment : Fragment() {
 
 
             var dataToUser = hashMapOf( "userMail" to MainActivity.mAuth.currentUser!!.email!! ,
-                "Score" to ratingBarProfile.numStars ,
+                "Score" to ratingBarProfile.rating ,
                 "TripId" to tripId,
-                "Role" to "Passenger")
+                "Role" to "Passenger",
+            "message" to messageToUserText.editText?.text.toString())
 
 
 
@@ -254,6 +304,16 @@ class ShowProfileFragment : Fragment() {
             else -> super.onOptionsItemSelected(item)
         }
     }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+
+        outState.putString("UserMessage", messageToUserText.editText?.text.toString())
+
+    }
+
+
+
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)

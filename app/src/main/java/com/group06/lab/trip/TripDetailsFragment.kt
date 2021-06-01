@@ -14,6 +14,7 @@ import coil.load
 import coil.request.CachePolicy
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
@@ -37,6 +38,7 @@ class TripDetailsFragment : Fragment() {
     private lateinit var btnCompleteTrip : Button
     private lateinit var btnRate : Button
     private lateinit var ratingBar: RatingBar
+    private lateinit var rateUserMessage : TextInputLayout
 
 
     private var showRatingBar: Boolean = false
@@ -74,6 +76,7 @@ class TripDetailsFragment : Fragment() {
 
         ratingBar = view.findViewById(R.id.ratingbar)
 
+        rateUserMessage = view.findViewById(R.id.commentRatingTrip)
         /*val t: Trip = when (caller) {
             "UserTrips" -> {
                 ArrayList<Trip>(Database.getInstance(context).myTripList.filter { it.id == tripId })[0]
@@ -103,6 +106,15 @@ class TripDetailsFragment : Fragment() {
         val tvDepTime = view.findViewById<TextView>(R.id.tvDepTime)
         val tvArrTime = view.findViewById<TextView>(R.id.tvArrTime)
 
+        if(savedInstanceState != null){
+
+            rateUserMessage.editText?.setText(savedInstanceState.getString("UserRateMessage"))
+
+
+        }
+
+
+
         vm.getTripById(tripId!!).observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             val t : Trip = it
 
@@ -126,7 +138,7 @@ class TripDetailsFragment : Fragment() {
 
             ratingBar.visibility = if(showRatingBar) View.VISIBLE else View.GONE
             btnRate.visibility = if(showRatingBar) View.VISIBLE else View.GONE
-
+            rateUserMessage.visibility = if(showRatingBar) View.VISIBLE else View.GONE
 
             if( ownerOfCompletedTrip ){
 
@@ -253,14 +265,16 @@ class TripDetailsFragment : Fragment() {
                 val db = FirebaseFirestore.getInstance()
 
                 var dataToTrips = hashMapOf( "userMail" to MainActivity.mAuth.currentUser!!.email!! ,
-                                        "Score" to ratingBar.numStars ,
+                                        "Score" to ratingBar.rating ,
                                         "TripId" to tripId,
-                                        "Role" to "Drive")
+                                        "Role" to "Drive" ,
+                "message" to rateUserMessage.editText?.text.toString())
 
                 var dataToUser = hashMapOf( "userMail" to MainActivity.mAuth.currentUser!!.email!! ,
-                    "Score" to ratingBar.numStars,
+                    "Score" to ratingBar.rating,
                     "TripId" to tripId,
-                    "Role" to "Driver")
+                    "Role" to "Driver",
+                    "message" to rateUserMessage.editText?.text.toString())
 
 
 
@@ -354,6 +368,14 @@ class TripDetailsFragment : Fragment() {
         inflater.inflate(R.menu.fragment_trip_details, menu)
         menu.findItem(R.id.edit).isVisible = false
     }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString("UserRateMessage" , rateUserMessage.editText?.text.toString() )
+
+
+    }
+
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
