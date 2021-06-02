@@ -31,7 +31,7 @@ import java.util.*
 private var isDeparture: Boolean? = true
 private var edit: Boolean? = false
 private var index = -1
-private var tripId: String? = ""
+private var trip_id: String? = ""
 private var depLat: Double? = 0.0
 private var arrLat: Double? = 0.0
 private var depLon: Double? = 0.0
@@ -73,7 +73,7 @@ class LocationSelectorFragment : Fragment() {
 
         isDeparture = arguments?.getBoolean("isDeparture")
         index = arguments?.getInt("index")!!
-        tripId = arguments?.getString("tripId")
+        trip_id = arguments?.getString("tripId")
 
         map = view.findViewById<MapView>(R.id.mapLocationSelector)
         map.setTileSource(TileSourceFactory.MAPNIK);
@@ -261,7 +261,7 @@ class LocationSelectorFragment : Fragment() {
                         putDouble("arrLon", arrLocation.longitude)
                         putString("arrCity", arrCity)
                         putInt("index", index)
-                        putString("tripId", tripId)
+                        putString("tripId", trip_id)
                         putBoolean("edit", true)
                     })
                 return true
