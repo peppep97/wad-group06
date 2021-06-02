@@ -1,16 +1,25 @@
 package com.group06.lab.trip
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.location.Address
+import android.location.Geocoder
 import android.os.Bundle
 import android.os.Debug
+import android.os.StrictMode
+import android.preference.PreferenceManager
 import android.view.*
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import coil.load
 import coil.request.CachePolicy
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.firestore.FirebaseFirestore
@@ -20,6 +29,15 @@ import com.group06.lab.MainActivity
 import com.group06.lab.R
 import com.group06.lab.extensions.toString
 import com.group06.lab.utils.Dialog
+import org.osmdroid.bonuspack.routing.OSRMRoadManager
+import org.osmdroid.bonuspack.routing.RoadManager
+import org.osmdroid.config.Configuration
+import org.osmdroid.tileprovider.tilesource.TileSourceFactory
+import org.osmdroid.util.GeoPoint
+import org.osmdroid.views.MapView
+import org.osmdroid.views.overlay.Marker
+import org.osmdroid.views.overlay.Overlay
+import org.osmdroid.views.overlay.Polyline
 import java.text.DecimalFormat
 import java.util.*
 
@@ -28,12 +46,15 @@ private var tripId: String? = ""
 private var caller: String? = ""
 private var showEditButton: Boolean = false
 private lateinit var snackBar: Snackbar
+private lateinit var client: FusedLocationProviderClient
 
 class TripDetailsFragment : Fragment() {
     private lateinit var fabFav: FloatingActionButton
     private lateinit var btnShowFavoredList: Button
     private lateinit var btnDeleteTrip: Button
     private lateinit var btnCompleteTrip : Button
+    private lateinit var map : MapView;
+    private val REQUEST_PERMISSIONS_REQUEST_CODE = 1;
 
     private val vm by viewModels<TripViewModel>()
 
@@ -41,6 +62,11 @@ class TripDetailsFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Configuration.getInstance().load(activity,
+            PreferenceManager.getDefaultSharedPreferences(activity))
+        client = LocationServices.getFusedLocationProviderClient(requireActivity())
+        val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
+        StrictMode.setThreadPolicy(policy)
     }
 
     override fun onCreateView(
@@ -48,7 +74,6 @@ class TripDetailsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        setHasOptionsMenu(true)
         return inflater.inflate(R.layout.fragment_trip_detail, container, false)
     }
 
@@ -90,11 +115,18 @@ class TripDetailsFragment : Fragment() {
         val imgTrip = view.findViewById<ImageView>(R.id.imgTrip)
         val tvDepTime = view.findViewById<TextView>(R.id.tvDepTime)
         val tvArrTime = view.findViewById<TextView>(R.id.tvArrTime)
+        map = view.findViewById<MapView>(R.id.map)
+        map.setTileSource(TileSourceFactory.MAPNIK)
+        map.setMultiTouchControls(true)
+        val mapController = map.controller
+        mapController.setZoom(9.5)
+        map.parent.requestDisallowInterceptTouchEvent(true)
 
         vm.getTripById(tripId!!).observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             val t : Trip = it
 
             showEditButton = t.userEmail == MainActivity.mAuth.currentUser!!.email!!
+            setHasOptionsMenu(true)
             fabFav.visibility = if (t.userEmail == MainActivity.mAuth.currentUser!!.email!!) View.GONE else View.VISIBLE
             btnDeleteTrip.visibility = if (t.userEmail == MainActivity.mAuth.currentUser!!.email!!) View.VISIBLE else View.GONE
             btnCompleteTrip.visibility = if (t.userEmail == MainActivity.mAuth.currentUser!!.email!!) View.VISIBLE else View.GONE
@@ -113,6 +145,78 @@ class TripDetailsFragment : Fragment() {
             tvArrivalLocation.text = t.arrival
             tvDepartureDate.text = t.departureDate.toString("MMMM - dd")
             tvAvailableSeats.text = t.availableSeats.toString()
+
+
+            val origin = GeoPoint(t.depPosition.latitude, t.depPosition.longitude)
+            val destination = GeoPoint(t.arrPosition.latitude, t.arrPosition.longitude)
+
+            if (origin.latitude != 0.0 && origin.longitude != 0.0 &&
+                destination.latitude != 0.0 && destination.longitude != 0.0) {
+
+                val gcd = Geocoder(context, Locale.getDefault())
+                var addresses: List<Address> =
+                    gcd.getFromLocation(origin.latitude, origin.longitude, 1)
+
+                val startMarker = Marker(map)
+                startMarker.position = GeoPoint(origin.latitude, origin.longitude)
+                startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+                if (addresses.isNotEmpty())
+                    startMarker.title = "${addresses[0].locality} - ${addresses[0].countryName}\n${addresses[0].thoroughfare ?: ""} ${addresses[0].subThoroughfare ?: ""}"
+                else
+                    startMarker.title = "Departure"
+                startMarker.id = "dep"
+
+                map.overlays?.add(startMarker)
+
+                val arrAddresses: List<Address> = gcd.getFromLocation(destination.latitude, destination.longitude, 1)
+                val endMarker = Marker(map)
+                endMarker.position = GeoPoint(destination.latitude, destination.longitude)
+                endMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+                if (arrAddresses.isNotEmpty())
+                    endMarker.title = "${arrAddresses[0].locality} - ${arrAddresses[0].countryName}\n${arrAddresses[0].thoroughfare ?: ""} ${arrAddresses[0].subThoroughfare ?: ""}"
+                else
+                    endMarker.title = "Arrival"
+                endMarker.id = "arr"
+
+                map.overlays?.add(startMarker)
+                map.overlays?.add(endMarker)
+
+                mapController.setCenter(origin)
+
+                val roadManager: RoadManager =
+                    OSRMRoadManager(requireContext(), "OBP_Tuto/1.0")
+
+                map.overlays
+                    .forEach { o -> if (o is Polyline) map.overlays.remove(o as Overlay) }
+
+                val wayPoints = ArrayList<GeoPoint>()
+                wayPoints.add(origin)
+                wayPoints.add(destination)
+                val road = roadManager.getRoad(wayPoints)
+                val roadOverlay = RoadManager.buildRoadOverlay(road)
+                roadOverlay.id = "path"
+                map.overlays.add(roadOverlay);
+                map.invalidate();
+            } else {
+                if (ActivityCompat.checkSelfPermission(
+                        requireContext(),
+                        Manifest.permission.ACCESS_FINE_LOCATION
+                    ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                        requireContext(),
+                        Manifest.permission.ACCESS_COARSE_LOCATION
+                    ) != PackageManager.PERMISSION_GRANTED
+                ) {
+                    //
+                } else {
+                    client.lastLocation.addOnSuccessListener(
+                        requireActivity()
+                    ) { location ->
+                        run {
+                            mapController.setCenter(GeoPoint(location.latitude, location.longitude))
+                        }
+                    }
+                }
+            }
 
             tvDepTime.text = t.departureDate.toString("HH:mm")
             val calendar = Calendar.getInstance()
@@ -225,11 +329,39 @@ class TripDetailsFragment : Fragment() {
 
     }
 
+    override fun onResume() {
+        super.onResume();
+        Configuration.getInstance().load(activity,
+            PreferenceManager.getDefaultSharedPreferences(activity))
+        map.onResume();
+    }
+
+    override fun onPause() {
+        super.onPause();
+        Configuration.getInstance().load(activity,
+            PreferenceManager.getDefaultSharedPreferences(activity))
+        map.onPause();
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        val permissionsToRequest = ArrayList<String>();
+        var i = 0;
+        while (i < grantResults.size) {
+            permissionsToRequest.add(permissions[i]);
+            i++;
+        }
+        if (permissionsToRequest.size > 0) {
+            ActivityCompat.requestPermissions(
+                requireActivity(),
+                permissionsToRequest.toTypedArray(),
+                REQUEST_PERMISSIONS_REQUEST_CODE);
+        }
+    }
+
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        myMenu = menu
         inflater.inflate(R.menu.fragment_trip_details, menu)
-        menu.findItem(R.id.edit).isVisible = false
+        menu.findItem(R.id.edit).isVisible = showEditButton
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
