@@ -3,14 +3,18 @@ package com.group06.lab.trip
 import android.app.AlertDialog
 import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.provider.MediaStore
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.drawable.toBitmap
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -23,6 +27,7 @@ import com.google.android.material.timepicker.TimeFormat
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.GeoPoint
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.UploadTask
 import com.google.firebase.storage.ktx.storage
@@ -49,6 +54,8 @@ class TripEditFragment : Fragment() {
     private lateinit var etPrice: TextInputLayout
     private lateinit var etDescription: TextInputLayout
     private lateinit var imgTrip: ImageView
+    private lateinit var btnSelectDepMap: ImageButton
+    private lateinit var btnSelectArrMap: ImageButton
 
     private lateinit var snackBar: Snackbar;
 
@@ -67,6 +74,14 @@ class TripEditFragment : Fragment() {
     private var tripId: String? = ""
     private var id: String = ""
 
+    private var depCity: String? = ""
+    private var arrCity: String? = ""
+    private var depLat: Double? = 0.0
+    private var arrLat: Double? = 0.0
+    private var depLon: Double? = 0.0
+    private var arrLon: Double? = 0.0
+    private var isDeparture: Boolean? = true
+
     private lateinit var mAuth: FirebaseAuth
 
     private val vm by viewModels<TripViewModel>()
@@ -79,7 +94,8 @@ class TripEditFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?): View? {
+        savedInstanceState: Bundle?
+    ): View? {
         // Inflate the layout for this fragment
         setHasOptionsMenu(true)
         return inflater.inflate(R.layout.fragment_trip_edit, container, false)
@@ -104,6 +120,13 @@ class TripEditFragment : Fragment() {
         etAvailableSeats = view.findViewById(R.id.etAvailableSeats)
         etPrice = view.findViewById(R.id.etPrice)
         etDescription = view.findViewById(R.id.etDescription)
+        btnSelectDepMap = view.findViewById(R.id.btnSelectDepMap)
+        btnSelectArrMap = view.findViewById(R.id.btnSelectArrMap)
+
+        btnSelectArrMap.isEnabled = false
+        btnSelectArrMap.isClickable = false
+        btnSelectArrMap.backgroundTintList =
+            ColorStateList.valueOf(resources.getColor(R.color.etBackgroundTint));
 
         imgTrip = view.findViewById(R.id.imgTrip)
         val imageButtonEdit = view.findViewById<ImageButton>(R.id.imageButtonEdit)
@@ -113,16 +136,65 @@ class TripEditFragment : Fragment() {
             unregisterForContextMenu(imageButtonEdit);
         }
 
+//        etDeparture.editText?.addTextChangedListener(depTextChangeListener())
+//        etArrival.editText?.addTextChangedListener(arrTextChangeListener())
+
+//        etDeparture.editText?.addTextChangedListener {
+//            depCity = it.toString()
+//            depLat = 0.0
+//            depLon = 0.0
+//        }
+//
+//        etArrival.editText?.addTextChangedListener {
+//            arrCity = it.toString()
+//            arrLat = 0.0
+//            arrLon = 0.0
+//        }
+
         edit = arguments?.getBoolean("edit")
-        if (edit!!){
+        if (edit!!) {
             index = arguments?.getInt("index")!!
             tripId = arguments?.getString("tripId")
+            depLat = arguments?.getDouble("depLat")
+            arrLat = arguments?.getDouble("arrLat")
+            depLon = arguments?.getDouble("depLon")
+            arrLon = arguments?.getDouble("arrLon")
+            depCity = arguments?.getString("depCity")
+            arrCity = arguments?.getString("arrCity")
+            isDeparture = arguments?.getBoolean("isDeparture")
+
+            if (depLat != null && depLon != null && depLat != 0.0 && depLon != 0.0) {
+                btnSelectArrMap.isClickable = true
+                btnSelectArrMap.isEnabled = true
+                btnSelectArrMap.backgroundTintList =
+                    ColorStateList.valueOf(resources.getColor(R.color.colorPrimary));
+            }
 
             vm.getTripById(tripId!!).observe(viewLifecycleOwner, androidx.lifecycle.Observer {
                 val t: Trip = it
 
-                etDeparture.editText?.setText(t.departure)
-                etArrival.editText?.setText(t.arrival)
+                etDeparture.editText?.removeTextChangedListener(depTextChangeListener())
+                if (depCity != "" && depCity != null)
+                    etDeparture.editText?.setText(depCity)
+                else {
+                    etDeparture.editText?.setText(t.departure)
+                    depLat = t.depPosition.latitude
+                    depLon = t.depPosition.longitude
+                    depCity = t.departure
+                }
+                etDeparture.editText?.addTextChangedListener(depTextChangeListener())
+
+                etArrival.editText?.removeTextChangedListener(arrTextChangeListener())
+                if (arrCity != "" && arrCity != null)
+                    etArrival.editText?.setText(arrCity)
+                else {
+                    etArrival.editText?.setText(t.arrival)
+                    arrLat = t.arrPosition.latitude
+                    arrLon = t.arrPosition.longitude
+                    arrCity = t.arrival
+                }
+                etArrival.editText?.addTextChangedListener(arrTextChangeListener())
+
                 etDepartureDate.editText?.setText(t.departureDate.toString("yyyy/MM/dd - HH:mm"))
                 etAvailableSeats.editText?.setText(t.availableSeats.toString())
                 etPrice.editText?.setText(t.price.toString())
@@ -149,8 +221,8 @@ class TripEditFragment : Fragment() {
                     imgTrip.setImageResource(R.drawable.ic_baseline_no_photography)
                 } else {
                     Firebase.storage.reference.child(t.imageUrl)
-                        .downloadUrl.addOnSuccessListener {
-                                uri -> imgTrip.load(uri.toString())
+                        .downloadUrl.addOnSuccessListener { uri ->
+                            imgTrip.load(uri.toString())
                         }
                 }
             })
@@ -160,21 +232,45 @@ class TripEditFragment : Fragment() {
 
         etDepartureDate.editText?.setOnClickListener {
             dateOk = false
-            activity?.supportFragmentManager?.let {
-                    it1 -> datePicker.show(it1, "selectdate")
+            activity?.supportFragmentManager?.let { it1 ->
+                datePicker.show(it1, "selectdate")
             }
+        }
+
+        btnSelectDepMap.setOnClickListener {
+            findNavController().navigate(
+                R.id.action_trip_edit_to_locationSelectorFragment,
+                Bundle().apply {
+                    putBoolean("isDeparture", true)
+                    putInt("index", index)
+                    putString("tripId", tripId)
+                    arrLat?.let { putDouble("arrLat", it) }
+                    arrLon?.let { putDouble("arrLon", it) }
+                })
+        }
+
+        btnSelectArrMap.setOnClickListener {
+            findNavController().navigate(
+                R.id.action_trip_edit_to_locationSelectorFragment,
+                Bundle().apply {
+                    putBoolean("isDeparture", false)
+                    putInt("index", index)
+                    putString("tripId", tripId)
+                    depLat?.let { putDouble("depLat", it) }
+                    depLon?.let { putDouble("depLon", it) }
+                })
         }
 
         datePicker.addOnPositiveButtonClickListener {
             dateValue.time = it
-            activity?.supportFragmentManager?.let {
-                    it1 -> timePicker.show(it1, "selecttime")
+            activity?.supportFragmentManager?.let { it1 ->
+                timePicker.show(it1, "selecttime")
             }
         }
 
         timePicker.addOnPositiveButtonClickListener {
             dateOk = true
-            dateValue.time += (timePicker.hour*60*60 + timePicker.minute*60)*1000
+            dateValue.time += (timePicker.hour * 60 * 60 + timePicker.minute * 60) * 1000
             etDepartureDate.editText?.setText(dateValue.toString("yyyy/MM/dd - HH:mm"))
         }
 
@@ -182,7 +278,7 @@ class TripEditFragment : Fragment() {
             showDialog()
         }
 
-        if (savedInstanceState != null){
+        if (savedInstanceState != null) {
             etDeparture.editText?.setText(savedInstanceState.getString("departure"))
             etArrival.editText?.setText(savedInstanceState.getString("arrival"))
             dateValue.time = savedInstanceState.getLong("date", Date().time)
@@ -198,41 +294,86 @@ class TripEditFragment : Fragment() {
                 etDepartureDate.editText?.setText(dateValue.toString("yyyy/MM/dd - HH:mm"))
         }
 
-        snackBar = Snackbar.make(requireActivity().findViewById(android.R.id.content), "Trip correctly saved", Snackbar.LENGTH_LONG)
-        snackBar.setAction("Dismiss"){
+        snackBar = Snackbar.make(
+            requireActivity().findViewById(android.R.id.content),
+            "Trip correctly saved",
+            Snackbar.LENGTH_LONG
+        )
+        snackBar.setAction("Dismiss") {
             snackBar.dismiss()
+        }
+    }
+
+    private fun depTextChangeListener(): TextWatcher {
+        return object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                depCity = s.toString()
+                depLat = 0.0
+                depLon = 0.0
+            }
+        }
+    }
+
+    private fun arrTextChangeListener(): TextWatcher {
+        return object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                arrCity = s.toString()
+                arrLat = 0.0
+                arrLon = 0.0
+            }
         }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putString("departure", etDeparture.editText?.text.toString())
-        outState.putString("arrival", etArrival.editText?.text.toString())
-        outState.putLong("date", dateValue.time)
-        outState.putBoolean("dateok", dateOk)
-        outState.putString("duration", etDuration.editText?.text.toString())
-        outState.putString("availableseats", etAvailableSeats.editText?.text.toString())
-        outState.putString("price", etPrice.editText?.text.toString())
-        outState.putString("description", etDescription.editText?.text.toString())
-        outState.putString("imgTrip", "trippictemp.png")
+        try {
+            outState.putString("departure", etDeparture.editText?.text.toString())
+            outState.putString("arrival", etArrival.editText?.text.toString())
+            outState.putLong("date", dateValue.time)
+            outState.putBoolean("dateok", dateOk)
+            outState.putString("duration", etDuration.editText?.text.toString())
+            outState.putString("availableseats", etAvailableSeats.editText?.text.toString())
+            outState.putString("price", etPrice.editText?.text.toString())
+            outState.putString("description", etDescription.editText?.text.toString())
+            outState.putString("imgTrip", "trippictemp.png")
+        } catch(ex: Exception) {
+            println(ex.message.toString())
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        menu.clear()
         inflater.inflate(R.menu.fragment_trip_edit, menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId){
+        when (item.itemId) {
             R.id.save -> {
                 //save data
-                if (validateForm()){
+                if (validateForm()) {
                     val t = Trip(
                         "",
                         imgName,
-                        etDeparture.editText?.text.toString(),
-                        etArrival.editText?.text.toString(),
+//                        etDeparture.editText?.text.toString(),
+                        depCity!!,
+//                        etArrival.editText?.text.toString(),
+                        arrCity!!,
                         false,
                         dateValue,
                         day,
@@ -241,13 +382,15 @@ class TripEditFragment : Fragment() {
                         etAvailableSeats.editText?.text.toString().toInt(),
                         etPrice.editText?.text.toString().toDouble(),
                         etDescription.editText?.text.toString(),
-                        mAuth.currentUser!!.email!!
+                        mAuth.currentUser!!.email!!,
+                        GeoPoint(depLat!!, depLon!!),
+                        GeoPoint(arrLat!!, arrLon!!)
                     )
 
                     val trips = FirebaseFirestore.getInstance().collection("trips")
-                    val doc: DocumentReference = if (edit!!){
+                    val doc: DocumentReference = if (edit!!) {
                         trips.document(tripId!!)
-                    }else{
+                    } else {
                         trips.document()
                     }
                     doc.set(t)
@@ -255,14 +398,14 @@ class TripEditFragment : Fragment() {
                             snackBar.show()
                         }
 
-                    if (imgChanged){
+                    if (imgChanged) {
                         saveImageOnCloudStorage(imgTrip.drawable.toBitmap(), imgName)
                             .addOnFailureListener {
                                 // Handle unsuccessful uploads
                             }.addOnSuccessListener {
                                 findNavController().navigate(R.id.action_trip_edit_to_othersTripListFragment)
                             }
-                    }else{
+                    } else {
                         findNavController().navigate(R.id.action_trip_edit_to_othersTripListFragment)
                     }
                 }
@@ -272,18 +415,18 @@ class TripEditFragment : Fragment() {
         return false
     }
 
-    private fun validateForm(): Boolean{
+    private fun validateForm(): Boolean {
         var res = true
 
-        if (etDeparture.editText?.text.toString() == ""){
+        if (etDeparture.editText?.text.toString() == "") {
             etDeparture.error = "Provide a value"
             res = false
         }
-        if (etArrival.editText?.text.toString() == ""){
+        if (etArrival.editText?.text.toString() == "") {
             etArrival.error = "Provide a value"
             res = false
         }
-        if (etDuration.editText?.text.toString() == ""){
+        if (etDuration.editText?.text.toString() == "") {
             etDuration.error = "Provide a value"
             res = false
         }
@@ -291,11 +434,11 @@ class TripEditFragment : Fragment() {
             etDepartureDate.error = "Provide a value"
             res = false
         }
-        if (etAvailableSeats.editText?.text.toString() == ""){
+        if (etAvailableSeats.editText?.text.toString() == "") {
             etAvailableSeats.error = "Provide a value"
             res = false
         }
-        if (etPrice.editText?.text.toString() == ""){
+        if (etPrice.editText?.text.toString() == "") {
             etPrice.error = "Provide a value"
             res = false
         }
@@ -311,9 +454,12 @@ class TripEditFragment : Fragment() {
         val hourSpinner = dialogLayout.findViewById<Spinner>(R.id.hourSpinner)
         val minuteSpinner = dialogLayout.findViewById<Spinner>(R.id.minuteSpinner)
 
-        val adapter1 = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, (0..30).toList())
-        val adapter2 = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, (0..23).toList())
-        val adapter3 = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, (0..59).toList())
+        val adapter1 =
+            ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, (0..30).toList())
+        val adapter2 =
+            ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, (0..23).toList())
+        val adapter3 =
+            ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, (0..59).toList())
 
         adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -343,7 +489,7 @@ class TripEditFragment : Fragment() {
             if (minuteSpinner.selectedItem != null)
                 minute = minuteSpinner.selectedItem.toString().toInt()
 
-            if (day > 0 || hour > 0 || minute > 0){
+            if (day > 0 || hour > 0 || minute > 0) {
                 val sBuilder = StringBuilder()
                 if (day > 0)
                     sBuilder.append(String.format("%dd", day))
@@ -382,6 +528,7 @@ class TripEditFragment : Fragment() {
             else -> false
         }
     }
+
     // ---------------- function for activating the camera to take a picture
     private fun dispatchTakePictureIntent() {
         val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
@@ -431,8 +578,8 @@ class TripEditFragment : Fragment() {
         out.close()
     }
 
-    private fun genRandomString(): String{
-        val charPool : List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')
+    private fun genRandomString(): String {
+        val charPool: List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')
 
         return (1..16)
             .map { i -> kotlin.random.Random.nextInt(0, charPool.size) }
