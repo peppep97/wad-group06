@@ -6,10 +6,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.*
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.*
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
@@ -21,6 +18,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
@@ -28,9 +26,9 @@ import com.google.firebase.storage.ktx.storage
 import com.group06.lab.MainActivity
 import com.group06.lab.R
 import com.group06.lab.login.LoginActivity
+import com.group06.lab.trip.tripId
 import java.io.File
 import java.io.FileOutputStream
-
 
 class ShowProfileFragment : Fragment() {
     private lateinit var tvFullName: TextView
@@ -42,10 +40,13 @@ class ShowProfileFragment : Fragment() {
     private lateinit var fullNameLayout: LinearLayout
     private lateinit var emailLayout: LinearLayout
     private lateinit var db: FirebaseFirestore
+    private lateinit var ratingBarProfile : RatingBar
+    private lateinit var rateButton : Button
+    private lateinit var messageToUserText : TextInputLayout
+    private lateinit var ratingAsDriverTextView : TextView
+    private lateinit var ratingAsPassengerTextView : TextView
 
     private lateinit var snackbar: Snackbar
-
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -53,9 +54,6 @@ class ShowProfileFragment : Fragment() {
     ): View? {
         // enable option edit
         setHasOptionsMenu(true)
-
-
-
 
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_activity_show_profile, container, false)
@@ -66,11 +64,15 @@ class ShowProfileFragment : Fragment() {
 
         val logoutButton = view.findViewById<Button>(R.id.logout_button)
 
-        var emailParameter : String? = arguments?.getString("email")
+        val emailParameter: String? = arguments?.getString("email")
+        var rating: Boolean? = arguments?.getBoolean("Rating")
+        val userId: String? = arguments?.getString("userId")
 
 
+        println("DEBUGVIEWPARAMETER " + rating)
 
 
+        if (rating == null) rating = false
 
 
         tvFullName = view.findViewById(R.id.tvFullName)
@@ -80,8 +82,11 @@ class ShowProfileFragment : Fragment() {
         imgProfile = view.findViewById(R.id.imgProfile)
         fullNameLayout = view.findViewById(R.id.fullNameLayout)
         emailLayout = view.findViewById(R.id.emailLayout)
-
-
+        ratingBarProfile = view.findViewById(R.id.ratingbarprofile)
+        rateButton = view.findViewById(R.id.RateButtonProfile)
+        messageToUserText = view.findViewById(R.id.commentRating)
+        ratingAsDriverTextView = view.findViewById(R.id.ratingAsDriver)
+        ratingAsPassengerTextView = view.findViewById(R.id.ratingAsPassenger)
 
 
 
@@ -89,26 +94,27 @@ class ShowProfileFragment : Fragment() {
         val nicknameLayout: LinearLayout = view.findViewById(R.id.nicknameLayout)
         val locationLayout: LinearLayout = view.findViewById(R.id.locationLayout)
 
-        snackbar = Snackbar.make(requireActivity().findViewById(android.R.id.content),
-            "Your profile seems empty, update it!", Snackbar.LENGTH_INDEFINITE)
+        snackbar = Snackbar.make(
+            requireActivity().findViewById(android.R.id.content),
+            "Your profile seems empty, update it!", Snackbar.LENGTH_INDEFINITE
+        )
 
-        snackbar.setAction("Update"){
+        snackbar.setAction("Update") {
             findNavController().navigate(R.id.action_showProfileActivity_to_editProfileActivity)
         }
 
-        if( emailParameter == null ) println("EMAIL PARAMETER NULL")
+        //if( emailParameter == null ) println("EMAIL PARAMETER NULL")
 
         //Use this to distinguish owner
-        var isOwner = emailParameter == null
-
+        val isOwner = emailParameter == null
 
         //Gets overwritten if the visitor is not the owner
         var getUserFromMail = MainActivity.mAuth.currentUser!!.email!!
 
-        if(!isOwner){
+        if (!isOwner) {
 
-            println( "EMAIL FROM LAYOUT" + emailParameter)
-            println( "EMAIL " + MainActivity.mAuth.currentUser!!.email!!)
+            //println( "EMAIL FROM LAYOUT" + emailParameter)
+            //println( "EMAIL " + MainActivity.mAuth.currentUser!!.email!!)
 
             fullNameLayout.visibility = View.GONE
             emailLayout.visibility = View.GONE
@@ -116,11 +122,114 @@ class ShowProfileFragment : Fragment() {
             setHasOptionsMenu(false)
 
             getUserFromMail = emailParameter!!
-
         }
 
 
+        FirebaseFirestore.getInstance().collection("users")
+            .document(MainActivity.mAuth.currentUser!!.email!!)
+            .collection("Ratings")
+            .addSnapshotListener { value, error ->
+                if(error != null) throw error
+                if(value != null){
 
+                    var averageScorePassenger : Float = 0f
+
+                    var numberOfScoresPassenger : Int = 0
+
+                    value.documents.filter { it.get("Role") == "Passenger" }.forEach { averageScorePassenger += it.get("Score").toString().toFloat(); numberOfScoresPassenger++  }
+
+                    ratingAsPassengerTextView.text = if(numberOfScoresPassenger != 0) (averageScorePassenger / numberOfScoresPassenger).toString() + "/5" else "No ratings yet!"
+
+                    var averageScoreDriver : Float = 0f
+
+                    var numberOfScoresDriver : Int = 0
+
+                    value.documents.filter { it.get("Role") == "Driver" }.forEach { averageScoreDriver += it.get("Score").toString().toFloat() ; numberOfScoresDriver++  }
+
+                    ratingAsDriverTextView.text = if(numberOfScoresDriver != 0) (averageScoreDriver / numberOfScoresDriver).toString() + "/5" else "No ratings yet!"
+
+
+                }
+
+
+            }
+
+
+
+
+        ratingBarProfile.visibility = View.GONE
+        rateButton.visibility = View.GONE
+        messageToUserText.visibility = View.GONE
+
+        if (rating!!) {
+
+            ratingBarProfile.visibility = View.VISIBLE
+            rateButton.visibility = View.VISIBLE
+            messageToUserText.visibility = View.VISIBLE
+
+
+        }
+
+        if (emailParameter != null){
+            FirebaseFirestore.getInstance().collection("users")
+                .document(emailParameter!!).collection("Ratings")
+                .addSnapshotListener { value, error ->
+                    if (error != null) throw error
+                    if (value != null) {
+
+
+                        if (value?.documents.filter {
+                                it.get("userMail") == MainActivity.mAuth.currentUser!!.email!! && it.get(
+                                    "TripId"
+                                ) == tripId
+                            }
+                                .isNotEmpty()) {
+
+
+                            ratingBarProfile.visibility = View.GONE
+                            rateButton.visibility = View.GONE
+                            messageToUserText.visibility = View.GONE
+
+                        }
+
+
+                    }
+
+
+                }
+
+    }
+
+
+
+        if(savedInstanceState != null){
+
+            messageToUserText.editText?.setText(savedInstanceState.getString("UserMessage"))
+
+
+        }
+
+        rateButton.setOnClickListener {
+
+            //Rate
+            //Send Rating
+            val db = FirebaseFirestore.getInstance()
+
+
+
+            var dataToUser = hashMapOf( "userMail" to MainActivity.mAuth.currentUser!!.email!! ,
+                "Score" to ratingBarProfile.rating ,
+                "TripId" to tripId,
+                "Role" to "Passenger",
+            "message" to messageToUserText.editText?.text.toString())
+
+
+
+            db.collection("users").document(emailParameter!!)
+                .collection("Ratings").add( dataToUser )
+
+
+        }
 
 
         db =  FirebaseFirestore.getInstance()
@@ -149,9 +258,6 @@ class ShowProfileFragment : Fragment() {
                     tvEmail.text = FirebaseAuth.getInstance().currentUser!!.email!!
                 }
             }
-
-
-
 
         Firebase.storage.reference
             .child(getUserFromMail).downloadUrl
@@ -198,6 +304,16 @@ class ShowProfileFragment : Fragment() {
             else -> super.onOptionsItemSelected(item)
         }
     }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+
+        outState.putString("UserMessage", messageToUserText.editText?.text.toString())
+
+    }
+
+
+
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)

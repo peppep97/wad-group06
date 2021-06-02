@@ -2,6 +2,7 @@ package com.group06.lab.trip
 
 import android.os.Bundle
 import android.view.*
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -17,6 +18,7 @@ class TripListFragment : Fragment() {
 
     private lateinit var tvEmpty: TextView
     private lateinit var rvTripList: RecyclerView
+    private lateinit var progressBar : ProgressBar
 
     var adapter: TripAdapter? = null
 
@@ -42,27 +44,11 @@ class TripListFragment : Fragment() {
 
         tvEmpty = view.findViewById(R.id.tvEmpty)
         rvTripList = view.findViewById(R.id.rvTripList)
+        progressBar = view.findViewById(R.id.progressBar)
+
+        progressBar.visibility = View.VISIBLE
 
         rvTripList.layoutManager = LinearLayoutManager(context)
-
-        //tripList = Database.getInstance(context).tripList
-
-       /* val db = FirebaseFirestore.getInstance()
-        db.collection("trips")
-            .addSnapshotListener { value, error ->
-                if (error != null) throw error
-                Database.getInstance(activity).myTripList.clear()
-                for (doc in value!!){
-                    val t = doc.toObject(Trip::class.java)
-                    t.id = doc.id
-                    if (t.userEmail == MainActivity.mAuth.currentUser!!.email!!)
-                        Database.getInstance(activity).myTripList.add(t)
-                }
-
-                adapter.notifyDataSetChanged()
-                showList(Database.getInstance(activity).myTripList.size)
-            }*/
-
 
         vm.getMyTrips().observe(viewLifecycleOwner, Observer {trips ->
             adapter = TripAdapter(trips, "UserTrips", parentFragmentManager)
@@ -96,5 +82,6 @@ class TripListFragment : Fragment() {
             rvTripList.visibility = View.VISIBLE
             tvEmpty.visibility = View.GONE
         }
+        progressBar.visibility = View.GONE
     }
 }

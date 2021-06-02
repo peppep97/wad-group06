@@ -23,6 +23,7 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
@@ -43,7 +44,7 @@ import java.text.DecimalFormat
 import java.util.*
 
 private var index: Int? = null
-private var tripId: String? = ""
+var tripId: String? = ""
 private var caller: String? = ""
 private var showEditButton: Boolean = false
 private lateinit var snackBar: Snackbar
@@ -54,10 +55,19 @@ class TripDetailsFragment : Fragment() {
     private lateinit var btnShowFavoredList: Button
     private lateinit var btnDeleteTrip: Button
     private lateinit var btnCompleteTrip : Button
+
     private lateinit var map : MapView;
     private val REQUEST_PERMISSIONS_REQUEST_CODE = 1;
-    private lateinit var ratingBar : RatingBar
 
+    private lateinit var btnRate : Button
+    private lateinit var ratingBar: RatingBar
+    private lateinit var rateUserMessage : TextInputLayout
+
+
+    private var showRatingBar: Boolean = false
+    private var showTripDetailsButtons: Boolean = false
+    private var showFAB: Boolean = false
+    private var ownerOfCompletedTrip: Boolean = false
 
     private val vm by viewModels<TripViewModel>()
 
@@ -89,9 +99,11 @@ class TripDetailsFragment : Fragment() {
         btnShowFavoredList = view.findViewById(R.id.btnShowFavoredList)
         btnCompleteTrip = view.findViewById(R.id.CompleteTrip)
         btnDeleteTrip = view.findViewById(R.id.DeleteTrip)
+        btnRate = view.findViewById<Button>(R.id.RateButton)
 
-        ratingBar = view.findViewById(R.id.RatingBar)
+        ratingBar = view.findViewById(R.id.ratingbar)
 
+        rateUserMessage = view.findViewById(R.id.commentRatingTrip)
         /*val t: Trip = when (caller) {
             "UserTrips" -> {
                 ArrayList<Trip>(Database.getInstance(context).myTripList.filter { it.id == tripId })[0]
@@ -127,23 +139,58 @@ class TripDetailsFragment : Fragment() {
         mapController.setZoom(9.5)
         map.parent.requestDisallowInterceptTouchEvent(true)
 
+        if(savedInstanceState != null){
+
+            rateUserMessage.editText?.setText(savedInstanceState.getString("UserRateMessage"))
+
+
+        }
+
+
+
         vm.getTripById(tripId!!).observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             val t : Trip = it
 
+            showRatingBar = (t.completed == true && t.userEmail != MainActivity.mAuth.currentUser!!.email!!)
+
+            showTripDetailsButtons = (t.completed == false && t.userEmail == MainActivity.mAuth.currentUser!!.email!!)
+
+            showFAB = ( t.userEmail != MainActivity.mAuth.currentUser!!.email!! && t.completed == false )
+
+            ownerOfCompletedTrip = ( t.userEmail == MainActivity.mAuth.currentUser!!.email!! && t.completed == true  )
+
+
+
             showEditButton = t.userEmail == MainActivity.mAuth.currentUser!!.email!!
+
             setHasOptionsMenu(true)
-            fabFav.visibility = if (t.userEmail == MainActivity.mAuth.currentUser!!.email!!) View.GONE else View.VISIBLE
-            btnDeleteTrip.visibility = if (t.userEmail == MainActivity.mAuth.currentUser!!.email!!) View.VISIBLE else View.GONE
-            btnCompleteTrip.visibility = if (t.userEmail == MainActivity.mAuth.currentUser!!.email!!) View.VISIBLE else View.GONE
-            if (t.userEmail == MainActivity.mAuth.currentUser!!.email!!) fabFav.hide()
-            btnShowFavoredList.visibility = if (t.userEmail == MainActivity.mAuth.currentUser!!.email!!) View.VISIBLE else View.GONE
+            //fabFav.visibility = if (t.userEmail == MainActivity.mAuth.currentUser!!.email!!) View.GONE else View.VISIBLE
+            //btnDeleteTrip.visibility = if (t.userEmail == MainActivity.mAuth.currentUser!!.email!!) View.VISIBLE else View.GONE
+            //btnCompleteTrip.visibility = if (t.userEmail == MainActivity.mAuth.currentUser!!.email!!) View.VISIBLE else View.GONE
+            //if (t.userEmail == MainActivity.mAuth.currentUser!!.email!!) fabFav.hide()
+            //btnShowFavoredList.visibility = if (t.userEmail == MainActivity.mAuth.currentUser!!.email!!) View.VISIBLE else View.GONE
+            fabFav.visibility = if (showFAB) View.VISIBLE else  View.VISIBLE
+            if (!showFAB) fabFav.hide()
 
-            btnCompleteTrip.visibility = if(t.completed == true) View.GONE else View.VISIBLE
-            btnDeleteTrip.visibility = if(t.completed == true) View.GONE else View.VISIBLE
-            btnShowFavoredList.visibility = if(t.completed == true) View.GONE else View.VISIBLE
+            btnCompleteTrip.visibility = if(showTripDetailsButtons) View.VISIBLE else View.GONE
+            btnDeleteTrip.visibility = if(showTripDetailsButtons) View.VISIBLE else View.GONE
+            btnShowFavoredList.visibility = if(showTripDetailsButtons) View.VISIBLE else View.GONE
 
-            ratingBar.visibility = if(t.completed == true) View.VISIBLE else View.GONE
-            ratingBar.visibility = if(t.userEmail == MainActivity.mAuth.currentUser!!.email!!) View.GONE else View.VISIBLE
+            ratingBar.visibility = if(showRatingBar) View.VISIBLE else View.GONE
+            btnRate.visibility = if(showRatingBar) View.VISIBLE else View.GONE
+            rateUserMessage.visibility = if(showRatingBar) View.VISIBLE else View.GONE
+
+            if( ownerOfCompletedTrip ){
+
+
+              //ratingBar.visibility = if(t.completed == true) View.VISIBLE else View.GONE
+              ratingBar.visibility = if(t.userEmail == MainActivity.mAuth.currentUser!!.email!!) View.GONE else View.VISIBLE
+              btnShowFavoredList.text = "Rate riders"
+              btnShowFavoredList.visibility = View.VISIBLE
+
+
+
+            }
 
             myMenu?.findItem(R.id.edit)?.isVisible = showEditButton
 
@@ -257,13 +304,33 @@ class TripDetailsFragment : Fragment() {
                     }
             }
 
+
+
+
             btnShowFavoredList.setOnClickListener {
-                findNavController().navigate(
-                    R.id.action_trip_details_to_favored_trip_list,
-                    Bundle().apply {
-                        putString("tripId", tripId)
-                        putInt("AvailableSeats", t.availableSeats)
-                    })
+
+                if( t.completed == true ){
+
+                    findNavController().navigate(
+                        R.id.action_trip_details_to_favored_trip_list,
+                        Bundle().apply {
+                            putString("tripId", tripId)
+                            putInt("AvailableSeats", t.availableSeats)
+                            putBoolean("TripIsComplete", true)
+                        })
+
+
+                }
+
+                else {
+                    findNavController().navigate(
+                        R.id.action_trip_details_to_favored_trip_list,
+                        Bundle().apply {
+                            putString("tripId", tripId)
+                            putInt("AvailableSeats", t.availableSeats)
+                            putBoolean("TripIsComplete", false)
+                        })
+                }
             }
 
             btnDeleteTrip.setOnClickListener {
@@ -285,6 +352,20 @@ class TripDetailsFragment : Fragment() {
                         .delete()
                 }
 
+                db.collection("trips").document(tripId!!).collection("Ratings").get().addOnSuccessListener {
+
+                        res ->
+                    res.documents.forEach { batch.delete(it.reference) }
+                    //Works only for small collection I guess?
+                    batch.commit()
+                    db.collection("trips")
+                        .document(tripId!!)
+                        .delete()
+                }
+
+
+
+
                 findNavController().navigate(
                     R.id.action_trip_details_to_trip_list,
                     Bundle().apply {
@@ -292,6 +373,39 @@ class TripDetailsFragment : Fragment() {
                         putInt("AvailableSeats", t.availableSeats)
                     })
             }
+
+
+            btnRate.setOnClickListener {
+
+                //Send Rating
+                val db = FirebaseFirestore.getInstance()
+
+                var dataToTrips = hashMapOf( "userMail" to MainActivity.mAuth.currentUser!!.email!! ,
+                                        "Score" to ratingBar.rating ,
+                                        "TripId" to tripId,
+                                        "Role" to "Drive" ,
+                "message" to rateUserMessage.editText?.text.toString())
+
+                var dataToUser = hashMapOf( "userMail" to MainActivity.mAuth.currentUser!!.email!! ,
+                    "Score" to ratingBar.rating,
+                    "TripId" to tripId,
+                    "Role" to "Driver",
+                    "message" to rateUserMessage.editText?.text.toString())
+
+
+
+                db.collection("trips").document(tripId!!)
+                    .collection("Ratings").add( dataToTrips )
+
+                db.collection("users").document(t.userEmail)
+                    .collection("Ratings").add( dataToUser )
+
+
+
+
+            }
+
+
         })
 
 
@@ -333,6 +447,35 @@ class TripDetailsFragment : Fragment() {
         }
 
 
+        FirebaseFirestore.getInstance().collection("trips")
+            .document(tripId!!).collection( "Ratings" )
+            .addSnapshotListener { value, error ->
+                if(error != null) throw error
+                if(value != null )
+                {
+
+
+
+
+                    if (value?.documents.filter { it.get("userMail") == MainActivity.mAuth.currentUser!!.email!! }
+                            .isNotEmpty()) {
+
+
+                        ratingBar.visibility = View.GONE
+                        btnRate.visibility = View.GONE
+                    }
+
+
+                }
+
+
+
+
+            }
+
+
+
+
     }
 
     override fun onResume() {
@@ -369,6 +512,14 @@ class TripDetailsFragment : Fragment() {
         inflater.inflate(R.menu.fragment_trip_details, menu)
         menu.findItem(R.id.edit).isVisible = showEditButton
     }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString("UserRateMessage" , rateUserMessage.editText?.text.toString() )
+
+
+    }
+
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {

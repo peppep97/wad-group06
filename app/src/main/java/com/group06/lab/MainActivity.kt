@@ -55,36 +55,13 @@ class MainActivity : AppCompatActivity() {
             setOf(
                 R.id.trip_list,
                 R.id.my_trip_list,
-                R.id.favored_trip_list,
+                R.id.interest_trip_list,
+                R.id.bought_trip_list,
                 R.id.show_profile
             ), drawerLayout
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
-
-        /*FirebaseFirestore.getInstance().collection("trips").addSnapshotListener { value, error ->
-            if (error != null) throw error
-            Database.getInstance(this).myTripList.clear()
-            for (doc in value!!) {
-                val f = doc.toObject(Trip::class.java)
-                f.id = doc.id
-                if (f.userEmail == mAuth.currentUser!!.email!!)
-                    Database.getInstance(this).myTripList.add(f)
-            }
-        }*/
-
-        //take all users which are interested in my trips
-        /*FirebaseFirestore.getInstance().collection("favored_trips")
-            .addSnapshotListener { value, error ->
-                if (error != null) throw error
-                Database.getInstance(this).favoredList.clear()
-                for (doc in value!!) {
-                    val f = doc.toObject(FavoriteTrip::class.java)
-                    val currentUserTrips = Database.getInstance(this).myTripList.filter {t -> t.userEmail == mAuth.currentUser!!.email!!}.map {t -> t.id}
-                    if (currentUserTrips.contains(f.tripId))
-                        Database.getInstance(this).favoredList.add(f)
-                }
-            }*/
     }
 
     private fun loadData() {
