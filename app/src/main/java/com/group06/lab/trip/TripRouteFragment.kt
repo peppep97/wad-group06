@@ -1,20 +1,21 @@
 package com.group06.lab.trip
 
 import android.Manifest
+import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Address
 import android.location.Geocoder
 import android.os.Bundle
 import android.os.StrictMode
 import android.preference.PreferenceManager
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.group06.lab.R
-import org.osmdroid.api.IGeoPoint
 import org.osmdroid.bonuspack.routing.OSRMRoadManager
 import org.osmdroid.bonuspack.routing.RoadManager
 import org.osmdroid.config.Configuration
@@ -26,10 +27,7 @@ import org.osmdroid.views.overlay.Overlay
 import org.osmdroid.views.overlay.Polyline
 import java.util.*
 
-private var isDeparture: Boolean? = true
-private var edit: Boolean? = false
-private var index = -1
-private var trip_id: String? = ""
+
 private var depLat: Double? = 0.0
 private var arrLat: Double? = 0.0
 private var depLon: Double? = 0.0
@@ -45,6 +43,7 @@ class TripRouteFragment : Fragment() {
             activity,
             PreferenceManager.getDefaultSharedPreferences(activity)
         )
+
         client = LocationServices.getFusedLocationProviderClient(requireActivity())
         val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
         StrictMode.setThreadPolicy(policy)
@@ -78,10 +77,6 @@ class TripRouteFragment : Fragment() {
             requireActivity()
         ) { location ->
             run {
-                depLat = arguments?.getDouble("depLat")
-                depLon = arguments?.getDouble("depLon")
-                arrLat = arguments?.getDouble("arrLat")
-                arrLon = arguments?.getDouble("arrLon")
 
                 if (depLat != 0.0 && depLon != 0.0 &&
                     arrLat != 0.0 && arrLon != 0.0

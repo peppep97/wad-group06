@@ -78,6 +78,7 @@ class LocationSelectorFragment : Fragment() {
         map = view.findViewById<MapView>(R.id.mapLocationSelector)
         map.setTileSource(TileSourceFactory.MAPNIK);
         map.setMultiTouchControls(true)
+
         val mapController = map.controller
         mapController.setZoom(16.0)
         var startPoint: GeoPoint

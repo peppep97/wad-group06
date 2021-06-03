@@ -60,6 +60,7 @@ class TripDetailsFragment : Fragment() {
     private lateinit var map : MapView;
 
     private val REQUEST_PERMISSIONS_REQUEST_CODE = 1;
+    private var PERMISSION_ALL = 2
 
     private lateinit var btnRate : Button
     private lateinit var ratingBar: RatingBar
@@ -150,7 +151,29 @@ class TripDetailsFragment : Fragment() {
 
         }
 
+        val PERMISSIONS = arrayOf(
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        )
 
+        if (
+            ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            ) == PackageManager.PERMISSION_GRANTED &&
+            ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED &&
+            ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+        } else {
+            ActivityCompat.requestPermissions(requireActivity(), PERMISSIONS, PERMISSION_ALL);
+        }
 
         vm.getTripById(tripId!!).observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             val t : Trip = it
