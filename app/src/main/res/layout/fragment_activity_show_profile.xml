@@ -29,306 +29,313 @@
         app:layout_constraintTop_toBottomOf="@+id/imgProfile"
         app:layout_constraintVertical_weight="2">
 
-        <LinearLayout
-            android:id="@+id/fullNameLayout"
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:orientation="horizontal"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp">
-
-            <ImageView
-                android:id="@+id/imageView"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="bottom"
-                android:paddingRight="16dp"
-                android:scaleType="fitCenter"
-                app:srcCompat="@drawable/ic_person" />
+            android:layout_height="match_parent">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:paddingStart="5dp">
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
 
-                <TextView
-                    android:id="@+id/textView2"
+                <LinearLayout
+                    android:id="@+id/fullNameLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:orientation="horizontal"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp">
+
+                    <ImageView
+                        android:id="@+id/imageView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="bottom"
+                        android:paddingRight="16dp"
+                        android:scaleType="fitCenter"
+                        app:srcCompat="@drawable/ic_person" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:paddingStart="5dp">
+
+                        <TextView
+                            android:id="@+id/textView2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Full Name"
+                            android:textColor="@color/textColorAccent"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:id="@+id/tvFullName"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                            android:textColor="@color/textColorMain"
+                            android:textSize="14sp" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/nicknameLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:orientation="horizontal"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp">
+
+                    <ImageView
+                        android:id="@+id/imageView2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="bottom"
+                        android:paddingRight="16dp"
+                        android:scaleType="fitCenter"
+                        app:srcCompat="@drawable/ic_keyboard" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:paddingStart="5dp">
+
+                        <TextView
+                            android:id="@+id/textView3"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Nick Name"
+                            android:textColor="@color/textColorAccent"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:id="@+id/tvNickName"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center_vertical"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                            android:textColor="@color/textColorMain"
+                            android:textSize="14sp" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/locationLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="16dp"
+                    android:orientation="horizontal"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp">
+
+                    <ImageView
+                        android:id="@+id/imageView4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="bottom"
+                        android:paddingRight="16dp"
+                        android:scaleType="fitCenter"
+                        app:srcCompat="@drawable/ic_location_on" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:paddingStart="5dp">
+
+                        <TextView
+                            android:id="@+id/textView5"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Location"
+                            android:textColor="@color/textColorAccent"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:id="@+id/tvLocation"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center_vertical"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                            android:textColor="@color/textColorMain"
+                            android:textSize="14sp" />
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/emailLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="16dp"
+                    android:orientation="horizontal"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp">
+
+                    <ImageView
+                        android:id="@+id/imageView3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="bottom"
+                        android:paddingRight="16dp"
+                        android:scaleType="fitCenter"
+                        app:srcCompat="@drawable/ic_email" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:paddingStart="5dp">
+
+                        <TextView
+                            android:id="@+id/textView4"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Email"
+                            android:textColor="@color/textColorAccent"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:id="@+id/tvEmail"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center_vertical"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                            android:textColor="@color/textColorMain"
+                            android:textSize="14sp" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="16dp"
+                    android:orientation="horizontal"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.5"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="0.4"
+                            android:text="Rating as driver"
+
+                            android:textAlignment="center"
+                            android:textColor="@color/textColorAccent"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:id="@+id/ratingAsDriver"
+
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="0.4"
+                            android:text="5/5"
+                            android:textAlignment="center"
+
+                            android:textSize="16sp" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.5"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="0.4"
+                            android:text="Rating as passenger"
+                            android:textAlignment="center"
+                            android:textColor="@color/textColorAccent"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:id="@+id/ratingAsPassenger"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="0.4"
+                            android:text="4/5"
+                            android:textAlignment="center"
+
+                            android:textSize="16sp" />
+
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/commentRating"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:hint="Message to user"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
+                    app:startIconDrawable="@drawable/ic_baseline_description_24">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="70dp"
+                        android:background="#ffffff"
+                        android:inputType="textMultiLine"
+                        android:singleLine="true" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <RatingBar
+                    android:id="@+id/ratingbarprofile"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Full Name"
-                    android:textColor="@color/textColorAccent"
-                    android:textSize="16sp" />
+                    android:layout_gravity="center_horizontal"
+                    android:gravity="center_horizontal"
 
-                <TextView
-                    android:id="@+id/tvFullName"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                    android:textColor="@color/textColorMain"
-                    android:textSize="14sp" />
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/nicknameLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:orientation="horizontal"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp">
-
-            <ImageView
-                android:id="@+id/imageView2"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="bottom"
-                android:paddingRight="16dp"
-                android:scaleType="fitCenter"
-                app:srcCompat="@drawable/ic_keyboard" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:paddingStart="5dp">
-
-                <TextView
-                    android:id="@+id/textView3"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Nick Name"
-                    android:textColor="@color/textColorAccent"
-                    android:textSize="16sp" />
-
-                <TextView
-                    android:id="@+id/tvNickName"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center_vertical"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                    android:textColor="@color/textColorMain"
-                    android:textSize="14sp" />
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/emailLayout"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginTop="16dp"
-            android:orientation="horizontal"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp">
-
-            <ImageView
-                android:id="@+id/imageView3"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="bottom"
-                android:paddingRight="16dp"
-                android:scaleType="fitCenter"
-                app:srcCompat="@drawable/ic_email" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:paddingStart="5dp">
-
-                <TextView
-                    android:id="@+id/textView4"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Email"
-                    android:textColor="@color/textColorAccent"
-                    android:textSize="16sp" />
-
-                <TextView
-                    android:id="@+id/tvEmail"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center_vertical"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                    android:textColor="@color/textColorMain"
-                    android:textSize="14sp" />
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/locationLayout"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginTop="16dp"
-            android:orientation="horizontal"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp">
-
-            <ImageView
-                android:id="@+id/imageView4"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="bottom"
-                android:paddingRight="16dp"
-                android:scaleType="fitCenter"
-                app:srcCompat="@drawable/ic_location_on" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:paddingStart="5dp">
-
-                <TextView
-                    android:id="@+id/textView5"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Location"
-                    android:textColor="@color/textColorAccent"
-                    android:textSize="16sp" />
-
-                <TextView
-                    android:id="@+id/tvLocation"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center_vertical"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                    android:textColor="@color/textColorMain"
-                    android:textSize="14sp" />
-            </LinearLayout>
-
-
-
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginTop="16dp"
-            android:orientation="horizontal"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            >
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="0.5"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:text="Rating as driver"
-                    android:textAlignment="center"
-
-                    android:layout_weight="0.4"
-                    android:textColor="@color/textColorAccent"
-                    android:textSize="14sp"
                     />
-                <TextView
-                    android:id="@+id/ratingAsDriver"
 
+                <Button
+                    android:id="@+id/RateButtonProfile"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="0.4"
+                    android:layout_height="wrap_content"
+
+                    android:text="Rate"
                     android:textAlignment="center"
-                    android:textSize="16sp"
 
-                    android:text="5/5"/>
 
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="0.5"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:text="Rating as passenger"
-                    android:textAlignment="center"
-                    android:layout_weight="0.4"
-                    android:textColor="@color/textColorAccent"
-                    android:textSize="14sp"
                     />
-                <TextView
-                    android:id="@+id/ratingAsPassenger"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="0.4"
-                    android:textAlignment="center"
-                    android:textSize="16sp"
 
-                    android:text="4/5"/>
+                <Button
+                    android:id="@+id/logout_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="Logout"
+                    android:textAlignment="center"
+
+
+                    />
+
 
             </LinearLayout>
-
-
-        </LinearLayout>
-
-        <Button
-            android:id="@+id/logout_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Logout"
-            android:textAlignment="center"
-
-
-            />
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/commentRating"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:hint="Message to user"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            app:startIconDrawable="@drawable/ic_baseline_description_24">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="match_parent"
-                android:layout_height="70dp"
-                android:background="#ffffff"
-                android:inputType="textMultiLine"
-                android:singleLine="true" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-
-
-        <RatingBar
-            android:id="@+id/ratingbarprofile"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:layout_gravity="center_horizontal"
-
-            />
-
-
-
-        <Button
-            android:id="@+id/RateButtonProfile"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-
-            android:text="Rate"
-            android:textAlignment="center"
-
-
-            />
+        </ScrollView>
 
 
     </LinearLayout>
