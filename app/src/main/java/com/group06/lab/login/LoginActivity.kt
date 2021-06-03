@@ -10,8 +10,10 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.firestore.FirebaseFirestore
 import com.group06.lab.MainActivity
 import com.group06.lab.R
+import com.group06.lab.profile.User
 import kotlinx.android.synthetic.main.activity_login.*
 
 class LoginActivity : AppCompatActivity() {
@@ -70,6 +72,15 @@ class LoginActivity : AppCompatActivity() {
                     // Google Sign In was successful, authenticate with Firebase
                     val account = task.getResult(ApiException::class.java)!!
                     Log.d("LogInActivity", "firebaseAuthWithGoogle:" + account.id)
+
+                    val user = User("${account.givenName} ${account.familyName}", account.displayName ?: "",
+                        account.email!!, "")
+
+                    val db = FirebaseFirestore.getInstance()
+                    db.collection("users")
+                        .document(account.email!!) //use the specified email as document id
+                        .set(user)
+
                     firebaseAuthWithGoogle(account.idToken!!)
                 } catch (e: ApiException) {
                     // Google Sign In failed, update UI appropriately
