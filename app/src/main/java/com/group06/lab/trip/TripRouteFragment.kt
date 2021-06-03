@@ -44,6 +44,11 @@ class TripRouteFragment : Fragment() {
             PreferenceManager.getDefaultSharedPreferences(activity)
         )
 
+        depLat = arguments?.getDouble("depLat")
+        depLon = arguments?.getDouble("depLon")
+        arrLat = arguments?.getDouble("arrLat")
+        arrLon = arguments?.getDouble("arrLon")
+
         client = LocationServices.getFusedLocationProviderClient(requireActivity())
         val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
         StrictMode.setThreadPolicy(policy)
