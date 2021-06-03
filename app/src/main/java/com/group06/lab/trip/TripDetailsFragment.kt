@@ -383,6 +383,7 @@ class TripDetailsFragment : Fragment() {
 
                         ratingBar.visibility = View.GONE
                         btnRate.visibility = View.GONE
+                        rateUserMessage.visibility = View.GONE
                     }
 
 
