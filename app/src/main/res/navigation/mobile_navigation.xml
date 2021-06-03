@@ -195,4 +195,8 @@
         android:id="@+id/tripRouteFragment"
         android:name="com.group06.lab.trip.TripRouteFragment"
         android:label="Trip Route" />
+    <fragment
+        android:id="@+id/interest_trip_list"
+        android:name="com.group06.lab.trip.TripsOfInterestListFragment"
+        android:label="Interested Trips" />
 </navigation>
