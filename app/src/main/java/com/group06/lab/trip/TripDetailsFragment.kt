@@ -50,7 +50,7 @@ class TripDetailsFragment : Fragment() {
 
     private lateinit var btnRate : Button
     private lateinit var ratingBar: RatingBar
-    private lateinit var rateUserMessage : TextInputLayout
+    private var rateUserMessage : TextInputLayout? = null
 
 
     private var showRatingBar: Boolean = false
@@ -121,8 +121,8 @@ class TripDetailsFragment : Fragment() {
         val cardMap = view.findViewById<CardView>(R.id.cardMap)
 
         if(savedInstanceState != null){
-
-            rateUserMessage.editText?.setText(savedInstanceState.getString("UserRateMessage"))
+            if(rateUserMessage != null)
+                rateUserMessage!!.editText?.setText(savedInstanceState.getString("UserRateMessage"))
 
 
         }
@@ -159,7 +159,7 @@ class TripDetailsFragment : Fragment() {
 
             ratingBar.visibility = if(showRatingBar) View.VISIBLE else View.GONE
             btnRate.visibility = if(showRatingBar) View.VISIBLE else View.GONE
-            rateUserMessage.visibility = if(showRatingBar) View.VISIBLE else View.GONE
+            rateUserMessage!!.visibility = if(showRatingBar) View.VISIBLE else View.GONE
 
             if( ownerOfCompletedTrip ){
 
@@ -304,13 +304,13 @@ class TripDetailsFragment : Fragment() {
                                         "Score" to ratingBar.rating ,
                                         "TripId" to tripId,
                                         "Role" to "Drive" ,
-                "message" to rateUserMessage.editText?.text.toString())
+                "message" to rateUserMessage!!.editText?.text.toString())
 
                 var dataToUser = hashMapOf( "userMail" to MainActivity.mAuth.currentUser!!.email!! ,
                     "Score" to ratingBar.rating,
                     "TripId" to tripId,
                     "Role" to "Driver",
-                    "message" to rateUserMessage.editText?.text.toString())
+                    "message" to rateUserMessage!!.editText?.text.toString())
 
 
 
@@ -383,7 +383,7 @@ class TripDetailsFragment : Fragment() {
 
                         ratingBar.visibility = View.GONE
                         btnRate.visibility = View.GONE
-                        rateUserMessage.visibility = View.GONE
+                        rateUserMessage!!.visibility = View.GONE
                     }
 
 
@@ -422,7 +422,8 @@ class TripDetailsFragment : Fragment() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putString("UserRateMessage" , rateUserMessage.editText?.text.toString() )
+        if(rateUserMessage != null)
+            outState.putString("UserRateMessage" , rateUserMessage!!.editText?.text.toString() )
 
 
     }
