@@ -72,6 +72,7 @@ class LocationSelectorFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         isDeparture = arguments?.getBoolean("isDeparture")
+        edit = arguments?.getBoolean("edit")
         index = arguments?.getInt("index")!!
         trip_id = arguments?.getString("tripId")
 
@@ -263,7 +264,7 @@ class LocationSelectorFragment : Fragment() {
                         putString("arrCity", arrCity)
                         putInt("index", index)
                         putString("tripId", trip_id)
-                        putBoolean("edit", true)
+                        putBoolean("edit", edit!!)
                     })
                 return true
             }

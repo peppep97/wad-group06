@@ -45,6 +45,7 @@ class TripEditFragment : Fragment() {
     val REQUEST_IMAGE_CAPTURE = 1
     val REQUEST_IMAGE_GALLERY = 2
     private var PERMISSION_ALL = 3
+
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
@@ -164,40 +165,25 @@ class TripEditFragment : Fragment() {
             unregisterForContextMenu(imageButtonEdit);
         }
 
-//        etDeparture.editText?.addTextChangedListener(depTextChangeListener())
-//        etArrival.editText?.addTextChangedListener(arrTextChangeListener())
-
-//        etDeparture.editText?.addTextChangedListener {
-//            depCity = it.toString()
-//            depLat = 0.0
-//            depLon = 0.0
-//        }
-//
-//        etArrival.editText?.addTextChangedListener {
-//            arrCity = it.toString()
-//            arrLat = 0.0
-//            arrLon = 0.0
-//        }
-
         edit = arguments?.getBoolean("edit")
+        index = arguments?.getInt("index")!!
+        tripId = arguments?.getString("tripId")
+        depLat = arguments?.getDouble("depLat")
+        arrLat = arguments?.getDouble("arrLat")
+        depLon = arguments?.getDouble("depLon")
+        arrLon = arguments?.getDouble("arrLon")
+        depCity = arguments?.getString("depCity")
+        arrCity = arguments?.getString("arrCity")
+        isDeparture = arguments?.getBoolean("isDeparture")
+
+        if (depLat != null && depLon != null && depLat != 0.0 && depLon != 0.0) {
+            btnSelectArrMap.isClickable = true
+            btnSelectArrMap.isEnabled = true
+            btnSelectArrMap.backgroundTintList =
+                ColorStateList.valueOf(resources.getColor(R.color.colorPrimary));
+        }
+
         if (edit!!) {
-            index = arguments?.getInt("index")!!
-            tripId = arguments?.getString("tripId")
-            depLat = arguments?.getDouble("depLat")
-            arrLat = arguments?.getDouble("arrLat")
-            depLon = arguments?.getDouble("depLon")
-            arrLon = arguments?.getDouble("arrLon")
-            depCity = arguments?.getString("depCity")
-            arrCity = arguments?.getString("arrCity")
-            isDeparture = arguments?.getBoolean("isDeparture")
-
-            if (depLat != null && depLon != null && depLat != 0.0 && depLon != 0.0) {
-                btnSelectArrMap.isClickable = true
-                btnSelectArrMap.isEnabled = true
-                btnSelectArrMap.backgroundTintList =
-                    ColorStateList.valueOf(resources.getColor(R.color.colorPrimary));
-            }
-
             vm.getTripById(tripId!!).observe(viewLifecycleOwner, androidx.lifecycle.Observer {
                 val t: Trip = it
 
@@ -254,8 +240,16 @@ class TripEditFragment : Fragment() {
                         }
                 }
             })
+        } else {
+            etDeparture.editText?.removeTextChangedListener(depTextChangeListener())
+            if (depCity != "" && depCity != null)
+                etDeparture.editText?.setText(depCity)
+            etDeparture.editText?.addTextChangedListener(depTextChangeListener())
 
-
+            etArrival.editText?.removeTextChangedListener(arrTextChangeListener())
+            if (arrCity != "" && arrCity != null)
+                etArrival.editText?.setText(arrCity)
+            etArrival.editText?.addTextChangedListener(arrTextChangeListener())
         }
 
         etDepartureDate.editText?.setOnClickListener {
@@ -270,6 +264,7 @@ class TripEditFragment : Fragment() {
                 R.id.action_trip_edit_to_locationSelectorFragment,
                 Bundle().apply {
                     putBoolean("isDeparture", true)
+                    putBoolean("edit", edit!!)
                     putInt("index", index)
                     putString("tripId", tripId)
                     arrLat?.let { putDouble("arrLat", it) }
@@ -283,6 +278,7 @@ class TripEditFragment : Fragment() {
                 Bundle().apply {
                     putBoolean("isDeparture", false)
                     putInt("index", index)
+                    putBoolean("edit", edit!!)
                     putString("tripId", tripId)
                     depLat?.let { putDouble("depLat", it) }
                     depLon?.let { putDouble("depLon", it) }
@@ -380,7 +376,7 @@ class TripEditFragment : Fragment() {
             outState.putString("price", etPrice.editText?.text.toString())
             outState.putString("description", etDescription.editText?.text.toString())
             outState.putString("imgTrip", "trippictemp.png")
-        } catch(ex: Exception) {
+        } catch (ex: Exception) {
             println(ex.message.toString())
         }
     }
