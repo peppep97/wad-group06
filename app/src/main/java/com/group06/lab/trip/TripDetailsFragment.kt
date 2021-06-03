@@ -466,7 +466,11 @@ class TripDetailsFragment : Fragment() {
                 db.collection("users").document(t.userEmail)
                     .collection("Ratings").add(dataToUser)
 
-                
+                snackBar = Snackbar.make(
+                    requireActivity().findViewById(android.R.id.content),
+                    "Rated succesfully!",
+                    Snackbar.LENGTH_SHORT
+                )
 
             }
 
