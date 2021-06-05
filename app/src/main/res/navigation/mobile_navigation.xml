@@ -22,10 +22,10 @@
         <action
             android:id="@+id/action_trip_details_to_favored_trip_list"
             app:destination="@id/favored_trip_list"
-            app:enterAnim="@anim/nav_default_enter_anim"
+            app:enterAnim="@anim/custom_from_right"
             app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+            app:popEnterAnim="@anim/custom_from_right"
+            app:popExitAnim="@anim/custom_to_right" />
         <action
             android:id="@+id/action_trip_details_to_trip_list"
             app:destination="@id/trip_list"
@@ -36,10 +36,10 @@
         <action
             android:id="@+id/action_trip_details_to_tripRouteFragment"
             app:destination="@id/tripRouteFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
+            app:enterAnim="@anim/custom_from_right"
             app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+            app:popEnterAnim="@anim/custom_from_right"
+            app:popExitAnim="@anim/custom_to_right" />
     </fragment>
     <fragment
         android:id="@+id/trip_edit"
@@ -167,17 +167,14 @@
             app:popExitAnim="@anim/custom_to_top"
             app:popUpTo="@id/trip_edit"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_locationSelectorFragment_to_trip_details"
+            app:destination="@id/trip_details" /><![CDATA[
 
         android:id="@+id/interest_trip_list"
         android:name="com.group06.lab.trip.TripsOfInterestListFragment"
         android:label="Trips of interest">
-        <action
-            android:id="@+id/action_interest_trip_list_to_trip_details"
-            app:destination="@id/trip_details"
-            app:enterAnim="@anim/custom_from_right"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/custom_from_right"
-            app:popExitAnim="@anim/custom_to_right" />
+        ]]>
     </fragment>
     <fragment
         android:id="@+id/bought_trip_list"
@@ -198,5 +195,13 @@
     <fragment
         android:id="@+id/interest_trip_list"
         android:name="com.group06.lab.trip.TripsOfInterestListFragment"
-        android:label="Interested Trips" />
+        android:label="Interested Trips" >
+        <action
+            android:id="@+id/action_interest_trip_list_to_trip_details"
+            app:destination="@id/trip_details"
+            app:enterAnim="@anim/custom_from_right"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/custom_from_right"
+            app:popExitAnim="@anim/custom_to_right" />
+    </fragment>
 </navigation>

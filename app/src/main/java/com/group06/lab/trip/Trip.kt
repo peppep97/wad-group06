@@ -5,7 +5,7 @@ import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.GeoPoint
 import java.util.*
 
-class Trip(var id: String, val imageUrl: String, val departure:String, val arrival:String, val completed: Boolean?,
+class Trip(var id: String, val imageUrl: String, val departure:String, val arrival:String, val completed: Boolean,
                 val departureDate: Date, val estimatedDay: Int, val estimatedHour: Int, val estimatedMinute: Int,
                 val availableSeats: Int, val price: Double, val description: String, val userEmail: String, val depPosition: GeoPoint, val arrPosition: GeoPoint){
     constructor() : this("","","","", false ,Date(),0,
@@ -17,7 +17,7 @@ class Trip(var id: String, val imageUrl: String, val departure:String, val arriv
                 val imageUrl = getString("imageUrl")!!
                 val departure = getString("departure")!!
                 val arrival = getString("arrival")!!
-                val completed = getBoolean("completed")
+                val completed = getBoolean("completed")!!
                 val departureDate = getDate("departureDate")!!
                 val estimatedDay = getLong("estimatedDay")!!.toInt()
                 val estimatedHour = getLong("estimatedHour")!!.toInt()
@@ -28,7 +28,7 @@ class Trip(var id: String, val imageUrl: String, val departure:String, val arriv
                 val userEmail = getString("userEmail")!!
                 val depPosition = getGeoPoint("depPosition")!!
                 val arrPosition = getGeoPoint("arrPosition")!!
-                return Trip(id, imageUrl, departure, arrival, completed , departureDate, estimatedDay,
+                return Trip(id, imageUrl, departure, arrival, completed, departureDate, estimatedDay,
                 estimatedHour, estimatedMinute, availableSeats, price, description, userEmail, depPosition, arrPosition)
             } catch (e: Exception) {
                 Log.e(TAG, "Error converting trip", e)

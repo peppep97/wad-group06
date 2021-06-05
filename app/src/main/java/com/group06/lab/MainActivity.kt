@@ -1,7 +1,6 @@
 package com.group06.lab
 
 import android.os.Bundle
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -21,6 +20,7 @@ import com.google.firebase.storage.ktx.storage
 import com.group06.lab.profile.ShowProfileFragment
 import com.group06.lab.trip.OthersTripListFragment
 import com.group06.lab.trip.TripListFragment
+import de.hdodenhof.circleimageview.CircleImageView
 
 class MainActivity : AppCompatActivity() {
     companion object {
@@ -30,7 +30,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var appBarConfiguration: AppBarConfiguration
 
     private lateinit var tvHeaderName: TextView
-    private lateinit var ivHeaderProfileImage: ImageView
+    private lateinit var ivHeaderProfileImage: CircleImageView
     private lateinit var tvHeaderEmail: TextView
     private lateinit var navView: NavigationView
 

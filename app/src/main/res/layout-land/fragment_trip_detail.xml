@@ -331,7 +331,6 @@
 
             </com.google.android.material.card.MaterialCardView>
 
-
             <Button
                 android:id="@+id/CompleteTrip"
                 style="@style/Widget.MaterialComponents.Button.TextButton"
@@ -339,102 +338,27 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:text="Complete Trip"
-                android:textColor="#79D63F"
                 android:textSize="12sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.498"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btnShowFavoredList" />
-
-            <Button
-                android:id="@+id/DeleteTrip"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
-                android:layout_width="wrap_content"
-                android:layout_height="50dp"
-                android:text="Delete trip"
-                android:textColor="#D51515"
-                android:textSize="12sp"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/btnShowFavoredList"
-                app:layout_constraintTop_toTopOf="@+id/btnShowFavoredList"
-                app:layout_constraintVertical_bias="0.0"
-                tools:ignore="MissingConstraints" />
+                app:layout_constraintTop_toBottomOf="@+id/cardDescription" />
 
             <Button
                 android:id="@+id/btnShowFavoredList"
                 style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="wrap_content"
-                android:layout_height="50dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Find out who liked this trip?"
+                android:text="Show interested users"
                 android:textSize="12sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/DeleteTrip"
+                android:visibility="visible"
+                app:layout_constraintEnd_toStartOf="@+id/CompleteTrip"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/cardDescription"
-                app:layout_constraintVertical_bias="0.0"
                 tools:ignore="MissingConstraints" />
 
-
-
-
-            <Button
-                android:id="@+id/RateButton"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
-                android:layout_width="wrap_content"
-                android:layout_height="50dp"
-                android:background="#FFFFFF"
-                android:text="Rate driver"
-                android:textColor="#79D63F"
-                android:textSize="12sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/ratingbar"
-                tools:ignore="MissingConstraints" />
-
-
-
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/commentRatingTrip"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="29dp"
-                android:hint="Message to user"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/cardDescription"
-                app:layout_constraintVertical_bias="0.0"
-                app:startIconDrawable="@drawable/ic_baseline_description_24">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:layout_width="match_parent"
-                    android:layout_height="70dp"
-                    android:background="#ffffff"
-                    android:inputType="textMultiLine"
-                    android:singleLine="true"
-                    app:layout_constraintBottom_toTopOf="@+id/commentRatingTrip"
-                    app:layout_constraintTop_toBottomOf="@+id/commentRatingTrip" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-
-            <RatingBar
-                android:id="@+id/ratingbar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toTopOf="@+id/RateButton"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.497"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/commentRatingTrip" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

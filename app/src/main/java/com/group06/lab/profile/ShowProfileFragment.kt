@@ -18,7 +18,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
@@ -26,7 +25,6 @@ import com.google.firebase.storage.ktx.storage
 import com.group06.lab.MainActivity
 import com.group06.lab.R
 import com.group06.lab.login.LoginActivity
-import com.group06.lab.trip.tripId
 import java.io.File
 import java.io.FileOutputStream
 
@@ -40,9 +38,6 @@ class ShowProfileFragment : Fragment() {
     private lateinit var fullNameLayout: LinearLayout
     private lateinit var emailLayout: LinearLayout
     private lateinit var db: FirebaseFirestore
-    private lateinit var ratingBarProfile : RatingBar
-    private lateinit var rateButton : Button
-    private lateinit var messageToUserText : TextInputLayout
     private lateinit var ratingAsDriverTextView : TextView
     private lateinit var ratingAsPassengerTextView : TextView
 
@@ -63,17 +58,7 @@ class ShowProfileFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val logoutButton = view.findViewById<Button>(R.id.logout_button)
-
         val emailParameter: String? = arguments?.getString("email")
-        var rating: Boolean? = arguments?.getBoolean("Rating")
-        val userId: String? = arguments?.getString("userId")
-
-
-        println("DEBUGVIEWPARAMETER " + rating)
-
-
-        if (rating == null) rating = false
-
 
         tvFullName = view.findViewById(R.id.tvFullName)
         tvNickName = view.findViewById(R.id.tvNickName)
@@ -82,13 +67,8 @@ class ShowProfileFragment : Fragment() {
         imgProfile = view.findViewById(R.id.imgProfile)
         fullNameLayout = view.findViewById(R.id.fullNameLayout)
         emailLayout = view.findViewById(R.id.emailLayout)
-        ratingBarProfile = view.findViewById(R.id.ratingbarprofile)
-        rateButton = view.findViewById(R.id.RateButtonProfile)
-        messageToUserText = view.findViewById(R.id.commentRating)
         ratingAsDriverTextView = view.findViewById(R.id.ratingAsDriver)
         ratingAsPassengerTextView = view.findViewById(R.id.ratingAsPassenger)
-
-
 
         val fullNameLayout: LinearLayout = view.findViewById(R.id.fullNameLayout)
         val nicknameLayout: LinearLayout = view.findViewById(R.id.nicknameLayout)
@@ -103,8 +83,6 @@ class ShowProfileFragment : Fragment() {
             findNavController().navigate(R.id.action_showProfileActivity_to_editProfileActivity)
         }
 
-        //if( emailParameter == null ) println("EMAIL PARAMETER NULL")
-
         //Use this to distinguish owner
         val isOwner = emailParameter == null
 
@@ -112,10 +90,6 @@ class ShowProfileFragment : Fragment() {
         var getUserFromMail = MainActivity.mAuth.currentUser!!.email!!
 
         if (!isOwner) {
-
-            //println( "EMAIL FROM LAYOUT" + emailParameter)
-            //println( "EMAIL " + MainActivity.mAuth.currentUser!!.email!!)
-
             fullNameLayout.visibility = View.GONE
             emailLayout.visibility = View.GONE
             logoutButton.visibility = View.GONE
@@ -131,106 +105,32 @@ class ShowProfileFragment : Fragment() {
             .addSnapshotListener { value, error ->
                 if(error != null) throw error
                 if(value != null){
+                    var averageScorePassenger = 0f
+                    var numberOfScoresPassenger = 0
 
-                    var averageScorePassenger : Float = 0f
+                    value.documents.filter { it.get("Role") == "Passenger" }
+                        .forEach {
+                            averageScorePassenger += it.get("Score").toString().toFloat()
+                            numberOfScoresPassenger++  }
 
-                    var numberOfScoresPassenger : Int = 0
+                    ratingAsPassengerTextView.text =
+                        if(numberOfScoresPassenger != 0)
+                            (averageScorePassenger / numberOfScoresPassenger).toString() + "/5"
+                        else "No ratings yet!"
 
-                    value.documents.filter { it.get("Role") == "Passenger" }.forEach { averageScorePassenger += it.get("Score").toString().toFloat(); numberOfScoresPassenger++  }
+                    var averageScoreDriver = 0f
+                    var numberOfScoresDriver = 0
 
-                    ratingAsPassengerTextView.text = if(numberOfScoresPassenger != 0) (averageScorePassenger / numberOfScoresPassenger).toString() + "/5" else "No ratings yet!"
+                    value.documents.filter { it.get("Role") == "Driver" }
+                        .forEach { averageScoreDriver += it.get("Score").toString().toFloat()
+                            numberOfScoresDriver++  }
 
-                    var averageScoreDriver : Float = 0f
-
-                    var numberOfScoresDriver : Int = 0
-
-                    value.documents.filter { it.get("Role") == "Driver" }.forEach { averageScoreDriver += it.get("Score").toString().toFloat() ; numberOfScoresDriver++  }
-
-                    ratingAsDriverTextView.text = if(numberOfScoresDriver != 0) (averageScoreDriver / numberOfScoresDriver).toString() + "/5" else "No ratings yet!"
-
-
+                    ratingAsDriverTextView.text =
+                        if(numberOfScoresDriver != 0)
+                            (averageScoreDriver / numberOfScoresDriver).toString() + "/5"
+                        else "No ratings yet!"
                 }
-
-
             }
-
-
-
-
-        ratingBarProfile.visibility = View.GONE
-        rateButton.visibility = View.GONE
-        messageToUserText.visibility = View.GONE
-
-        if (rating!!) {
-
-            ratingBarProfile.visibility = View.VISIBLE
-            rateButton.visibility = View.VISIBLE
-            messageToUserText.visibility = View.VISIBLE
-
-
-        }
-
-        if (emailParameter != null){
-            FirebaseFirestore.getInstance().collection("users")
-                .document(emailParameter!!).collection("Ratings")
-                .addSnapshotListener { value, error ->
-                    if (error != null) throw error
-                    if (value != null) {
-
-
-                        if (value?.documents.filter {
-                                it.get("userMail") == MainActivity.mAuth.currentUser!!.email!! && it.get(
-                                    "TripId"
-                                ) == tripId
-                            }
-                                .isNotEmpty()) {
-
-
-                            ratingBarProfile.visibility = View.GONE
-                            rateButton.visibility = View.GONE
-                            messageToUserText.visibility = View.GONE
-
-                        }
-
-
-                    }
-
-
-                }
-
-    }
-
-
-
-        if(savedInstanceState != null){
-
-            messageToUserText.editText?.setText(savedInstanceState.getString("UserMessage"))
-
-
-        }
-
-        rateButton.setOnClickListener {
-
-            //Rate
-            //Send Rating
-            val db = FirebaseFirestore.getInstance()
-
-
-
-            var dataToUser = hashMapOf( "userMail" to MainActivity.mAuth.currentUser!!.email!! ,
-                "Score" to ratingBarProfile.rating ,
-                "TripId" to tripId,
-                "Role" to "Passenger",
-            "message" to messageToUserText.editText?.text.toString())
-
-
-
-            db.collection("users").document(emailParameter!!)
-                .collection("Ratings").add( dataToUser )
-
-
-        }
-
 
         db =  FirebaseFirestore.getInstance()
         db.collection("users")
@@ -305,16 +205,6 @@ class ShowProfileFragment : Fragment() {
         }
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-
-        outState.putString("UserMessage", messageToUserText.editText?.text.toString())
-
-    }
-
-
-
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
@@ -340,7 +230,6 @@ class ShowProfileFragment : Fragment() {
             "requestKeyShowToEdit", bundleOf(
                 "group06.lab.fullName" to tvFullName.text.toString(),
                 "group06.lab.nickName" to tvNickName.text.toString(),
-                //"group06.lab.email" to tvEmail.text.toString(),
                 "group06.lab.location" to tvLocation.text.toString()
             )
         )

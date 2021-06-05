@@ -305,45 +305,6 @@
 
                     android:textAlignment="center" />
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/commentRating"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:hint="Message to user"
-                    android:paddingLeft="16dp"
-                    android:paddingRight="16dp"
-                    app:startIconDrawable="@drawable/ic_baseline_description_24">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:layout_width="match_parent"
-                        android:layout_height="120dp"
-                        android:background="#ffffff"
-                        android:inputType="textMultiLine"
-                        android:singleLine="true" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-
-                <RatingBar
-                    android:id="@+id/ratingbarprofile"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:gravity="center_horizontal"
-
-                    />
-
-                <Button
-                    android:id="@+id/RateButtonProfile"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-
-                    android:text="Rate"
-                    android:textAlignment="center"
-
-
-                    />
-
 
             </LinearLayout>
         </ScrollView>

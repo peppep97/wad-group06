@@ -60,12 +60,10 @@ class TripViewModel : ViewModel() {
             .get()
             .addOnSuccessListener{
                     value ->
-                Log.d("success", value?.isEmpty.toString())
                 data.value = value?.isEmpty
             }
         return data
     }
-
 
     fun getConfirmedUsersByTrip(tripId: String) : LiveData<List<User>> {
 
@@ -80,13 +78,8 @@ class TripViewModel : ViewModel() {
                 data.value = value?.toObjects(User::class.java)
 
             }
-
         return data
-
     }
-
-
-
 
     fun getFavoredUsersByTrip(tripId : String) : LiveData<List<FavoriteTrip>> {
         val data = MutableLiveData<List<FavoriteTrip>>()
@@ -103,7 +96,6 @@ class TripViewModel : ViewModel() {
     private suspend fun loadFavoredTrips() : List<Trip> {
         val tripsIds: List<String>?
 
-        Log.d("size", "start")
         tripsIds = FirebaseFirestore.getInstance().collection("favored_trips")
             .whereEqualTo("userEmail", FirebaseAuth.getInstance().currentUser!!.email!!)
             .get()
@@ -154,9 +146,6 @@ class TripViewModel : ViewModel() {
 
                 if (t != null) tripList.add(t)
             }
-            /*.documents.mapNotNull {
-                it.toTrip()
-            }*/
         return tripList
     }
 }

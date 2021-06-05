@@ -17,7 +17,6 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.graphics.drawable.toBitmap
-import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -39,16 +38,18 @@ import com.group06.lab.extensions.toString
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.ZonedDateTime
+import java.time.temporal.TemporalField
 import java.util.*
 
 class TripEditFragment : Fragment() {
     val REQUEST_IMAGE_CAPTURE = 1
     val REQUEST_IMAGE_GALLERY = 2
     private var PERMISSION_ALL = 3
-
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
     private lateinit var etDeparture: TextInputLayout
     private lateinit var etArrival: TextInputLayout
@@ -74,9 +75,7 @@ class TripEditFragment : Fragment() {
     private var imgName: String = ""
 
     private var edit: Boolean? = false
-    private var index = -1
     private var tripId: String? = ""
-    private var id: String = ""
 
     private var depCity: String? = ""
     private var arrCity: String? = ""
@@ -107,7 +106,7 @@ class TripEditFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        val PERMISSIONS = arrayOf(
+        val permissions = arrayOf(
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.ACCESS_FINE_LOCATION
@@ -128,7 +127,7 @@ class TripEditFragment : Fragment() {
             ) == PackageManager.PERMISSION_GRANTED
         ) {
         } else {
-            ActivityCompat.requestPermissions(requireActivity(), PERMISSIONS, PERMISSION_ALL);
+            ActivityCompat.requestPermissions(requireActivity(), permissions, PERMISSION_ALL);
         }
 
         val datePicker =
@@ -152,11 +151,6 @@ class TripEditFragment : Fragment() {
         btnSelectDepMap = view.findViewById(R.id.btnSelectDepMap)
         btnSelectArrMap = view.findViewById(R.id.btnSelectArrMap)
 
-        btnSelectArrMap.isEnabled = false
-        btnSelectArrMap.isClickable = false
-        btnSelectArrMap.backgroundTintList =
-            ColorStateList.valueOf(resources.getColor(R.color.etBackgroundTint));
-
         imgTrip = view.findViewById(R.id.imgTrip)
         val imageButtonEdit = view.findViewById<ImageButton>(R.id.imageButtonEdit)
         imageButtonEdit.setOnClickListener {
@@ -166,7 +160,6 @@ class TripEditFragment : Fragment() {
         }
 
         edit = arguments?.getBoolean("edit")
-        index = arguments?.getInt("index")!!
         tripId = arguments?.getString("tripId")
         depLat = arguments?.getDouble("depLat")
         arrLat = arguments?.getDouble("arrLat")
@@ -177,8 +170,6 @@ class TripEditFragment : Fragment() {
         isDeparture = arguments?.getBoolean("isDeparture")
 
         if (depLat != null && depLon != null && depLat != 0.0 && depLon != 0.0) {
-            btnSelectArrMap.isClickable = true
-            btnSelectArrMap.isEnabled = true
             btnSelectArrMap.backgroundTintList =
                 ColorStateList.valueOf(resources.getColor(R.color.colorPrimary));
         }
@@ -242,7 +233,7 @@ class TripEditFragment : Fragment() {
             })
         } else {
             etDeparture.editText?.removeTextChangedListener(depTextChangeListener())
-            if (depCity != "" && depCity != null)
+            if (depCity != null && depCity != "")
                 etDeparture.editText?.setText(depCity)
             etDeparture.editText?.addTextChangedListener(depTextChangeListener())
 
@@ -265,10 +256,13 @@ class TripEditFragment : Fragment() {
                 Bundle().apply {
                     putBoolean("isDeparture", true)
                     putBoolean("edit", edit!!)
-                    putInt("index", index)
                     putString("tripId", tripId)
+                    depLat?.let { putDouble("depLat", it) }
+                    depLon?.let { putDouble("depLon", it) }
+                    depCity?.let { putString("depCity", it) }
                     arrLat?.let { putDouble("arrLat", it) }
                     arrLon?.let { putDouble("arrLon", it) }
+                    arrCity?.let { putString("arrCity", it) }
                 })
         }
 
@@ -277,16 +271,27 @@ class TripEditFragment : Fragment() {
                 R.id.action_trip_edit_to_locationSelectorFragment,
                 Bundle().apply {
                     putBoolean("isDeparture", false)
-                    putInt("index", index)
                     putBoolean("edit", edit!!)
                     putString("tripId", tripId)
                     depLat?.let { putDouble("depLat", it) }
                     depLon?.let { putDouble("depLon", it) }
+                    depCity?.let { putString("depCity", it) }
+                    arrLat?.let { putDouble("arrLat", it) }
+                    arrLon?.let { putDouble("arrLon", it) }
+                    arrCity?.let { putString("arrCity", it) }
                 })
         }
 
         datePicker.addOnPositiveButtonClickListener {
-            dateValue.time = it
+
+            val calendar = Calendar.getInstance()
+            calendar.timeInMillis = it
+            calendar.set(Calendar.HOUR, 0)
+            calendar.set(Calendar.HOUR_OF_DAY, 0)
+            calendar.set(Calendar.MINUTE, 0)
+
+            dateValue.time = calendar.timeInMillis
+
             activity?.supportFragmentManager?.let { it1 ->
                 timePicker.show(it1, "selecttime")
             }
@@ -294,8 +299,12 @@ class TripEditFragment : Fragment() {
 
         timePicker.addOnPositiveButtonClickListener {
             dateOk = true
+
+            val dateFormat = SimpleDateFormat("yyyy/MM/dd HH:mm",
+                Locale.getDefault())
+
             dateValue.time += (timePicker.hour * 60 * 60 + timePicker.minute * 60) * 1000
-            etDepartureDate.editText?.setText(dateValue.toString("yyyy/MM/dd - HH:mm"))
+            etDepartureDate.editText?.setText(dateFormat.format(dateValue))
         }
 
         etDuration.editText?.setOnClickListener {

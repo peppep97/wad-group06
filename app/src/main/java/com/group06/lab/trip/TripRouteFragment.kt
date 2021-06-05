@@ -1,7 +1,6 @@
 package com.group06.lab.trip
 
 import android.Manifest
-import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Address
 import android.location.Geocoder
@@ -26,7 +25,6 @@ import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Overlay
 import org.osmdroid.views.overlay.Polyline
 import java.util.*
-
 
 private var depLat: Double? = 0.0
 private var arrLat: Double? = 0.0

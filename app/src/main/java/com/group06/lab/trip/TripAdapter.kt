@@ -25,12 +25,12 @@ class TripAdapter() :
     RecyclerView.Adapter<TripAdapter.TripViewHolder>(), Filterable {
 
     var fm: FragmentManager? = null
-    var data: List<Trip> = ArrayList()
+    var data: MutableList<Trip> = ArrayList()
     var dataFull: MutableList<Trip> = ArrayList()
     var caller: String = ""
 
     constructor(
-        allData: List<Trip>,
+        allData: MutableList<Trip>,
         caller: String,
         fragmentManager: FragmentManager?
     ) : this() {
@@ -68,8 +68,10 @@ class TripAdapter() :
             tvPrice.text = String.format("%s €", format.format(t.price).toString())
             tvSeat.text = t.availableSeats.toString()
             if (t.imageUrl == "") {
+                imgCar.scaleType = ImageView.ScaleType.CENTER_INSIDE
                 imgCar.setImageResource(R.drawable.ic_baseline_no_photography)
             } else {
+                imgCar.scaleType = ImageView.ScaleType.FIT_CENTER
                 Firebase.storage.reference.child(t.imageUrl)
                     .downloadUrl.addOnSuccessListener { uri ->
                         imgCar.load(uri.toString()) {
@@ -98,7 +100,6 @@ class TripAdapter() :
                     .navigate(R.id.action_trip_list_to_trip_details, Bundle().apply {
                         putInt("index", position)
                         putString("tripId", data[position].id)
-                        Log.d("dataid", data[position].id)
                         putString("caller", caller)
                     })
             else if (caller == "OtherTrips"){
@@ -194,11 +195,10 @@ class TripAdapter() :
             return results
         }
 
-        //TODO fix
         override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
-            /*data.clear()
+            data.clear()
             data.addAll(results?.values as MutableList<Trip>)
-            notifyDataSetChanged()*/
+            notifyDataSetChanged()
         }
     }
 }

@@ -71,7 +71,6 @@ class LoginActivity : AppCompatActivity() {
                 try {
                     // Google Sign In was successful, authenticate with Firebase
                     val account = task.getResult(ApiException::class.java)!!
-                    Log.d("LogInActivity", "firebaseAuthWithGoogle:" + account.id)
 
                     val user = User("${account.givenName} ${account.familyName}", account.displayName ?: "",
                         account.email!!, "")
@@ -100,7 +99,6 @@ class LoginActivity : AppCompatActivity() {
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
-                    Log.d("LogInActivity", "signInWithCredential:success")
 //                    val user = mAuth.currentUser
                     val intent = Intent(this,MainActivity::class.java)
                     startActivity(intent)

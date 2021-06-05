@@ -54,7 +54,7 @@ class OthersTripListFragment : Fragment() {
         rvTripList.layoutManager = LinearLayoutManager(context)
 
         vm.getTrips().observe(viewLifecycleOwner, Observer {trips ->
-            adapter = TripAdapter(trips, "OtherTrips", parentFragmentManager)
+            adapter = TripAdapter(trips.toMutableList(), "OtherTrips", parentFragmentManager)
             rvTripList.adapter = adapter
 
             showList(trips.size)
