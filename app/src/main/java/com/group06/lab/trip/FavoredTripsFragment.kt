@@ -23,6 +23,7 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import com.group06.lab.MainActivity
 import com.group06.lab.R
+import com.group06.lab.profile.Rating
 import java.lang.Error
 import java.util.*
 
@@ -159,8 +160,8 @@ class FavoredTripsFragment : Fragment() {
                     .collection("users")
                     .document(data[position].email)
                     .collection("Ratings")
-                    .whereEqualTo("Role", "Passenger")
-                    .whereEqualTo("TripId", tripId)
+                    .whereEqualTo("role", "Passenger")
+                    .whereEqualTo("tripId", tripId)
                     .whereEqualTo("userMail", FirebaseAuth.getInstance().currentUser!!.email!!)
                     .addSnapshotListener { value, error ->
                         if (error != null) throw error
@@ -268,11 +269,8 @@ class FavoredTripsFragment : Fragment() {
                 //Send Rating
                 val db = FirebaseFirestore.getInstance()
 
-                val dataToUser = hashMapOf("userMail" to MainActivity.mAuth.currentUser!!.email!!,
-                    "Score" to ratingBar.rating ,
-                    "TripId" to com.group06.lab.trip.tripId,
-                    "Role" to "Passenger",
-                    "message" to messageInput.editText?.text.toString())
+                val dataToUser = Rating("Passenger", ratingBar.rating, com.group06.lab.trip.tripId!!,
+                    messageInput.editText?.text.toString(), MainActivity.mAuth.currentUser!!.email!!, Date())
 
                 db.collection("users").document(userEmail)
                     .collection("Ratings").add(dataToUser)

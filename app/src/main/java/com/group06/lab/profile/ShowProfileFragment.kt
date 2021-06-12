@@ -5,6 +5,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.widget.*
 import androidx.core.graphics.drawable.toBitmap
@@ -40,6 +41,8 @@ class ShowProfileFragment : Fragment() {
     private lateinit var db: FirebaseFirestore
     private lateinit var ratingAsDriverTextView : TextView
     private lateinit var ratingAsPassengerTextView : TextView
+    private lateinit var driverRatingBar : RatingBar
+    private lateinit var passengerRatingBar : RatingBar
 
     private lateinit var snackbar: Snackbar
 
@@ -69,6 +72,8 @@ class ShowProfileFragment : Fragment() {
         emailLayout = view.findViewById(R.id.emailLayout)
         ratingAsDriverTextView = view.findViewById(R.id.ratingAsDriver)
         ratingAsPassengerTextView = view.findViewById(R.id.ratingAsPassenger)
+        driverRatingBar = view.findViewById(R.id.driverRatingBar)
+        passengerRatingBar = view.findViewById(R.id.passengerRatingBar)
 
         val fullNameLayout: LinearLayout = view.findViewById(R.id.fullNameLayout)
         val nicknameLayout: LinearLayout = view.findViewById(R.id.nicknameLayout)
@@ -98,6 +103,10 @@ class ShowProfileFragment : Fragment() {
             getUserFromMail = emailParameter!!
         }
 
+        var averageScorePassenger = 0f
+        var numberOfScoresPassenger = 0
+        var averageScoreDriver = 0f
+        var numberOfScoresDriver = 0
 
         FirebaseFirestore.getInstance().collection("users")
             .document(MainActivity.mAuth.currentUser!!.email!!)
@@ -105,32 +114,50 @@ class ShowProfileFragment : Fragment() {
             .addSnapshotListener { value, error ->
                 if(error != null) throw error
                 if(value != null){
-                    var averageScorePassenger = 0f
-                    var numberOfScoresPassenger = 0
-
-                    value.documents.filter { it.get("Role") == "Passenger" }
+                    value.documents.filter { it.get("role") == "Passenger" }
                         .forEach {
-                            averageScorePassenger += it.get("Score").toString().toFloat()
+                            averageScorePassenger += it.get("score").toString().toFloat()
                             numberOfScoresPassenger++  }
 
-                    ratingAsPassengerTextView.text =
-                        if(numberOfScoresPassenger != 0)
-                            (averageScorePassenger / numberOfScoresPassenger).toString() + "/5"
-                        else "No ratings yet!"
+                    if (numberOfScoresPassenger != 0){
+                        passengerRatingBar.visibility = View.VISIBLE
+                        passengerRatingBar.rating = averageScorePassenger/numberOfScoresPassenger
+                        ratingAsPassengerTextView.text = String.format("%d ratings", numberOfScoresPassenger)
+                    }else{
+                        ratingAsPassengerTextView.text = "No ratings yet!"
+                        passengerRatingBar.visibility = View.GONE
+                    }
 
-                    var averageScoreDriver = 0f
-                    var numberOfScoresDriver = 0
-
-                    value.documents.filter { it.get("Role") == "Driver" }
-                        .forEach { averageScoreDriver += it.get("Score").toString().toFloat()
+                    value.documents.filter { it.get("role") == "Driver" }
+                        .forEach { averageScoreDriver += it.getDouble("score").toString().toFloat()
                             numberOfScoresDriver++  }
 
-                    ratingAsDriverTextView.text =
-                        if(numberOfScoresDriver != 0)
-                            (averageScoreDriver / numberOfScoresDriver).toString() + "/5"
-                        else "No ratings yet!"
+                    if (numberOfScoresDriver != 0){
+                        driverRatingBar.visibility = View.VISIBLE
+                        driverRatingBar.rating = averageScoreDriver/numberOfScoresDriver
+                        ratingAsDriverTextView.text = String.format("%d ratings", numberOfScoresDriver)
+                    }else{
+                        ratingAsDriverTextView.text = "No ratings yet!"
+                        driverRatingBar.visibility = View.GONE
+                    }
                 }
             }
+
+        ratingAsDriverTextView.setOnClickListener {
+            findNavController().navigate(R.id.action_show_profile_to_ratingListFragment, Bundle().apply {
+                putString("email",MainActivity.mAuth.currentUser!!.email!!)
+                putString("role", "Driver")
+                putInt("number", numberOfScoresDriver)
+            })
+        }
+
+        ratingAsPassengerTextView.setOnClickListener {
+            findNavController().navigate(R.id.action_show_profile_to_ratingListFragment, Bundle().apply {
+                putString("email",MainActivity.mAuth.currentUser!!.email!!)
+                putString("role", "Passenger")
+                putInt("number", numberOfScoresPassenger)
+            })
+        }
 
         db =  FirebaseFirestore.getInstance()
         db.collection("users")

@@ -91,7 +91,7 @@
     <fragment
         android:id="@+id/show_profile"
         android:name="com.group06.lab.profile.ShowProfileFragment"
-        android:label="Show Profile"
+        android:label="Profile Details"
         tools:layout="@layout/fragment_activity_show_profile">
         <action
             android:id="@+id/action_showProfileActivity_to_editProfileActivity"
@@ -101,6 +101,13 @@
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/custom_to_top"
             app:popUpTo="@+id/show_profile" />
+        <action
+            android:id="@+id/action_show_profile_to_ratingListFragment"
+            app:destination="@id/ratingListFragment"
+            app:enterAnim="@anim/custom_from_top"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/custom_to_top" />
     </fragment>
     <fragment
         android:id="@+id/editProfileActivity"
@@ -204,4 +211,8 @@
             app:popEnterAnim="@anim/custom_from_right"
             app:popExitAnim="@anim/custom_to_right" />
     </fragment>
+    <fragment
+        android:id="@+id/ratingListFragment"
+        android:name="com.group06.lab.profile.RatingListFragment"
+        android:label="Ratings" />
 </navigation>

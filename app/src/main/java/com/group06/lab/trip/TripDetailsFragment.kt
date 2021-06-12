@@ -31,6 +31,7 @@ import com.google.firebase.storage.ktx.storage
 import com.group06.lab.MainActivity
 import com.group06.lab.R
 import com.group06.lab.extensions.toString
+import com.group06.lab.profile.Rating
 import org.osmdroid.bonuspack.routing.OSRMRoadManager
 import org.osmdroid.bonuspack.routing.RoadManager
 import org.osmdroid.config.Configuration
@@ -320,8 +321,8 @@ class TripDetailsFragment : Fragment() {
                             .collection("users")
                             .document(t.userEmail)
                             .collection("Ratings")
-                            .whereEqualTo("Role", "Driver")
-                            .whereEqualTo("TripId", tripId)
+                            .whereEqualTo("role", "Driver")
+                            .whereEqualTo("tripId", tripId)
                             .whereEqualTo("userMail", FirebaseAuth.getInstance().currentUser!!.email!!)
                             .addSnapshotListener { value, error ->
                                 if (error != null) throw error
@@ -497,13 +498,8 @@ class TripDetailsFragment : Fragment() {
             //Send Rating
             val db = FirebaseFirestore.getInstance()
 
-            var dataToUser = hashMapOf(
-                "userMail" to MainActivity.mAuth.currentUser!!.email!!,
-                "Score" to ratingBar.rating,
-                "TripId" to tripId,
-                "Role" to "Driver",
-                "message" to messageInput!!.editText?.text.toString()
-            )
+            val dataToUser = Rating("Driver", ratingBar.rating, tripId!!,
+                messageInput.editText?.text.toString(), MainActivity.mAuth.currentUser!!.email!!, Date())
 
             db.collection("users")
                 .document(userEmail)
