@@ -104,7 +104,7 @@
 
                 android:id="@+id/cardTripDetails"
                 android:layout_width="match_parent"
-                android:layout_height="160dp"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
                 android:layout_marginEnd="5dp"
                 android:checkable="true"
@@ -122,13 +122,58 @@
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="4dp">
+
+                    <TextView
+                        android:id="@+id/ownerTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Mario Rossi"
+                        app:layout_constraintBottom_toBottomOf="@+id/imageView12"
+                        app:layout_constraintStart_toStartOf="@+id/tvArrivalLocation"
+                        app:layout_constraintTop_toTopOf="@+id/imageView12" />
+
+                    <Button
+                        android:id="@+id/showProfileButton"
+                        style="@style/Widget.MaterialComponents.Button.TextButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginEnd="16dp"
+                        android:text="Show Profile"
+                        android:textSize="12sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/view2" />
+
+                    <ImageView
+                        android:id="@+id/imageView12"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="24dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/view2"
+                        app:srcCompat="@drawable/ic_account_circle" />
+
+                    <View
+                        android:id="@+id/view2"
+                        android:layout_width="0dp"
+                        android:layout_height="0.5dp"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginEnd="16dp"
+                        android:background="@android:color/darker_gray"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/tvArrivalLocation" />
 
                     <TextView
                         android:id="@+id/tvDepartureLocation"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
                         android:text="Origin"
                         android:textStyle="bold"
                         app:layout_constraintBottom_toTopOf="@+id/tvDepTime"
@@ -140,9 +185,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
+                        android:layout_marginTop="4dp"
                         android:text="Destination"
                         android:textStyle="bold"
-                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/imageView13"
                         app:layout_constraintTop_toBottomOf="@+id/tvArrTime" />
 
@@ -152,7 +197,7 @@
                         android:layout_height="0dp"
                         android:layout_marginStart="16dp"
                         android:scaleType="fitCenter"
-                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintBottom_toTopOf="@+id/view2"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:srcCompat="@drawable/ic_distance" />
@@ -162,6 +207,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
+                        android:layout_marginTop="4dp"
                         android:text="12:00"
                         android:textColor="#A5A5A5"
                         app:layout_constraintBottom_toTopOf="@+id/tvEstimatedDuration"
@@ -173,6 +219,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
+                        android:layout_marginTop="4dp"
                         android:text="14:00"
                         android:textColor="#A5A5A5"
                         app:layout_constraintBottom_toTopOf="@+id/tvArrivalLocation"
@@ -184,9 +231,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="16dp"
-                        android:layout_marginBottom="16dp"
+                        android:layout_marginBottom="4dp"
                         android:text="Apr - 19th"
-                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintBottom_toTopOf="@+id/view2"
                         app:layout_constraintEnd_toEndOf="parent" />
 
                     <TextView
@@ -214,6 +261,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
+                        android:layout_marginTop="4dp"
                         android:text="6h"
                         app:layout_constraintBottom_toTopOf="@+id/tvArrTime"
                         app:layout_constraintStart_toEndOf="@+id/imageView13"

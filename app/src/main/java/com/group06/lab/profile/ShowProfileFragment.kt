@@ -109,7 +109,7 @@ class ShowProfileFragment : Fragment() {
         var numberOfScoresDriver = 0
 
         FirebaseFirestore.getInstance().collection("users")
-            .document(MainActivity.mAuth.currentUser!!.email!!)
+            .document(getUserFromMail)
             .collection("Ratings")
             .addSnapshotListener { value, error ->
                 if(error != null) throw error
@@ -145,7 +145,7 @@ class ShowProfileFragment : Fragment() {
 
         ratingAsDriverTextView.setOnClickListener {
             findNavController().navigate(R.id.action_show_profile_to_ratingListFragment, Bundle().apply {
-                putString("email",MainActivity.mAuth.currentUser!!.email!!)
+                putString("email", getUserFromMail)
                 putString("role", "Driver")
                 putInt("number", numberOfScoresDriver)
             })
@@ -153,7 +153,7 @@ class ShowProfileFragment : Fragment() {
 
         ratingAsPassengerTextView.setOnClickListener {
             findNavController().navigate(R.id.action_show_profile_to_ratingListFragment, Bundle().apply {
-                putString("email",MainActivity.mAuth.currentUser!!.email!!)
+                putString("email", getUserFromMail)
                 putString("role", "Passenger")
                 putInt("number", numberOfScoresPassenger)
             })

@@ -8,7 +8,6 @@ import android.location.Geocoder
 import android.os.Bundle
 import android.os.StrictMode
 import android.preference.PreferenceManager
-import android.util.Log
 import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
@@ -111,6 +110,10 @@ class TripDetailsFragment : Fragment() {
         val imgTrip = view.findViewById<ImageView>(R.id.imgTrip)
         val tvDepTime = view.findViewById<TextView>(R.id.tvDepTime)
         val tvArrTime = view.findViewById<TextView>(R.id.tvArrTime)
+        val ownerTextView = view.findViewById<TextView>(R.id.ownerTextView)
+        val showProfileButton = view.findViewById<Button>(R.id.showProfileButton)
+        val separator = view.findViewById<View>(R.id.view2)
+        val driverIcon = view.findViewById<ImageView>(R.id.imageView12)
 
         map = view.findViewById(R.id.mapRoute)
         map.setTileSource(TileSourceFactory.MAPNIK)
@@ -343,6 +346,23 @@ class TripDetailsFragment : Fragment() {
                     }
                 }
             })
+
+            vm.getUserName(t.userEmail).observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+                ownerTextView.text = it
+            })
+
+            showProfileButton.setOnClickListener {
+                findNavController().navigate(R.id.action_trip_details_to_show_profile, Bundle().apply {
+                    putString("email", t.userEmail)
+                })
+            }
+
+            if (tripOwner){
+                separator.visibility = View.GONE
+                driverIcon.visibility = View.GONE
+                showProfileButton.visibility = View.GONE
+                ownerTextView.visibility = View.GONE
+            }
         })
 
 

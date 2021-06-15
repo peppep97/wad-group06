@@ -40,6 +40,16 @@ class TripViewModel : ViewModel() {
         return boughtTrips
     }
 
+    fun getUserName(email : String) : LiveData<String> {
+        val data = MutableLiveData<String>()
+        FirebaseFirestore.getInstance().collection("users")
+            .document(email)
+            .addSnapshotListener { value, error ->
+                if (error != null) throw error
+                data.value = value?.getString("name")
+            }
+        return data
+    }
 
     fun getTripById(id : String) : LiveData<Trip> {
         val data = MutableLiveData<Trip>()

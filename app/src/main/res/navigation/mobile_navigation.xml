@@ -40,6 +40,13 @@
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/custom_from_right"
             app:popExitAnim="@anim/custom_to_right" />
+        <action
+            android:id="@+id/action_trip_details_to_show_profile"
+            app:destination="@id/show_profile"
+            app:enterAnim="@anim/custom_from_right"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/custom_from_right"
+            app:popExitAnim="@anim/custom_to_right" />
     </fragment>
     <fragment
         android:id="@+id/trip_edit"
