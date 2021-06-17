@@ -33,7 +33,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            app:srcCompat="@drawable/ic_baseline_no_photography" />
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/ic_baseline_no_photography_128" />
     </LinearLayout>
 
     <androidx.core.widget.NestedScrollView
@@ -61,6 +62,7 @@
                 android:orientation="horizontal"
                 android:weightSum="8">
 
+
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/etDeparture"
                     android:layout_width="0dp"
@@ -78,7 +80,6 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="#ffffff"
                         android:singleLine="true" />
 
                 </com.google.android.material.textfield.TextInputLayout>
@@ -104,6 +105,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 android:orientation="horizontal"
                 android:weightSum="8">
 
@@ -124,7 +126,6 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="#ffffff"
                         android:singleLine="true" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -159,7 +160,6 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="#ffffff"
                     android:focusable="false" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -177,7 +177,6 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="#ffffff"
                     android:focusable="false"
                     android:inputType="number" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -195,7 +194,6 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="#ffffff"
                     android:inputType="number"
                     android:singleLine="true" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -213,7 +211,6 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="#ffffff"
                     android:inputType="number"
                     android:singleLine="true" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -230,8 +227,7 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
-                    android:layout_height="120dp"
-                    android:background="#ffffff"
+                    android:layout_height="wrap_content"
                     android:inputType="textMultiLine"
                     android:singleLine="true" />
             </com.google.android.material.textfield.TextInputLayout>

@@ -12,6 +12,7 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -21,6 +22,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import coil.load
+import com.google.android.material.datepicker.CalendarConstraints
+import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
@@ -65,7 +68,6 @@ class TripEditFragment : Fragment() {
     private lateinit var snackBar: Snackbar;
 
     private var dateValue: Date = Date()
-    private var dateOk: Boolean = false
 
     private var day: Int = 0
     private var hour: Int = 0
@@ -130,16 +132,12 @@ class TripEditFragment : Fragment() {
             ActivityCompat.requestPermissions(requireActivity(), permissions, PERMISSION_ALL);
         }
 
-        val datePicker =
-            MaterialDatePicker.Builder.datePicker().setTitleText("Select date").build()
+        val constraintsBuilder =
+            CalendarConstraints.Builder()
+                .setValidator(DateValidatorPointForward.now())
 
-        val timePicker =
-            MaterialTimePicker.Builder()
-                .setTimeFormat(TimeFormat.CLOCK_24H)
-                .setHour(12)
-                .setMinute(10)
-                .setTitleText("Select Appointment time")
-                .build()
+        val datePicker =
+            MaterialDatePicker.Builder.datePicker().setCalendarConstraints(constraintsBuilder.build()).setTitleText("Select date").build()
 
         etDeparture = view.findViewById(R.id.etDeparture)
         etArrival = view.findViewById(R.id.etArrival)
@@ -208,7 +206,6 @@ class TripEditFragment : Fragment() {
                 imgName = t.imageUrl
                 dateValue = t.departureDate
 
-                dateOk = true
                 day = t.estimatedDay
                 hour = t.estimatedHour
                 minute = t.estimatedMinute
@@ -244,7 +241,6 @@ class TripEditFragment : Fragment() {
         }
 
         etDepartureDate.editText?.setOnClickListener {
-            dateOk = false
             activity?.supportFragmentManager?.let { it1 ->
                 datePicker.show(it1, "selectdate")
             }
@@ -282,6 +278,14 @@ class TripEditFragment : Fragment() {
                 })
         }
 
+        var timePicker =
+            MaterialTimePicker.Builder()
+                .setTimeFormat(TimeFormat.CLOCK_24H)
+                .setHour(12)
+                .setMinute(10)
+                .setTitleText("Select Appointment time")
+                .build()
+
         datePicker.addOnPositiveButtonClickListener {
 
             val calendar = Calendar.getInstance()
@@ -292,19 +296,29 @@ class TripEditFragment : Fragment() {
 
             dateValue.time = calendar.timeInMillis
 
+            Log.d("test", dateValue.toString())
+
+            timePicker = MaterialTimePicker.Builder()
+                .setTimeFormat(TimeFormat.CLOCK_24H)
+                .setHour(12)
+                .setMinute(10)
+                .setTitleText("Select Appointment time")
+                .build()
+
+            timePicker.addOnPositiveButtonClickListener {
+                val dateFormat = SimpleDateFormat("yyyy/MM/dd HH:mm",
+                    Locale.getDefault())
+
+                dateValue.time += (timePicker.hour * 60 * 60 + timePicker.minute * 60) * 1000
+
+                Log.d("test", dateValue.toString())
+
+                etDepartureDate.editText?.setText(dateFormat.format(dateValue))
+            }
+
             activity?.supportFragmentManager?.let { it1 ->
                 timePicker.show(it1, "selecttime")
             }
-        }
-
-        timePicker.addOnPositiveButtonClickListener {
-            dateOk = true
-
-            val dateFormat = SimpleDateFormat("yyyy/MM/dd HH:mm",
-                Locale.getDefault())
-
-            dateValue.time += (timePicker.hour * 60 * 60 + timePicker.minute * 60) * 1000
-            etDepartureDate.editText?.setText(dateFormat.format(dateValue))
         }
 
         etDuration.editText?.setOnClickListener {
@@ -315,7 +329,6 @@ class TripEditFragment : Fragment() {
             etDeparture.editText?.setText(savedInstanceState.getString("departure"))
             etArrival.editText?.setText(savedInstanceState.getString("arrival"))
             dateValue.time = savedInstanceState.getLong("date", Date().time)
-            dateOk = savedInstanceState.getBoolean("dateok", false)
             etDuration.editText?.setText(savedInstanceState.getString("duration"))
             etAvailableSeats.editText?.setText(savedInstanceState.getString("availableseats"))
             etPrice.editText?.setText(savedInstanceState.getString("price"))
@@ -323,8 +336,7 @@ class TripEditFragment : Fragment() {
             File(context?.filesDir, savedInstanceState.getString("imgTrip") ?: "").let {
                 if (it.exists()) imgTrip.setImageBitmap(BitmapFactory.decodeFile(it.absolutePath))
             }
-            if (dateOk)
-                etDepartureDate.editText?.setText(dateValue.toString("yyyy/MM/dd - HH:mm"))
+            etDepartureDate.editText?.setText(dateValue.toString("yyyy/MM/dd - HH:mm"))
         }
 
         snackBar = Snackbar.make(
@@ -379,7 +391,6 @@ class TripEditFragment : Fragment() {
             outState.putString("departure", etDeparture.editText?.text.toString())
             outState.putString("arrival", etArrival.editText?.text.toString())
             outState.putLong("date", dateValue.time)
-            outState.putBoolean("dateok", dateOk)
             outState.putString("duration", etDuration.editText?.text.toString())
             outState.putString("availableseats", etAvailableSeats.editText?.text.toString())
             outState.putString("price", etPrice.editText?.text.toString())
@@ -400,6 +411,7 @@ class TripEditFragment : Fragment() {
             R.id.save -> {
                 //save data
                 if (validateForm()) {
+
                     val t = Trip(
                         "",
                         imgName,
@@ -454,26 +466,41 @@ class TripEditFragment : Fragment() {
         if (etDeparture.editText?.text.toString() == "") {
             etDeparture.error = "Provide a value"
             res = false
+        }else{
+            etDeparture.isErrorEnabled = false
         }
         if (etArrival.editText?.text.toString() == "") {
             etArrival.error = "Provide a value"
             res = false
+        }else{
+            etArrival.isErrorEnabled = false
         }
         if (etDuration.editText?.text.toString() == "") {
             etDuration.error = "Provide a value"
             res = false
+        }else{
+            etDuration.isErrorEnabled = false
         }
-        if (!dateOk) {
+        if (etDepartureDate.editText?.text.toString() == "") {
             etDepartureDate.error = "Provide a value"
             res = false
+        }else if (dateValue.before(Date())) {
+            etDepartureDate.error = "Date cannot be before now"
+            res = false
+        }else{
+            etDepartureDate.isErrorEnabled = false
         }
         if (etAvailableSeats.editText?.text.toString() == "") {
             etAvailableSeats.error = "Provide a value"
             res = false
+        }else{
+            etAvailableSeats.isErrorEnabled = false
         }
         if (etPrice.editText?.text.toString() == "") {
             etPrice.error = "Provide a value"
             res = false
+        }else{
+            etPrice.isErrorEnabled = false
         }
         return res
     }
