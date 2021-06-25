@@ -72,7 +72,6 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_weight="1"
                 tools:ignore="MissingConstraints">
 
@@ -124,73 +123,13 @@
                     android:layout_height="wrap_content"
                     android:paddingBottom="4dp">
 
-                    <TextView
-                        android:id="@+id/tvDepartureLocation"
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="8dp"
-                        android:text="Origin"
-                        android:textStyle="bold"
-                        app:layout_constraintBottom_toTopOf="@+id/tvDepTime"
-                        app:layout_constraintStart_toEndOf="@+id/imageView13"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <TextView
-                        android:id="@+id/tvArrivalLocation"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="4dp"
-                        android:text="Destination"
-                        android:textStyle="bold"
-                        app:layout_constraintStart_toEndOf="@+id/imageView13"
-                        app:layout_constraintTop_toBottomOf="@+id/tvArrTime" />
-
-                    <ImageView
-                        android:id="@+id/imageView13"
-                        android:layout_width="40dp"
-                        android:layout_height="0dp"
-                        android:layout_marginStart="16dp"
-                        android:scaleType="fitCenter"
-                        app:layout_constraintBottom_toTopOf="@+id/view2"
+                        app:layout_constraintBottom_toTopOf="@+id/showProfileButton"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/ic_distance" />
-
-                    <TextView
-                        android:id="@+id/tvDepTime"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="4dp"
-                        android:text="12:00"
-                        android:textColor="#A5A5A5"
-                        app:layout_constraintBottom_toTopOf="@+id/tvEstimatedDuration"
-                        app:layout_constraintStart_toEndOf="@+id/imageView13"
-                        app:layout_constraintTop_toBottomOf="@+id/tvDepartureLocation" />
-
-                    <TextView
-                        android:id="@+id/tvArrTime"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="4dp"
-                        android:text="14:00"
-                        android:textColor="#A5A5A5"
-                        app:layout_constraintBottom_toTopOf="@+id/tvArrivalLocation"
-                        app:layout_constraintStart_toEndOf="@+id/imageView13"
-                        app:layout_constraintTop_toBottomOf="@+id/tvEstimatedDuration" />
-
-                    <TextView
-                        android:id="@+id/tvDepartureDate"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="16dp"
-                        android:layout_marginBottom="4dp"
-                        android:text="Apr - 19th"
-                        app:layout_constraintBottom_toTopOf="@+id/view2"
-                        app:layout_constraintEnd_toEndOf="parent" />
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
                         android:id="@+id/tvAvailableSeats"
@@ -212,18 +151,6 @@
                         app:layout_constraintTop_toTopOf="parent"
                         app:srcCompat="@drawable/ic_seat" />
 
-                    <TextView
-                        android:id="@+id/tvEstimatedDuration"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginTop="4dp"
-                        android:text="6h"
-                        app:layout_constraintBottom_toTopOf="@+id/tvArrTime"
-                        app:layout_constraintStart_toEndOf="@+id/imageView13"
-                        app:layout_constraintTop_toBottomOf="@+id/tvDepTime"
-                        app:layout_constraintVertical_bias="0.555" />
-
                     <View
                         android:id="@+id/view2"
                         android:layout_width="0dp"
@@ -234,15 +161,16 @@
                         android:background="@android:color/darker_gray"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/tvArrivalLocation" />
+                        app:layout_constraintTop_toBottomOf="@+id/recyclerView" />
 
                     <TextView
                         android:id="@+id/ownerTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
                         android:text="Mario Rossi"
                         app:layout_constraintBottom_toBottomOf="@+id/imageView12"
-                        app:layout_constraintStart_toStartOf="@+id/tvArrivalLocation"
+                        app:layout_constraintStart_toEndOf="@+id/imageView12"
                         app:layout_constraintTop_toTopOf="@+id/imageView12" />
 
                     <ImageView

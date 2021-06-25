@@ -75,6 +75,13 @@
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
+        <action
+            android:id="@+id/action_trip_edit_to_intermediateStopsFragment"
+            app:destination="@id/intermediateStopsFragment"
+            app:enterAnim="@anim/custom_from_right"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/custom_from_right"
+            app:popExitAnim="@anim/custom_to_right" />
     </fragment>
     <fragment
         android:id="@+id/my_trip_list"
@@ -229,6 +236,38 @@
         <action
             android:id="@+id/action_showOtherProfileFragment_to_ratingListFragment"
             app:destination="@id/ratingListFragment"
+            app:enterAnim="@anim/custom_from_top"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/custom_to_top" />
+    </fragment>
+    <fragment
+        android:id="@+id/intermediateStopsFragment"
+        android:name="com.group06.lab.trip.IntermediateStopsFragment"
+        android:label="Intermediate Stops"
+        tools:layout="@layout/fragment_intermediate_stops" >
+        <action
+            android:id="@+id/action_intermediateStopsFragment_to_intermediateLocationSelectorFragment"
+            app:destination="@id/intermediateLocationSelectorFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_intermediateStopsFragment_to_trip_edit"
+            app:destination="@id/trip_edit"
+            app:enterAnim="@anim/custom_from_right"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/custom_from_right"
+            app:popExitAnim="@anim/custom_to_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/intermediateLocationSelectorFragment"
+        android:name="com.group06.lab.trip.IntermediateLocationSelectorFragment"
+        android:label="Tap on a location">
+        <action
+            android:id="@+id/action_intermediateLocationSelectorFragment_to_intermediateStopsFragment"
+            app:destination="@id/intermediateStopsFragment"
             app:enterAnim="@anim/custom_from_top"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"

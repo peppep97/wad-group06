@@ -62,7 +62,7 @@ class TripAdapter() :
             tvArrTime.text = calendar.time.toString("HH:mm")
             tvOrigin.text = t.departure
             tvDestination.text = t.arrival
-            tvDepDate.text = t.departureDate.toString("MMMM - dd")
+            tvDepDate.text = t.departureDate.toString("dd MMMM")
             val format = DecimalFormat()
             format.isDecimalSeparatorAlwaysShown = false
             tvPrice.text = String.format("%s €", format.format(t.price).toString())

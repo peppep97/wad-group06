@@ -6,6 +6,7 @@ import android.content.res.ColorStateList
 import android.location.Address
 import android.location.Geocoder
 import android.os.Bundle
+import android.os.Parcelable
 import android.os.StrictMode
 import android.preference.PreferenceManager
 import android.view.*
@@ -16,6 +17,8 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import coil.request.CachePolicy
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -53,6 +56,7 @@ class TripDetailsFragment : Fragment() {
     private lateinit var fabFav: FloatingActionButton
     private lateinit var btnShowFavoredList: Button
     private lateinit var btnCompleteTrip: Button
+    private lateinit var timelineRecyclerView: RecyclerView
 
     private lateinit var map: MapView;
 
@@ -93,6 +97,7 @@ class TripDetailsFragment : Fragment() {
         fabFav = view.findViewById(R.id.fabFav)
         btnShowFavoredList = view.findViewById(R.id.btnShowFavoredList)
         btnCompleteTrip = view.findViewById(R.id.CompleteTrip)
+        timelineRecyclerView = view.findViewById(R.id.recyclerView)
 
         snackBar = Snackbar.make(
             requireActivity().findViewById(android.R.id.content),
@@ -100,16 +105,10 @@ class TripDetailsFragment : Fragment() {
             Snackbar.LENGTH_SHORT
         )
 
-        val tvDepartureLocation = view.findViewById<TextView>(R.id.tvDepartureLocation)
-        val tvArrivalLocation = view.findViewById<TextView>(R.id.tvArrivalLocation)
-        val tvDepartureDate = view.findViewById<TextView>(R.id.tvDepartureDate)
-        val tvEstimatedDuration = view.findViewById<TextView>(R.id.tvEstimatedDuration)
         val tvAvailableSeats = view.findViewById<TextView>(R.id.tvAvailableSeats)
         val tvPrice = view.findViewById<TextView>(R.id.tvPrice)
         val tvDescription = view.findViewById<TextView>(R.id.tvDescription)
         val imgTrip = view.findViewById<ImageView>(R.id.imgTrip)
-        val tvDepTime = view.findViewById<TextView>(R.id.tvDepTime)
-        val tvArrTime = view.findViewById<TextView>(R.id.tvArrTime)
         val ownerTextView = view.findViewById<TextView>(R.id.ownerTextView)
         val showProfileButton = view.findViewById<Button>(R.id.showProfileButton)
         val separator = view.findViewById<View>(R.id.view2)
@@ -165,9 +164,6 @@ class TripDetailsFragment : Fragment() {
             myMenu?.findItem(R.id.edit)?.isVisible = tripOwner
             myMenu?.findItem(R.id.delete)?.isVisible = tripOwner
 
-            tvDepartureLocation.text = t.departure
-            tvArrivalLocation.text = t.arrival
-            tvDepartureDate.text = t.departureDate.toString("MMMM - dd")
             tvAvailableSeats.text = t.availableSeats.toString()
 
             val origin = GeoPoint(t.depPosition.latitude, t.depPosition.longitude)
@@ -191,10 +187,13 @@ class TripDetailsFragment : Fragment() {
                     startMarker.title = "Departure"
                 startMarker.id = "dep"
 
+                startMarker.icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_location_green)
+
                 map.overlays?.add(startMarker)
 
                 val arrAddresses: List<Address> =
                     gcd.getFromLocation(destination.latitude, destination.longitude, 1)
+
                 val endMarker = Marker(map)
                 endMarker.position = GeoPoint(destination.latitude, destination.longitude)
                 endMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
@@ -205,7 +204,37 @@ class TripDetailsFragment : Fragment() {
                     endMarker.title = "Arrival"
                 endMarker.id = "arr"
 
+                endMarker.icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_location_red_48)
+
                 map.overlays?.add(startMarker)
+
+                val wayPoints = ArrayList<GeoPoint>()
+                wayPoints.add(origin)
+
+                if (t.intermediateStops.isNotEmpty()){
+                    t.intermediateStops.forEach {
+                        val stop = it
+
+                        wayPoints.add(GeoPoint(stop.lat, stop.lon))
+
+                        val addresses: List<Address> =
+                            gcd.getFromLocation(stop.lat, stop.lon, 1)
+
+                        val marker = Marker(map)
+                        marker.position = GeoPoint(stop.lat, stop.lon)
+                        marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+                        if (addresses.isNotEmpty())
+                            marker.title =
+                                "${addresses[0].locality} - ${addresses[0].countryName}\n${addresses[0].thoroughfare ?: ""} ${addresses[0].subThoroughfare ?: ""}"
+                        else
+                            marker.title = "Intermediate Stop"
+
+                        marker.icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_location_blue)
+
+                        map.overlays?.add(marker)
+                    }
+                }
+
                 map.overlays?.add(endMarker)
 
                 mapController.setCenter(origin)
@@ -216,9 +245,9 @@ class TripDetailsFragment : Fragment() {
                 map.overlays
                     .forEach { o -> if (o is Polyline) map.overlays.remove(o as Overlay) }
 
-                val wayPoints = ArrayList<GeoPoint>()
-                wayPoints.add(origin)
+
                 wayPoints.add(destination)
+
                 val road = roadManager.getRoad(wayPoints)
                 val roadOverlay = RoadManager.buildRoadOverlay(road)
                 roadOverlay.id = "path"
@@ -257,18 +286,17 @@ class TripDetailsFragment : Fragment() {
                             putDouble("depLon", t.depPosition.longitude)
                             putDouble("arrLat", t.arrPosition.latitude)
                             putDouble("arrLon", t.arrPosition.longitude)
+                            putParcelableArrayList("stops", t.intermediateStops as ArrayList<out Parcelable>?)
                         })
                     return true
                 }
             })
 
-            tvDepTime.text = t.departureDate.toString("HH:mm")
             val calendar = Calendar.getInstance()
             calendar.time = t.departureDate
             calendar.add(Calendar.DAY_OF_MONTH, t.estimatedDay)
             calendar.add(Calendar.HOUR, t.estimatedHour)
             calendar.add(Calendar.MINUTE, t.estimatedMinute)
-            tvArrTime.text = calendar.time.toString("HH:mm")
 
             val format = DecimalFormat()
             format.isDecimalSeparatorAlwaysShown = false
@@ -282,7 +310,6 @@ class TripDetailsFragment : Fragment() {
                 sBuilder.append(String.format(" %dh", t.estimatedHour))
             if (t.estimatedMinute > 0)
                 sBuilder.append(String.format(" %dm", t.estimatedMinute))
-            tvEstimatedDuration.text = "(${sBuilder})"
 
             if (t.imageUrl == "") {
                 imgTrip.setImageResource(R.drawable.ic_baseline_no_photography)
@@ -363,6 +390,20 @@ class TripDetailsFragment : Fragment() {
                 showProfileButton.visibility = View.GONE
                 ownerTextView.visibility = View.GONE
             }
+
+            val stopsList = t.intermediateStops.toMutableList()
+            stopsList.add(0, IntermediateStop(t.departure, t.depPosition.latitude, t.depPosition.longitude, t.departureDate.time))
+
+            val final = IntermediateStop(t.arrival, t.arrPosition.latitude, t.arrPosition.longitude, Long.MAX_VALUE)
+            final.estimatedDay = t.estimatedDay
+            final.estimatedHour = t.estimatedHour
+            final.estimatedMinute = t.estimatedMinute
+            stopsList.add(final)
+
+            timelineRecyclerView.layoutManager = LinearLayoutManager(context)
+            val adapter = TimeLineAdapter(stopsList)
+
+            timelineRecyclerView.adapter = adapter
         })
 
 
@@ -467,29 +508,6 @@ class TripDetailsFragment : Fragment() {
                     db.collection("trips")
                         .document(tripId!!)
                         .delete()
-
-
-                    /* val batch = db.batch()
-
-                     db.collection("trips").document(tripId!!).collection("confirmedUsers").get()
-                         .addOnSuccessListener { res ->
-                             res.documents.forEach { batch.delete(it.reference) }
-                             //Works only for small collection I guess?
-                             batch.commit()
-                             db.collection("trips")
-                                 .document(tripId!!)
-                                 .delete()
-                         }
-
-                     db.collection("trips").document(tripId!!).collection("Ratings").get()
-                         .addOnSuccessListener { res ->
-                             res.documents.forEach { batch.delete(it.reference) }
-                             //Works only for small collection I guess?
-                             batch.commit()
-                             db.collection("trips")
-                                 .document(tripId!!)
-                                 .delete()
-                         }*/
 
                     findNavController().navigate(
                         R.id.action_trip_details_to_trip_list)

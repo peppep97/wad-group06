@@ -1,13 +1,13 @@
 package com.group06.lab.trip
 
-import android.util.Log
 import androidx.lifecycle.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
-import com.group06.lab.trip.Trip.Companion.toTrip
+import com.google.firebase.firestore.Query
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import java.util.*
 
 class TripViewModel : ViewModel() {
     private val trips = MutableLiveData<List<Trip>>()
@@ -57,7 +57,7 @@ class TripViewModel : ViewModel() {
             .document(id)
             .addSnapshotListener { value, error ->
                 if (error != null) throw error
-                data.value = value?.toTrip()
+                data.value = value?.toObject(Trip::class.java)
             }
         return data
     }
@@ -122,15 +122,17 @@ class TripViewModel : ViewModel() {
                 .get()
                 .await()
                 .documents.mapNotNull {
-                    it.toTrip()
+                    it.toObject(Trip::class.java)
                 }
     }
 
     private suspend fun loadTrips() : List<Trip> {
         return FirebaseFirestore.getInstance().collection("trips")
+            .whereGreaterThanOrEqualTo("departureDate", Date())
+            .orderBy("departureDate", Query.Direction.ASCENDING)
             .get().await()
             .documents.mapNotNull {
-                it.toTrip()
+                it.toObject(Trip::class.java)
             }
     }
 
@@ -139,7 +141,7 @@ class TripViewModel : ViewModel() {
             .whereEqualTo("userEmail", FirebaseAuth.getInstance().currentUser!!.email!!)
             .get().await()
             .documents.mapNotNull {
-                it.toTrip()
+                it.toObject(Trip::class.java)
             }
     }
 
@@ -152,7 +154,7 @@ class TripViewModel : ViewModel() {
                 val t = it.reference.parent.parent
                     ?.get()
                     ?.await()
-                    ?.toTrip()
+                    ?.toObject(Trip::class.java)
 
                 if (t != null) tripList.add(t)
             }

@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -26,14 +27,15 @@ import org.osmdroid.views.overlay.Overlay
 import org.osmdroid.views.overlay.Polyline
 import java.util.*
 
-private var depLat: Double? = 0.0
-private var arrLat: Double? = 0.0
-private var depLon: Double? = 0.0
-private var arrLon: Double? = 0.0
-
 class TripRouteFragment : Fragment() {
-    private lateinit var map: MapView;
+    private lateinit var map: MapView
     private lateinit var client: FusedLocationProviderClient
+
+    private var depLat: Double? = 0.0
+    private var arrLat: Double? = 0.0
+    private var depLon: Double? = 0.0
+    private var arrLon: Double? = 0.0
+    private var stopList: List<IntermediateStop>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,6 +48,7 @@ class TripRouteFragment : Fragment() {
         depLon = arguments?.getDouble("depLon")
         arrLat = arguments?.getDouble("arrLat")
         arrLon = arguments?.getDouble("arrLon")
+        stopList = arguments?.getParcelableArrayList("stops")
 
         client = LocationServices.getFusedLocationProviderClient(requireActivity())
         val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
@@ -61,7 +64,7 @@ class TripRouteFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        map = view.findViewById<MapView>(R.id.mapRoute)
+        map = view.findViewById(R.id.mapRoute)
         map.setTileSource(TileSourceFactory.MAPNIK);
         map.setMultiTouchControls(true)
         val mapController = map.controller
@@ -105,7 +108,36 @@ class TripRouteFragment : Fragment() {
                             startMarker.title = "Departure"
                         startMarker.id = "dep"
 
+                        startMarker.icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_location_green)
+
                         map.overlays?.add(startMarker)
+
+                        val wayPoints = ArrayList<GeoPoint>()
+                        wayPoints.add(origin)
+
+                        if (stopList?.isNotEmpty()!!){
+                            stopList!!.forEach {
+                                val stop = it
+
+                                wayPoints.add(GeoPoint(stop.lat, stop.lon))
+
+                                val addresses: List<Address> =
+                                    gcd.getFromLocation(stop.lat, stop.lon, 1)
+
+                                val marker = Marker(map)
+                                marker.position = GeoPoint(stop.lat, stop.lon)
+                                marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+                                if (addresses.isNotEmpty())
+                                    marker.title =
+                                        "${addresses[0].locality} - ${addresses[0].countryName}\n${addresses[0].thoroughfare ?: ""} ${addresses[0].subThoroughfare ?: ""}"
+                                else
+                                    marker.title = "Intermediate Stop"
+
+                                marker.icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_location_blue)
+
+                                map.overlays?.add(marker)
+                            }
+                        }
 
                         val arrAddresses: List<Address> =
                             gcd.getFromLocation(destination.latitude, destination.longitude, 1)
@@ -119,6 +151,8 @@ class TripRouteFragment : Fragment() {
                             endMarker.title = "Arrival"
                         endMarker.id = "arr"
 
+                        endMarker.icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_location_red_48)
+
                         map.overlays?.add(startMarker)
                         map.overlays?.add(endMarker)
 
@@ -130,8 +164,7 @@ class TripRouteFragment : Fragment() {
                         map.overlays
                             .forEach { o -> if (o is Polyline) map.overlays.remove(o as Overlay) }
 
-                        val wayPoints = ArrayList<GeoPoint>()
-                        wayPoints.add(origin)
+
                         wayPoints.add(destination)
                         val road = roadManager.getRoad(wayPoints)
                         val roadOverlay = RoadManager.buildRoadOverlay(road)
