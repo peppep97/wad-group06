@@ -142,7 +142,8 @@ class TripEditFragment : Fragment() {
         etAvailableSeats = view.findViewById(R.id.etAvailableSeats)
         etPrice = view.findViewById(R.id.etPrice)
         etDescription = view.findViewById(R.id.etDescription)
-        stopList = arguments?.getParcelableArrayList("stops")
+        if (arguments?.getParcelableArrayList<IntermediateStop>("stops") != null)
+            stopList = arguments?.getParcelableArrayList("stops")
 
         imgTrip = view.findViewById(R.id.imgTrip)
         val imageButtonEdit = view.findViewById<ImageButton>(R.id.imageButtonEdit)
@@ -191,6 +192,10 @@ class TripEditFragment : Fragment() {
                     arrLat = t.arrPosition.latitude
                     arrLon = t.arrPosition.longitude
                     arrCity = t.arrival
+                }
+
+                if (stopList.isNullOrEmpty()){
+                    stopList = t.intermediateStops
                 }
                 etArrival.editText?.addTextChangedListener(arrTextChangeListener())
 
@@ -441,6 +446,7 @@ class TripEditFragment : Fragment() {
             R.id.save -> {
                 //save data
                 if (validateForm()) {
+
 
                     val t = Trip(
                         "",
